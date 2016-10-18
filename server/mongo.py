@@ -84,5 +84,5 @@ def get_data_in_bounding_box():
   return json.dumps(output, sort_keys=True, indent=2)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    # app.run(debug=True)
+    app.run(host= '0.0.0.0', threaded=True, debug=False)
