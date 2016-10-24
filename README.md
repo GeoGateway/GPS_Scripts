@@ -17,22 +17,7 @@ Please make sure the following steps are carried out before installation
     ssh -i "*****.pem" ubuntu@ec2-publicIP.compute-1.amazonaws.com
   ```
 2. [Python2.7](https://www.python.org/download/releases/2.7/) installed in your machine.  
-3. [MongoDB](https://www.mongodb.com/) is installed. MongoDB can be installed by following the steps from this [tutorial](https://www.howtoforge.com/tutorial/install-mongodb-on-ubuntu-14.04/).
-  ```
-    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10  
-    echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list  
-    sudo apt-get update  
-    sudo apt-get install -y mongodb-org
-  ```
 
-4. Start the MongoDB service by-  
-  ```
-   sudo service mongod start 
-   
-   OR  
-   
-   mongod  
-  ```
 
 Installation
 ------------------
@@ -48,6 +33,17 @@ Installation
 3. Execute the runAll.sh file. It will load the json data to mongoDB and print out the instructions that need to be followed to start the server.  
   ```
   sudo runAll.sh
+  ```  
+
+  It will also install [MongoDB](https://www.mongodb.com/) following steps from this [tutorial](https://www.howtoforge.com/tutorial/install-mongodb-on-ubuntu-14.04/).  
+
+4. Start the MongoDB service by-  
+  ```
+   sudo service mongod start 
+   
+   OR  
+   
+   mongod  
   ```
 
 Author Information
