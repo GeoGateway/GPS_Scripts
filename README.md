@@ -30,21 +30,10 @@ Installation
   ```
   cd GPS_Scripts
   ```  
-3. Execute the runAll.sh file. It will load the json data to mongoDB and print out the instructions that need to be followed to start the server.  
+3. Execute the runAll.sh file. It will install [MongoDB](https://www.mongodb.com/) following steps from this [tutorial](https://www.howtoforge.com/tutorial/install-mongodb-on-ubuntu-14.04/). It will load the json data to mongoDB and print out the instructions that need to be followed to start the server.  
   ```
   sudo runAll.sh
   ```  
-
-  It will also install [MongoDB](https://www.mongodb.com/) following steps from this [tutorial](https://www.howtoforge.com/tutorial/install-mongodb-on-ubuntu-14.04/).  
-
-4. Start the MongoDB service by-  
-  ```
-   sudo service mongod start 
-   
-   OR  
-   
-   mongod  
-  ```
 
 Author Information
 ------------------

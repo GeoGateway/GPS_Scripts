@@ -18,6 +18,13 @@ sudo apt-get install -y mongodb-org
 echo 
 echo
 echo "***********************************"
+echo "Starting MongoDB"
+echo "***********************************"
+sudo service mongod start
+
+echo 
+echo
+echo "***********************************"
 echo "Adding data to MongoDB"
 echo "***********************************"
 python PythonRDAHMM/create_mongodb.py UNR_SPLICE
