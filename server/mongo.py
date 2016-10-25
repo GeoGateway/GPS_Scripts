@@ -19,6 +19,8 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from flask_pymongo import PyMongo
+from flask.ext.jsonpify import jsonify
+
 import json
 from datetime import datetime
 
@@ -116,7 +118,8 @@ def get_data_in_bounding_box():
 
 	output["status"] = list_status
 	# http://stackoverflow.com/questions/19877903/using-mongo-with-flask-and-python
-	return json.dumps(output, sort_keys=True, indent=2)
+	# return json.dumps(output, sort_keys=True, indent=2)
+	return jsonify(output)
 
 if __name__ == '__main__':
     # app.run(debug=True)
