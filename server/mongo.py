@@ -8,7 +8,7 @@
 # usage: to start the service
 #   python mongo.py
 
-# eg: request to service: http://localhost:5000/gps?lat_min=18.005611&lat_max=48.987386&long_min=-124.626080&long_max=-62.361014
+# eg: request to service: http://localhost:5000/gps?lat_min=18.005611&lat_max=48.987386&lon_min=-124.626080&lon_max=-62.361014
 #     output: Is a json file containinf information
 #             of all stations in the bounding box
 
@@ -37,8 +37,8 @@ def get_data_in_bounding_box():
 
 	lat_min=request.args.get('lat_min')
 	lat_max=request.args.get('lat_max')
-	long_min=request.args.get('long_min')
-	long_max=request.args.get('long_max')
+	lon_min=request.args.get('lon_min')
+	lon_max=request.args.get('lon_max')
 	year=request.args.get('year')
 	month=request.args.get('month')
 	day=request.args.get('day')
@@ -53,15 +53,15 @@ def get_data_in_bounding_box():
 	else:
 		lat_max=float(lat_max)   
 
-	if not long_min:
-		long_min=-359.998835383    
+	if not lon_min:
+		lon_min=-359.998835383    
 	else:
-		long_min=float(long_min)   
+		lon_min=float(lon_min)   
 
-	if not long_max:
-		long_max=-0.037155605
+	if not lon_max:
+		lon_max=-0.037155605
 	else:
-		long_max=float(long_max)
+		lon_max=float(lon_max)
 
 	today = datetime.today()
 
@@ -89,8 +89,8 @@ def get_data_in_bounding_box():
 
 	cursor_stations = collections_stations.find( { "loc" : 
                                                   { "$geoWithin" :
-                                                    { "$box" : [ [long_min, lat_min],
-                                                               [long_max, lat_max]]
+                                                    { "$box" : [ [lon_min, lat_min],
+                                                               [lon_max, lat_max]]
                                              } } } )
 	list_station = []
 	if cursor_stations:
