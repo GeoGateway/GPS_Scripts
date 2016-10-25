@@ -98,8 +98,6 @@ def get_data_in_bounding_box():
 	        i.pop('_id', None)
 	        list_station.append(i)
 
-	output['station_count'] = cursor_stations.count()
-
 	for i in cursor_stations:
 		i.pop('_id', None)
 		list_station.append(i)
@@ -116,6 +114,7 @@ def get_data_in_bounding_box():
 	    except:
 	        continue
 
+	output['station_count'] = len(list_status)
 	output["status"] = list_status
 	# http://stackoverflow.com/questions/19877903/using-mongo-with-flask-and-python
 	# return json.dumps(output, sort_keys=True, indent=2)
