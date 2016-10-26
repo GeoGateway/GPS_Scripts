@@ -87,32 +87,25 @@ def get_data_in_bounding_box():
 	#   i.pop('station_count', None)
 	#   output = i
 
-	cursor_stations = collections_stations.find( { "loc" : 
-                                                  { "$geoWithin" :
-                                                    { "$box" : [ [lon_min, lat_min],
-                                                               [lon_max, lat_max]]
-                                             } } } )
-	list_station = []
-	if cursor_stations:
-	    for i in cursor_stations:
-	        i.pop('_id', None)
-	        list_station.append(i)
-
-	for i in cursor_stations:
-		i.pop('_id', None)
-		list_station.append(i)
+	status_to_find = 'status.' + year + '.' + month + '.' + day
+	cursor_stations = collections_stations.find({ "loc" : \
+	                                                  { "$geoWithin" : 
+	                                                    { "$box" : [ [lon_min, lat_min],\
+	                                                               [lon_max, lat_max]] \
+	                                                    } }, \
+	                                                 status_to_find : {'$exists': 1} \
+	                                                }, {'id': 1, status_to_find:1})
 
 	list_status = []
-
-	for station in list_station:
-    
-	    try:
-	        res = {'id' : station['id'],
-	               'status' : station['status'][year][month][day]
-	              }
-	        list_status.append(res)
-	    except:
-	        continue
+	if cursor_stations:
+	    for station in cursor_stations:
+	        try:
+	            res = {'id' : station['id'],
+	                   'status' : station['status'][year][month][day]
+	                  }
+	            list_status.append(res)
+	        except:
+	            continue
 
 	output['station_count'] = len(list_status)
 	output["status"] = list_status
