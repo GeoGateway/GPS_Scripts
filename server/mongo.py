@@ -111,5 +111,5 @@ def get_data_in_bounding_box():
 	return jsonify(output)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    # app.run(host= '0.0.0.0', threaded=True, debug=False)
+    # app.run(debug=True)
+    app.run(host= '0.0.0.0', threaded=True, debug=False)
