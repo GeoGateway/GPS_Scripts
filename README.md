@@ -17,7 +17,16 @@ Please make sure the following steps are carried out before installation
     ssh -i "*****.pem" ubuntu@ec2-publicIP.compute-1.amazonaws.com
   ```
 2. [Python2.7](https://www.python.org/download/releases/2.7/) installed in your machine.  
-
+3. Git  
+  ```  
+  sudo apt-get update  
+    
+  sudo apt-get install git  
+  ```  
+4. Pip  
+  ```  
+  sudo apt-get -y install python-pip
+  ```  
 
 Installation
 ------------------
