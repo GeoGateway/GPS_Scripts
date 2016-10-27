@@ -26,7 +26,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-database_name = 'GPS_UNR_SPLICE'
+database_name = 'GPS_mXn_UNR_SPLICE'
 app.config['MONGO_DBNAME'] = database_name
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/'+database_name
 
@@ -87,32 +87,29 @@ def get_data_in_bounding_box():
 	#   i.pop('station_count', None)
 	#   output = i
 
-	status_to_find = 'status.' + year + '.' + month + '.' + day
+	date_to_find_in_str = year + '-' + month + '-' + day
+	date_to_find = datetime.strptime(date_to_find_in_str,'%Y-%m-%d')
+
 	cursor_stations = collections_stations.find({ "loc" : \
 	                                                  { "$geoWithin" : 
 	                                                    { "$box" : [ [lon_min, lat_min],\
 	                                                               [lon_max, lat_max]] \
 	                                                    } }, \
-	                                                 status_to_find : {'$exists': 1} \
-	                                                }, {'station_id': 1, status_to_find:1})
+	                                                 "date" : {'$eq': date_to_find} \
+	                                                }, {'station_id': 1, 'status':1})
 
 	list_status = []
 	if cursor_stations:
-	    for station in cursor_stations:
-	        try:
-	            res = {'station_id' : station['station_id'],
-	                   'status' : station['status'][year][month][day]
-	                  }
-	            list_status.append(res)
-	        except:
-	            continue
+	    for record in cursor_stations:
+	        record.pop('_id', None)
+	        list_status.append(record)
 
 	output['station_count'] = len(list_status)
 	output["status"] = list_status
-	# http://stackoverflow.com/questions/19877903/using-mongo-with-flask-and-python
+
 	# return json.dumps(output, sort_keys=True, indent=2)
 	return jsonify(output)
 
 if __name__ == '__main__':
-    # app.run(debug=True)
-    app.run(host= '0.0.0.0', threaded=True, debug=False)
+    app.run(debug=True)
+    # app.run(host= '0.0.0.0', threaded=True, debug=False)

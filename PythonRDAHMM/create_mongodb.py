@@ -451,7 +451,7 @@ def getStationState(date,gpsStation):
 #########SAVE TO MONGODB###########
 client = MongoClient('localhost', 27017)
 
-database_name='GPS_'+dataSet
+database_name='GPS_mXn_'+dataSet
 
 # Create database
 client.drop_database(database_name)
@@ -519,7 +519,7 @@ end_date=datetime.strptime(endDate, '%Y-%m-%d')
 # http://stackoverflow.com/questions/21231789/how-to-get-all-days-in-current-month
 from calendar import monthrange
 
-# temp_station_list= []
+today = datetime.today()
 for station in stations:
 #     GeoJson format: maybe considered in future
 #     loc = {'type' : "Point", 
@@ -527,40 +527,34 @@ for station in stations:
 #           }
     loc = [float(station['long']), float(station['lat'])]   
     document={'station_id' : station['id'], 'loc' : loc }
-    
-    data_for_all_years = {}
-    
+        
     for year in range(start_date.year,end_date.year+1):
-        data_for_a_year = {}
         
         for month in range(1,13):
             no_of_days_in_month = monthrange(year, month)[1]+1
             days=range(1, no_of_days_in_month)
-#             state=[None]*(no_of_days_in_month-1)          
-            data_for_a_month={}
-            
+
             for day in days:
                 date_in_time_series=datetime(year, month, day)
                 if (date_in_time_series > today):
-                    break                
-                data_for_a_month[str(day)] = str(getStationState(date_in_time_series, station))
-
+                    break
+                
+                doc = document.copy()
+                doc['status'] = str(getStationState(date_in_time_series, station))             
+                doc['date'] = date_in_time_series
+                
+                # Add station data
+                collections_stations.insert_one(doc)
+            
             if (date_in_time_series > today):
-                break 
-            data_for_a_year[str(month)] = data_for_a_month
-
+                break
+                
         if (date_in_time_series > today):
-            break             
-        data_for_all_years[str(year)] = data_for_a_year
-        
-    document['status'] = data_for_all_years
-    # set_legacy_data(document, station)
-    
-    # Add station data
-    collections_stations.insert_one(document)
+            break            
 
-# Create 2-D index based on latitude, longitude
-db.collections_stations.create_index( [("lon", pymongo.GEO2D)] )
+# Create compund index based on 2-D index based on latitude, longitude and date
+db.collections_stations.create_index([("lon", pymongo.GEO2D), \
+                                        ("date", pymongo.ASCENDING)])
 
 # Close connection to database
 client.close()
