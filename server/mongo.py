@@ -94,13 +94,13 @@ def get_data_in_bounding_box():
 	                                                               [lon_max, lat_max]] \
 	                                                    } }, \
 	                                                 status_to_find : {'$exists': 1} \
-	                                                }, {'id': 1, status_to_find:1})
+	                                                }, {'station_id': 1, status_to_find:1})
 
 	list_status = []
 	if cursor_stations:
 	    for station in cursor_stations:
 	        try:
-	            res = {'id' : station['id'],
+	            res = {'station_id' : station['station_id'],
 	                   'status' : station['status'][year][month][day]
 	                  }
 	            list_status.append(res)

@@ -526,7 +526,7 @@ for station in stations:
 #            'coordinates' : [float(station['long']), float(station['lat'])]
 #           }
     loc = [float(station['long']), float(station['lat'])]   
-    document={'station_name' : station['id'], 'loc' : loc }
+    document={'station_id' : station['id'], 'loc' : loc }
     
     data_for_all_years = {}
     
@@ -540,16 +540,21 @@ for station in stations:
             data_for_a_month={}
             
             for day in days:
-                single_date=datetime(year, month, day)
-#                 state[str(day-1)]=str(getStationState(single_date, station))
-                data_for_a_month[str(day)] = str(getStationState(single_date, station))
-#             data_for_a_year[str(month)] = dict(zip(days, state))
+                date_in_time_series=datetime(year, month, day)
+                if (date_in_time_series > today):
+                    break                
+                data_for_a_month[str(day)] = str(getStationState(date_in_time_series, station))
+
+            if (date_in_time_series > today):
+                break 
             data_for_a_year[str(month)] = data_for_a_month
-            
+
+        if (date_in_time_series > today):
+            break             
         data_for_all_years[str(year)] = data_for_a_year
         
     document['status'] = data_for_all_years
-    set_legacy_data(document, station)
+    # set_legacy_data(document, station)
     
     # Add station data
     collections_stations.insert_one(document)
