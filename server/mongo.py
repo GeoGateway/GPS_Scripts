@@ -96,7 +96,7 @@ def get_data_in_bounding_box():
 	                                                 status_to_find : {'$exists': 1} \
 	                                                }, {'station_id': 1, 'loc': 1, status_to_find:1})
 
-	list_status = []
+	list_station = []
 	if cursor_stations:
 	    for station in cursor_stations:
 	        try:
@@ -105,12 +105,12 @@ def get_data_in_bounding_box():
 	                   'lat' : station['loc'][1],
 	                   'lon' : station['loc'][0]
 	                  }
-	            list_status.append(res)
+	            list_station.append(res)
 	        except:
 	            continue
 
-	output['station_count'] = len(list_status)
-	output["status"] = list_status
+	output['station_count'] = len(list_station)
+	output["stations"] = list_station
 	# http://stackoverflow.com/questions/19877903/using-mongo-with-flask-and-python
 	# return json.dumps(output, sort_keys=True, indent=2)
 	return jsonify(output)
