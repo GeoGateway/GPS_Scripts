@@ -27,22 +27,22 @@ def get_parent_dir(directory):
 # http://stackoverflow.com/questions/9856683/using-pythons-os-path-how-do-i-go-up-one-directory
     return os.path.dirname(directory)
 
-V={}
+Paths={}
 # WORK_DIR = get_parent_dir(os.getcwd())
 WORK_DIR = os.getcwd()
-V['cron_path']=os.path.join(WORK_DIR, "RDAHMM","CRON_Download/")  
-V['download_path']=os.path.join(WORK_DIR,"RDAHMM","Download/")  
-V['script_path']=os.path.join(WORK_DIR,"PythonRDAHMM/") 
-V['data_path']=os.path.join(WORK_DIR,"RDAHMM","Data/")
+Paths['cron_path']=os.path.join(WORK_DIR, "RDAHMM","CRON_Download/")  
+Paths['download_path']=os.path.join(WORK_DIR,"RDAHMM","Download/")  
+Paths['script_path']=os.path.join(WORK_DIR,"PythonRDAHMM/") 
+Paths['data_path']=os.path.join(WORK_DIR,"RDAHMM","Data/")
 # temp_path is the temporary working directory for ingesting raw data
-V['temp_path']=os.path.join(WORK_DIR,"RDAHMM","TEMP/")
-V['model_path']=os.path.join(WORK_DIR,"RDAHMM","Model/")
-V['eval_path']=os.path.join(WORK_DIR,"daily/")
-V['train_epoch']="2013-12-31"
-V['rdahmm_bin']=os.path.join(WORK_DIR,"RDAHMM", "rdahmm3","bin", "rdahmm")
-V['rdahmm_model_parm']="-data <inputFile> -T <dataCount> -D <dimensionCount> -N 5 -output_type gauss -anneal -annealfactor 1.1 -betamin 0.1 -regularize -omega 0 0 1 1.0e-6 -ntries 10 -seed 1234"
-V['rdahmm_eval_parm']="-data <proBaseName>.all.input -T <dataCount> -D <dimensionCount> -N 5 -output_type gauss -A <modelBaseName>.A -B <modelBaseName>.B -pi <modelBaseName>.pi -minvalfile <modelBaseName>.minval -maxvalfile <modelBaseName>.maxval -rangefile <modelBaseName>.range -eval"
-V['dygraphsJs']=os.path.join(WORK_DIR,"PythonRDAHMM","dygraphsJsCreator.pearl")
+Paths['temp_path']=os.path.join(WORK_DIR,"RDAHMM","TEMP/")
+Paths['model_path']=os.path.join(WORK_DIR,"RDAHMM","Model/")
+Paths['eval_path']=os.path.join(WORK_DIR,"daily/")
+Paths['train_epoch']="2013-12-31"
+Paths['rdahmm_bin']=os.path.join(WORK_DIR,"RDAHMM", "rdahmm3","bin", "rdahmm")
+Paths['rdahmm_model_parm']="-data <inputFile> -T <dataCount> -D <dimensionCount> -N 5 -output_type gauss -anneal -annealfactor 1.1 -betamin 0.1 -regularize -omega 0 0 1 1.0e-6 -ntries 10 -seed 1234"
+Paths['rdahmm_eval_parm']="-data <proBaseName>.all.input -T <dataCount> -D <dimensionCount> -N 5 -output_type gauss -A <modelBaseName>.A -B <modelBaseName>.B -pi <modelBaseName>.pi -minvalfile <modelBaseName>.minval -maxvalfile <modelBaseName>.maxval -rangefile <modelBaseName>.range -eval"
+Paths['dygraphsJs']=os.path.join(WORK_DIR,"PythonRDAHMM","dygraphsJsCreator.pearl")
 
 def properties(key):
-    return V[key]
+    return Paths[key]
