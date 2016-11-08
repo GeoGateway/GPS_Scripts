@@ -32,7 +32,7 @@ app.config['MONGO_URI'] = 'mongodb://localhost:27017/'+database_name
 
 mongo = PyMongo(app)
 
-@app.route('/gps', methods=['GET'])
+@app.route('/'+ database_name+'/time_series', methods=['GET'])
 def get_data_in_bounding_box():
 
 	lat_min=request.args.get('lat_min')
@@ -75,7 +75,7 @@ def get_data_in_bounding_box():
 		day=str(today.day)
 
 
-	collections_stations = mongo.db.collections_stations
+	collections_time_series_stations = mongo.db.collections_time_series_stations
 	# collections_meta = mongo.db.collections_meta
 
 	output = {}
@@ -88,7 +88,7 @@ def get_data_in_bounding_box():
 	#   output = i
 
 	status_to_find = 'status.' + year + '.' + month + '.' + day
-	cursor_stations = collections_stations.find({ "loc" : \
+	cursor_stations = collections_time_series_stations.find({ "loc" : \
 	                                                  { "$geoWithin" : 
 	                                                    { "$box" : [ [lon_min, lat_min],\
 	                                                               [lon_max, lat_max]] \
@@ -114,6 +114,40 @@ def get_data_in_bounding_box():
 	# http://stackoverflow.com/questions/19877903/using-mongo-with-flask-and-python
 	# return json.dumps(output, sort_keys=True, indent=2)
 	return jsonify(output)
+
+########### GET NETWORK META
+@app.route('/'+ database_name+ '/network_meta', methods=['GET'])
+def get_network_meta_data():
+
+	collections_meta_network = mongo.db.collections_meta_network
+
+	output = {}
+	cursor_meta_network = collections_meta_network.find()
+
+	for i in cursor_meta_network:
+	    i.pop('_id', None)
+	    i['network_station_count'] = i['station_count']
+	    i.pop('station_count', None)
+    	output = i
+
+	return jsonify(output)
+
+#########GET STATION META
+@app.route('/'+ database_name+'/station_meta', methods=['GET'])
+def get_station_meta_data():
+
+	station_id_to_find=request.args.get('station_id_to_find')
+	collections_meta_stations = mongo.db.collections_meta_stations
+
+	output = {}
+	cursor_meta_stations = collections_meta_stations.find( \
+	                                        { '_id': station_id_to_find })
+
+	for i in cursor_meta_stations:
+	    output=i
+
+	return jsonify(output)
+
 
 if __name__ == '__main__':
     # app.run(debug=True)

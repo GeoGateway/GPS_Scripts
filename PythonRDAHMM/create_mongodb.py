@@ -26,8 +26,8 @@ today = datetime.today()
 serverName = "gf9.ucs.indiana.edu"
 updateTime = str(today.strftime("%Y-%m-%dT%H:%M:%S"))
 beginDate = "1994-01-01"
-# endDate = str(today.strftime("%Y-%m-%d"))
-endDate = '2016-10-19'
+endDate = str(today.strftime("%Y-%m-%d"))
+# endDate = '2016-10-19'
 centerLng = "-119.7713889"
 centerLat = "36.7477778"
 stateChangeNumTxtFile = "stateChangeNums.txt"
@@ -458,32 +458,37 @@ client.drop_database(database_name)
 db =client[database_name]
 
 
-# Create 2 collections
-# for meta
-collections_meta = db.collections_meta
+# Create 3 collections
+# for network meta data
+collections_meta_network = db.collections_meta_network
+# for station meta data
+collections_meta_stations = db.collections_meta_stations
 # for stations
-collections_stations = db.collections_stations 
+collections_time_series_stations = db.collections_time_series_stations  
 
 
-meta= {}
-meta['update_time'] = summaryData['update_time']
-meta['data_source'] = summaryData['data_source']
-meta['begin_date'] = summaryData['begin_date']
-meta['end_date'] = summaryData['end_date']
-meta['center_longitude'] = summaryData['center_longitude']
-meta['center_latitude'] = summaryData['center_latitude']
-meta['server_url'] = summaryData['server_url']
-meta['stateChangeNumTxtFile'] = summaryData['stateChangeNumTxtFile']
-meta['stateChangeNumJsInput'] = summaryData['stateChangeNumJsInput']
-meta['allStationInputName'] = summaryData['allStationInputName']
-meta['Filters'] = summaryData['Filters']
-meta['video_url'] = summaryData['video_url']
-meta['station_count'] = summaryData['station_count']
-collections_meta.insert_one(meta)
+meta_network= {}
+meta_network['update_time'] = summaryData['update_time']
+meta_network['data_source'] = summaryData['data_source']
+meta_network['begin_date'] = summaryData['begin_date']
+meta_network['end_date'] = summaryData['end_date']
+meta_network['center_longitude'] = summaryData['center_longitude']
+meta_network['center_latitude'] = summaryData['center_latitude']
+meta_network['server_url'] = summaryData['server_url']
+meta_network['stateChangeNumTxtFile'] = summaryData['stateChangeNumTxtFile']
+meta_network['stateChangeNumJsInput'] = summaryData['stateChangeNumJsInput']
+meta_network['allStationInputName'] = summaryData['allStationInputName']
+meta_network['Filters'] = summaryData['Filters']
+meta_network['video_url'] = summaryData['video_url']
+meta_network['station_count'] = summaryData['station_count']
+
+collections_meta_network.insert_one(meta_network)
 
 
-def set_legacy_data(document, station):
-    document['id'] = station['id']
+def get_legacy_data(station):
+    
+    document= {}
+    document['_id'] = station['id']
     document['pro_dir'] = station['pro_dir']
     document['AFile'] = station['AFile']
     document['BFile'] = station['BFile']
@@ -510,8 +515,7 @@ def set_legacy_data(document, station):
     document['long'] = station['long']
     document['height'] = station['height']
     
-    return
-
+    return document
 
 start_date=datetime.strptime(beginDate, '%Y-%m-%d')
 end_date=datetime.strptime(endDate, '%Y-%m-%d')
@@ -556,9 +560,12 @@ for station in stations:
     document['status'] = data_for_all_years
     # set_legacy_data(document, station)
     
-    # Add station data
-    collections_stations.insert_one(document)
-
+    # Add station time series
+    collections_time_series_stations.insert_one(document)
+    
+    # Add station metadata
+    collections_meta_stations.insert_one(get_legacy_data(station))
+    
 # Create 2-D index based on latitude, longitude
 db.collections_stations.create_index( [("lon", pymongo.GEO2D)] )
 
