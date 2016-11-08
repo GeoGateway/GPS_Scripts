@@ -42,25 +42,25 @@ class ThreadJob(Thread):
             print p.stderr        
         print "+++Finished process ", self.dataset
 
-        # create summary xml on the corresponding dataset 
-        print "+++creating summary xml for  ", self.dataset, " ..."
-        cmd = xml_cmd
-        #cmd = "echo"
-        p = subprocess.Popen([cmd, self.dataset], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        (stdout, stderr) = p.communicate()
-        if p.returncode != 0:
-            print p.stderr        
-        print "+++Finished creating summary xml for  ", self.dataset
+        # # create summary xml on the corresponding dataset 
+        # print "+++creating summary xml for  ", self.dataset, " ..."
+        # cmd = xml_cmd
+        # #cmd = "echo"
+        # p = subprocess.Popen([cmd, self.dataset], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # (stdout, stderr) = p.communicate()
+        # if p.returncode != 0:
+        #     print p.stderr        
+        # print "+++Finished creating summary xml for  ", self.dataset
 
-        # create summary json on the corresponding dataset 
-        print "+++creating summary json for  ", self.dataset, " ..."
-        cmd = json_cmd
-        #cmd = "echo"
-        p = subprocess.Popen([cmd, self.dataset], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        (stdout, stderr) = p.communicate()
-        if p.returncode != 0:
-            print p.stderr        
-        print "+++Finished creating summary json for  ", self.dataset
+        # # create summary json on the corresponding dataset 
+        # print "+++creating summary json for  ", self.dataset, " ..."
+        # cmd = json_cmd
+        # #cmd = "echo"
+        # p = subprocess.Popen([cmd, self.dataset], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # (stdout, stderr) = p.communicate()
+        # if p.returncode != 0:
+        #     print p.stderr        
+        # print "+++Finished creating summary json for  ", self.dataset
 
 for dataset in ['fid', 'igs08']:
     t = ThreadJob(dataset)

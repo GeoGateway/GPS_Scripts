@@ -25,9 +25,9 @@ sudo service mongod start
 echo 
 echo
 echo "***********************************"
-echo "Adding data to MongoDB"
+echo "Not Adding data to MongoDB"
 echo "***********************************"
-python PythonRDAHMM/create_mongodb.py UNR_SPLICE
+# python PythonRDAHMM/create_mongodb.py UNR_SPLICE
 
 echo 
 echo
