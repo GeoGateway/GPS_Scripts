@@ -26,7 +26,8 @@ class ThreadJob(Thread):
 	# ingest a given dataset: igs08 | fid
         print "+++Starting process UNR ", self.source, " ..."
         cmd = unr_cmd
-        p = subprocess.Popen([cmd, self.source], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	print "Command: " + cmd
+        p = subprocess.Popen(["sudo", cmd, self.source], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (stdout, stderr) = p.communicate()
         if p.returncode != 0:
             print p.stderr  
@@ -35,8 +36,9 @@ class ThreadJob(Thread):
         # run rdahmm evaluation on the corresponding dataset 
         print "+++Starting process ", self.dataset, " ..."
         cmd = eval_cmd
+	print "command: " + cmd
         #cmd = "echo"
-        p = subprocess.Popen([cmd, self.dataset], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(["sudo", cmd, self.dataset], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (stdout, stderr) = p.communicate()
         if p.returncode != 0:
             print p.stderr        
