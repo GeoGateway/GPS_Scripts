@@ -29,11 +29,11 @@ def get_parent_dir(directory):
 
 Paths={}
 # WORK_DIR = get_parent_dir(os.getcwd())
-# WORK_DIR = os.getcwd()
-WORK_DIR = '~/GPS_Scripts'
+WORK_DIR = os.getcwd()
+#WORK_DIR = '~/GPS_Scripts'
 Paths['cron_path']=os.path.join(WORK_DIR, "RDAHMM","CRON_Download/")  
 Paths['download_path']=os.path.join(WORK_DIR,"RDAHMM","Download/")  
-Paths['script_path']=os.path.join(WORK_DIR,"PythonRDAHMM/") 
+Paths['script_path']=os.path.join(WORK_DIR,"PythonRDAHMM") 
 Paths['data_path']=os.path.join(WORK_DIR,"RDAHMM","Data/")
 # temp_path is the temporary working directory for ingesting raw data
 Paths['temp_path']=os.path.join(WORK_DIR,"RDAHMM","TEMP/")
