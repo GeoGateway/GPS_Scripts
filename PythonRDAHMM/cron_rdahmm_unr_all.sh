@@ -1,9 +1,9 @@
 #!/bin/bash
 
-~/GeoGateway/PythonRDAHMM/cron_rdahmm_unr.py
-~/GeoGateway/PythonRDAHMM/unr_splice.py
-~/GeoGateway/PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
-~/GeoGateway/PythonRDAHMM/create_mongodb.py UNR_SPLICE
+~/GPS_Scripts/PythonRDAHMM/cron_rdahmm_unr.py
+~/GPS_Scripts/PythonRDAHMM/unr_splice.py
+~/GPS_Scripts/PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
+~/GPS_Scripts/PythonRDAHMM/create_mongodb.py UNR_SPLICE
 
 
 # /home/yuma/PythonRDAHMM/cron_rdahmm_unr.py
