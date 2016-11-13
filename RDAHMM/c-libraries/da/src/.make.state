@@ -1,0 +1,3 @@
+.MAKE_VERSION:	VERSION-1.0
+libda.a(da_cluster.o):	/tools/gcc/2.5.5/lib/gcc-lib/sparc-sun-solaris2.3/2.5.5/include/stdlib.h /usr/include/sys/feature_tests.h /tools/gcc/2.5.5/lib/gcc-lib/sparc-sun-solaris2.3/2.5.5/include/stdio.h /tools/gcc/2.5.5/lib/gcc-lib/sparc-sun-solaris2.3/2.5.5/include/math.h /usr/include/floatingpoint.h /tools/gcc/2.5.5/lib/gcc-lib/sparc-sun-solaris2.3/2.5.5/include/sys/ieeefp.h /proj/ml/mltt/include/ut_types.h /proj/ml/mltt/include/ut_rand.h /proj/ml/mltt/include/ut_string.h
+libda.a(da_cluster.o):	/proj/ml/mltt/include/ut_debug.h /proj/ml/numerical_recipes/recipes_c-ansi/include/nrutil.h /proj/ml/numerical_recipes/recipes_c-ansi/include/nr.h da_signal.h da_random.h da_cluster.h 

@@ -1,0 +1,414 @@
+# Makefile for Recipes: BSD UNIX distribution
+#
+# $Id: Makefile,v 1.5 1997/05/15 17:54:15 agray Exp granat $
+# $Log: Makefile,v $
+# Revision 1.5  1997/05/15 17:54:15  agray
+# change made by Alex Fukunaga, unsanctioned
+#
+# Revision 1.4  1996/09/24 17:16:51  granat
+# Changed object list and dependencies list to use da_ hacked files rather
+# than the originals
+#
+# Revision 1.3  1996/07/25 17:14:52  granat
+# added svdcmp3 and nrutil2 to objects list
+#
+# Revision 1.2  1996/07/25 17:09:29  agray
+# added comments.
+#
+# Note: all ranlib calls were taken out in the port from SunOS to Solaris.
+# 7/25/96 AG
+
+# Library, source code, and objects.
+
+LIBRARY		= libnr.a
+
+DESTDIR		= $(C_CODE_HOME)/lib
+
+SOURCES.c	= \
+		addint.c airy.c amebsa.c amoeba.c amotry.c amotsa.c anneal.c \
+		anorm2.c arcmak.c arcode.c arcsum.c asolve.c atimes.c avevar.c \
+		balanc.c banbks.c bandec.c banmul.c bcucof.c bcuint.c beschb.c \
+		bessi.c bessi0.c bessi1.c bessik.c bessj.c bessj0.c bessj1.c \
+		bessjy.c bessk.c bessk0.c bessk1.c bessy.c bessy0.c bessy1.c \
+		beta.c betacf.c betai.c bico.c bksub.c bnldev.c brent.c broydn.c \
+		bsstep.c caldat.c chder.c chebev.c chebft.c chebpc.c chint.c \
+		chixy.c choldc.c cholsl.c chsone.c chstwo.c cisi.c complex.c cntab1.c \
+		cntab2.c convlv.c copy.c correl.c cosft1.c cosft2.c covsrt.c \
+		crank.c cyclic.c daub4.c dawson.c dbrent.c ddpoly.c decchk.c \
+		df1dim.c dfour1.c dfpmin.c dfridr.c dftcor.c dftint.c difeq.c \
+		dlinmin.c dpythag.c drealft.c dsprsax.c dsprstx.c dsvbksb.c \
+		dsvdcmp.c eclass.c eclazz.c ei.c eigsrt.c elle.c ellf.c ellpi.c \
+		elmhes.c erfcc.c erff.c erffc.c eulsum.c evlmem.c expdev.c \
+		expint.c f1dim.c factln.c factrl.c fasper.c fdjac.c fgauss.c \
+		fill0.c fit.c fitexy.c fixrts.c fleg.c flmoon.c fmin.c four1.c \
+		fourew.c fourfs.c fourn.c fpoly.c fred2.c fredin.c frenel.c \
+		frprmn.c ftest.c gamdev.c gammln.c gammp.c gammq.c gasdev.c \
+		gaucof.c gauher.c gaujac.c gaulag.c gauleg.c gaussj.c gcf.c \
+		golden.c gser.c hpsel.c hpsort.c hqr.c hufapp.c hufdec.c \
+		hufenc.c hufmak.c hunt.c hypdrv.c hypgeo.c hypser.c icrc.c \
+		icrc1.c igray.c iindexx.c indexx.c interp.c irbit1.c irbit2.c \
+		jacobi.c jacobn.c julday.c kendl1.c kendl2.c kermom.c ks2d1s.c \
+		ks2d2s.c ksone.c kstwo.c laguer.c lfit.c linbcg.c linmin.c \
+		lnsrch.c locate.c lop.c lubksb.c ludcmp.c machar.c matadd.c \
+		matsub.c nr_medfit.c memcof.c metrop.c mgfas.c mglin.c midexp.c \
+		midinf.c midpnt.c midsql.c midsqu.c miser.c mmid.c mnbrak.c \
+		mnewt.c moment.c mp2dfr.c mpdiv.c mpinv.c mpmul.c mpops.c mppi.c \
+		mprove.c mpsqrt.c mrqcof.c mrqmin.c newt.c nrutil.c odeint.c orthog.c \
+		pade.c pccheb.c pcshft.c pearsn.c period.c piksr2.c piksrt.c \
+		pinvs.c plgndr.c poidev.c polcoe.c polcof.c poldiv.c polin2.c \
+		polint.c powell.c predic.c probks.c psdes.c pwt.c pwtset.c \
+		pythag.c pzextr.c qgaus.c qrdcmp.c qromb.c qromo.c qroot.c \
+		qrsolv.c qrupdt.c qsimp.c qtrap.c quad3d.c quadct.c quadmx.c \
+		quadvl.c ran0.c ran1.c ran2.c ran3.c ran4.c rank.c ranpt.c \
+		ratint.c ratlsq.c ratval.c rc.c rd.c realft.c rebin.c red.c \
+		relax.c relax2.c resid.c revcst.c reverse.c rf.c rj.c rk4.c \
+		rkck.c rkdumb.c rkqs.c rlft3.c nr_rofunc.c rotate.c rsolv.c \
+		rstrct.c rtbis.c rtflsp.c rtnewt.c rtsafe.c rtsec.c rzextr.c \
+		savgol.c scrsho.c nr_select.c selip.c shell.c shoot.c shootf.c \
+		simp1.c simp2.c simp3.c simplx.c simpr.c sinft.c slvsm2.c \
+		slvsml.c sncndn.c snrm.c sobseq.c solvde.c sor.c sort.c sort2.c \
+		sort3.c spctrm.c spear.c sphbes.c splie2.c splin2.c spline.c \
+		splint.c spread.c sprsax.c sprsin.c sprspm.c sprstm.c sprstp.c \
+		sprstx.c stifbs.c stiff.c stoerm.c svbksb.c svdcmp.c \
+		svdfit.c svdvar.c toeplz.c tptest.c tqli.c trapzd.c tred2.c tridag.c \
+		trncst.c trnspt.c ttest.c tutest.c twofft.c vander.c vegas.c \
+		voltra.c wt1.c wtn.c wwghts.c zbrac.c zbrak.c zbrent.c zrhqr.c \
+		zriddr.c zroots.c
+
+SOURCES.h	= \
+			nr.h nrutil.h complex.h
+
+SOURCES		= $(SOURCES.h) $(SOURCES.c)
+
+OBJECTS		= $(SOURCES.c:%.c=%.o)
+
+# Compiler options.
+
+CC 			= $(NR_CC)
+#CC 			= purify $(NR_CC)
+CFLAGS 		= $(NR_CFLAGS)
+#CFLAGS 		= -pg $(NR_CFLAGS)
+CPPFLAGS	= -I$(C_CODE_HOME)/include
+
+#If any of the above have problems with an optimization option or other
+#compiler flags, a specific rule will be needed for them. This is very
+#simple to write. For example, for svdcmp (which sometimes has problems
+#with optimizers), a very plain rule is:
+#svdcmp.o: svdcmp.c ; $(CC) -I../include -c $<
+#Uncomment or write analogously for other recipes as needed.
+
+# Special make commands.
+
+.PRECIOUS:	$(LIBRARY)
+
+# Standard targets.
+
+all:		$(SOURCES) $(OBJECTS) $(LIBRARY) install
+objects:	$(SOURCES) $(OBJECTS)
+sources:	$(SOURCES)
+test:		badluk fredex sfroid sphfpt sphoot
+
+install: 
+			cp $(LIBRARY) $(DESTDIR)
+			cp badluk fredex sfroid sphfpt sphoot $(DESTDIR)/../bin
+
+clean:	
+			/bin/rm -f core $(OBJECTS) $(LIBRARY)
+			/bin/rm -f badluk fredex sfroid sphfpt sphoot
+
+# Targets' dependencies.
+
+$(LIBRARY):	$(LIBRARY)($(OBJECTS))
+			ar rv $@ $?
+
+$(LIBRARY)(%.o):	%.c
+					$(COMPILE.c) $< $(OUTPUT_OPTION)
+
+badluk: badluk.c $(LIBRARY)
+	$(NR_CC) $(NR_CFLAGS) -o badluk badluk.c $(LIBRARY) -lm
+
+fredex: fredex.c $(LIBRARY)
+	$(NR_CC) $(NR_CFLAGS) -o fredex fredex.c $(LIBRARY) -lm
+
+sfroid: sfroid.c $(LIBRARY)
+	$(NR_CC) $(NR_CFLAGS) -o sfroid sfroid.c $(LIBRARY) -lm
+
+sphfpt: sphfpt.c $(LIBRARY)
+	$(NR_CC) $(NR_CFLAGS) -o sphfpt sphfpt.c $(LIBRARY) -lm
+
+sphoot: sphoot.c $(LIBRARY)
+	$(NR_CC) $(NR_CFLAGS) -o sphoot sphoot.c $(LIBRARY) -lm
+
+# Specific objects' dependencies.  Use "makedepend *.c".
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+airy.o: /usr/include/math.h
+amebsa.o: /usr/include/math.h nrutil.h
+amoeba.o: /usr/include/math.h nrutil.h
+amotry.o: nrutil.h
+amotsa.o: /usr/include/math.h nrutil.h
+anneal.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+anneal.o: /usr/include/math.h
+anorm2.o: /usr/include/math.h
+arcmak.o: nrutil.h /usr/include/limits.h /usr/include/sys/feature_tests.h
+arcode.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+arcode.o: /usr/include/stdlib.h
+badluk.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+badluk.o: /usr/include/math.h
+balanc.o: /usr/include/math.h
+bandec.o: /usr/include/math.h
+banmul.o: nrutil.h
+bcuint.o: nrutil.h
+bessi.o: /usr/include/math.h
+bessi0.o: /usr/include/math.h
+bessi1.o: /usr/include/math.h
+bessik.o: /usr/include/math.h
+bessj.o: /usr/include/math.h
+bessj0.o: /usr/include/math.h
+bessj1.o: /usr/include/math.h
+bessjy.o: /usr/include/math.h nrutil.h
+bessk0.o: /usr/include/math.h
+bessk1.o: /usr/include/math.h
+bessy0.o: /usr/include/math.h
+bessy1.o: /usr/include/math.h
+beta.o: /usr/include/math.h
+betacf.o: /usr/include/math.h
+betai.o: /usr/include/math.h
+bico.o: /usr/include/math.h
+bnldev.o: /usr/include/math.h
+brent.o: /usr/include/math.h nrutil.h
+broydn.o: /usr/include/math.h nrutil.h
+bsstep.o: /usr/include/math.h nrutil.h
+caldat.o: /usr/include/math.h
+chebft.o: /usr/include/math.h nrutil.h
+chebpc.o: nrutil.h
+chixy.o: /usr/include/math.h nrutil.h
+choldc.o: /usr/include/math.h
+cisi.o: /usr/include/math.h complex.h
+cntab1.o: /usr/include/math.h nrutil.h
+cntab2.o: /usr/include/math.h nrutil.h
+complex.o: /usr/include/math.h
+convlv.o: nrutil.h
+correl.o: nrutil.h
+cosft1.o: /usr/include/math.h
+cosft2.o: /usr/include/math.h
+cyclic.o: nrutil.h
+daub4.o: nrutil.h
+dawson.o: /usr/include/math.h nrutil.h
+dbrent.o: /usr/include/math.h nrutil.h
+df1dim.o: nrutil.h
+dfour1.o: /usr/include/math.h
+dfpmin.o: /usr/include/math.h nrutil.h
+dfridr.o: /usr/include/math.h nrutil.h
+dftcor.o: /usr/include/math.h
+dftint.o: /usr/include/math.h nrutil.h
+dlinmin.o: nrutil.h
+dpythag.o: /usr/include/math.h nrutil.h
+drealft.o: /usr/include/math.h
+dsvbksb.o: nrutil.h
+dsvdcmp.o: /usr/include/math.h nrutil.h
+ei.o: /usr/include/math.h
+elle.o: /usr/include/math.h nrutil.h
+ellf.o: /usr/include/math.h nrutil.h
+ellpi.o: /usr/include/math.h nrutil.h
+elmhes.o: /usr/include/math.h
+erfcc.o: /usr/include/math.h
+eulsum.o: /usr/include/math.h
+evlmem.o: /usr/include/math.h
+expdev.o: /usr/include/math.h
+expint.o: /usr/include/math.h
+f1dim.o: nrutil.h
+factrl.o: /usr/include/math.h
+fasper.o: /usr/include/math.h nrutil.h
+fdjac.o: /usr/include/math.h nrutil.h
+fgauss.o: /usr/include/math.h
+fit.o: /usr/include/math.h nrutil.h
+fitexy.o: /usr/include/math.h nrutil.h
+fixrts.o: /usr/include/math.h complex.h
+flmoon.o: /usr/include/math.h
+fmin.o: nrutil.h
+four1.o: /usr/include/math.h
+fourew.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+fourfs.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+fourfs.o: /usr/include/math.h nrutil.h
+fourn.o: /usr/include/math.h
+fred2.o: nrutil.h
+fredex.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+fredex.o: /usr/include/math.h nrutil.h
+frenel.o: /usr/include/math.h complex.h
+frprmn.o: /usr/include/math.h nrutil.h
+gamdev.o: /usr/include/math.h
+gammln.o: /usr/include/math.h
+gasdev.o: /usr/include/math.h
+gaucof.o: /usr/include/math.h nrutil.h
+gauher.o: /usr/include/math.h
+gaujac.o: /usr/include/math.h
+gaulag.o: /usr/include/math.h
+gauleg.o: /usr/include/math.h
+gaussj.o: /usr/include/math.h nrutil.h
+gcf.o: /usr/include/math.h
+golden.o: /usr/include/math.h
+gser.o: /usr/include/math.h
+hqr.o: /usr/include/math.h nrutil.h
+hufenc.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+hufenc.o: /usr/include/stdlib.h
+hufmak.o: nrutil.h
+hypdrv.o: complex.h
+hypgeo.o: /usr/include/math.h complex.h nrutil.h
+hypser.o: complex.h
+iindexx.o: nrutil.h
+indexx.o: nrutil.h
+jacobi.o: /usr/include/math.h nrutil.h
+julday.o: /usr/include/math.h
+kendl1.o: /usr/include/math.h
+kendl2.o: /usr/include/math.h
+kermom.o: /usr/include/math.h
+ks2d1s.o: /usr/include/math.h nrutil.h
+ks2d2s.o: /usr/include/math.h nrutil.h
+ksone.o: /usr/include/math.h nrutil.h
+kstwo.o: /usr/include/math.h
+laguer.o: /usr/include/math.h complex.h nrutil.h
+lfit.o: nrutil.h
+linbcg.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+linbcg.o: /usr/include/math.h nrutil.h
+linmin.o: nrutil.h
+lnsrch.o: /usr/include/math.h nrutil.h
+ludcmp.o: /usr/include/math.h nrutil.h
+machar.o: /usr/include/math.h
+medfit.o: /usr/include/math.h nrutil.h
+memcof.o: /usr/include/math.h nrutil.h
+metrop.o: /usr/include/math.h
+mgfas.o: nrutil.h
+mglin.o: nrutil.h
+midexp.o: /usr/include/math.h
+midsql.o: /usr/include/math.h
+midsqu.o: /usr/include/math.h
+miser.o: /usr/include/stdlib.h /usr/include/sys/feature_tests.h
+miser.o: /usr/include/math.h nrutil.h
+mmid.o: nrutil.h
+mnbrak.o: /usr/include/math.h nrutil.h
+mnewt.o: /usr/include/math.h nrutil.h
+moment.o: /usr/include/math.h
+mpdiv.o: nrutil.h
+mpinv.o: nrutil.h
+mpmul.o: nrutil.h
+mppi.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h nrutil.h
+mprove.o: nrutil.h
+mpsqrt.o: /usr/include/math.h nrutil.h
+mrqcof.o: nrutil.h
+mrqmin.o: nrutil.h
+newt.o: /usr/include/math.h nrutil.h
+nrutil.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+nrutil.o: /usr/include/stddef.h /usr/include/stdlib.h
+nrutil2.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+nrutil2.o: /usr/include/stddef.h /usr/include/stdlib.h /usr/include/signal.h
+nrutil2.o: /usr/include/sys/signal.h /usr/include/sys/unistd.h
+odeint.o: /usr/include/math.h nrutil.h
+orthog.o: nrutil.h
+pade.o: /usr/include/math.h nrutil.h
+pearsn.o: /usr/include/math.h
+period.o: /usr/include/math.h nrutil.h
+pinvs.o: /usr/include/math.h nrutil.h
+plgndr.o: /usr/include/math.h
+poidev.o: /usr/include/math.h
+polcoe.o: nrutil.h
+polcof.o: /usr/include/math.h nrutil.h
+polin2.o: nrutil.h
+polint.o: /usr/include/math.h nrutil.h
+powell.o: /usr/include/math.h nrutil.h
+predic.o: nrutil.h
+probks.o: /usr/include/math.h
+pwt.o: nrutil.h
+pythag.o: /usr/include/math.h nrutil.h
+pzextr.o: nrutil.h
+qrdcmp.o: /usr/include/math.h nrutil.h
+qromb.o: /usr/include/math.h
+qromo.o: /usr/include/math.h
+qroot.o: /usr/include/math.h nrutil.h
+qrupdt.o: /usr/include/math.h nrutil.h
+qsimp.o: /usr/include/math.h
+qtrap.o: /usr/include/math.h
+quadmx.o: /usr/include/math.h nrutil.h
+quadvl.o: nrutil.h
+ratint.o: /usr/include/math.h nrutil.h
+ratlsq.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+ratlsq.o: /usr/include/math.h nrutil.h
+rc.o: /usr/include/math.h nrutil.h
+rd.o: /usr/include/math.h nrutil.h
+realft.o: /usr/include/math.h
+revcst.o: /usr/include/math.h
+rf.o: /usr/include/math.h nrutil.h
+rj.o: /usr/include/math.h nrutil.h
+rk4.o: nrutil.h
+rkck.o: nrutil.h
+rkdumb.o: nrutil.h
+rkqs.o: /usr/include/math.h nrutil.h
+rlft3.o: /usr/include/math.h
+rlftfrag.o: /usr/include/stdlib.h /usr/include/sys/feature_tests.h nrutil.h
+rofunc.o: /usr/include/math.h nrutil.h
+rotate.o: /usr/include/math.h nrutil.h
+rtbis.o: /usr/include/math.h
+rtflsp.o: /usr/include/math.h
+rtnewt.o: /usr/include/math.h
+rtsafe.o: /usr/include/math.h
+rtsec.o: /usr/include/math.h
+rzextr.o: nrutil.h
+savgol.o: /usr/include/math.h nrutil.h
+scrsho.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+selip.o: nrutil.h
+sfroid.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+sfroid.o: /usr/include/math.h nrutil.h
+shoot.o: nrutil.h
+shootf.o: nrutil.h
+simp1.o: /usr/include/math.h
+simplx.o: nrutil.h
+simpr.o: nrutil.h
+sinft.o: /usr/include/math.h
+slvsm2.o: /usr/include/math.h
+sncndn.o: /usr/include/math.h
+snrm.o: /usr/include/math.h
+sobseq.o: nrutil.h
+solvde.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+solvde.o: /usr/include/math.h nrutil.h
+sor.o: /usr/include/math.h
+sort.o: nrutil.h
+sort2.o: nrutil.h
+sort3.o: nrutil.h
+spctrm.o: /usr/include/math.h /usr/include/stdio.h
+spctrm.o: /usr/include/sys/feature_tests.h nrutil.h
+spear.o: /usr/include/math.h nrutil.h
+sphbes.o: /usr/include/math.h
+sphfpt.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+sphfpt.o: /usr/include/math.h nrutil.h
+sphoot.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h nrutil.h
+splin2.o: nrutil.h
+spline.o: nrutil.h
+spread.o: nrutil.h
+sprsin.o: /usr/include/math.h
+sprstm.o: /usr/include/math.h
+stifbs.o: /usr/include/math.h nrutil.h
+stiff.o: /usr/include/math.h nrutil.h
+stoerm.o: nrutil.h
+svbksb.o: nrutil.h
+svdcmp.o: /usr/include/math.h nrutil.h
+svdfit.o: nrutil.h
+svdvar.o: nrutil.h
+toeplz.o: nrutil.h
+tptest.o: /usr/include/math.h
+tqli.o: /usr/include/math.h nrutil.h
+tred2.o: /usr/include/math.h
+tridag.o: nrutil.h
+trncst.o: /usr/include/math.h
+trnspt.o: nrutil.h
+ttest.o: /usr/include/math.h
+tutest.o: /usr/include/math.h nrutil.h
+vander.o: nrutil.h
+vegas.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+vegas.o: /usr/include/math.h nrutil.h
+voltra.o: nrutil.h
+wtn.o: nrutil.h
+zbrac.o: /usr/include/math.h
+zbrent.o: /usr/include/math.h nrutil.h
+zrhqr.o: nrutil.h
+zriddr.o: /usr/include/math.h nrutil.h
+zroots.o: /usr/include/math.h complex.h

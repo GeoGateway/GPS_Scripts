@@ -1,0 +1,914 @@
+head	1.20;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.20
+date	2000.03.31.01.38.17;	author granat;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	98.05.01.20.51.04;	author granat;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	97.10.21.14.52.47;	author granat;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	97.06.20.22.16.21;	author granat;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	97.03.27.23.02.36;	author granat;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	97.01.29.21.30.24;	author agray;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	96.10.31.02.13.49;	author agray;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	96.09.27.17.57.45;	author agray;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	96.09.27.17.55.46;	author agray;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	96.09.18.16.34.37;	author granat;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	96.08.28.20.15.02;	author agray;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	96.07.15.18.56.06;	author agray;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	96.07.15.18.17.57;	author agray;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	96.07.15.17.25.26;	author agray;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	96.07.13.01.07.45;	author agray;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	96.07.11.17.59.41;	author agray;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	96.05.10.21.06.39;	author granat;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	96.03.01.00.20.02;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	96.02.29.02.32.50;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.02.28.04.55.24;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@header for da_data.c
+ag
+@
+
+
+1.20
+log
+@added prototypes for double precision sets of matrices functions
+@
+text
+@/*******************************************************************************
+MODULE HEADER:
+da_io.h
+*******************************************************************************/
+
+#ifndef _DA_IO_H_
+#define _DA_IO_H_
+/* Protects from multiple inclusion. */
+
+#define VIC_HEADER_LABEL "LBLSIZE="
+
+#ifndef lint
+static char da_io_h_rcsid[] = "$Id: da_io.h,v 1.19 1998/05/01 20:51:04 granat Exp granat $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_io.h,v $
+ * Revision 1.19  1998/05/01 20:51:04  granat
+ * added prototypes for unctions to read/write unsigned char matrices
+ * into/from matrices of doubles and floats
+ *
+ * Revision 1.18  1997/10/21 14:52:47  granat
+ * added prototypes to match changes in da_io.c
+ *
+ * Revision 1.17  1997/06/20 22:16:21  granat
+ * fixed bugs introduced by auto-editing script
+ *
+ * Revision 1.16  1997/03/27 23:02:36  granat
+ * added prototypes for skip_header() and read_vicar()
+ *
+ * Revision 1.15  1997/01/29 21:30:24  agray
+ * new format.  also added write_matrix_transpose().
+ *
+ * Revision 1.14  1996/10/31 02:13:49  agray
+ * renamed from "da_data" to "da_io";
+ * changed .h and .c formats throughout library;
+ * some reorganizing between modules;
+ * added some functions from HMM project.
+ *
+ * Revision 1.13  1996/09/27 17:57:45  agray
+ * fixed log message.
+ *
+ * Revision 1.12  1996/09/27 17:55:46  agray
+ * removed k&r prototypes so that this library can be linked with c++ code.
+ *
+ * Revision 1.11  1996/09/18 16:34:37  granat
+ * Fixed "char" matrix functions so that they use the "unsigned char" type
+ *
+ * Revision 1.10  1996/08/28 20:15:02  agray
+ * changed read/write_data() to read/write_lc_matrix(); added read/write/print_
+ * indexed_matrix().
+ *
+ * Revision 1.9  1996/07/15 18:56:06  agray
+ * updated k&r prototypes.
+ *
+ * Revision 1.8  1996/07/15 18:17:57  agray
+ * added  write/read_bin_row/col/irow/icol();
+ * renamed read_bin_subset2matrix().
+ *
+ * Revision 1.7  1996/07/15 17:25:26  agray
+ * rearranged order of functions; added read_row/col/irow/icol().
+ *
+ * Revision 1.6  1996/07/13 01:07:45  agray
+ * moved in print/write_row/col/irow/icol() from da_linalg module
+ *
+ * Revision 1.5  1996/07/11 17:59:41  agray
+ * added read_matrix_transpose(), write_comment().  some cosmetic changes.
+ * /
+ *
+ * Revision 1.4  1996/05/10 21:06:39  granat
+ * added prototypes for read_subset2matrix and read_binary2matrix
+ * rg
+ *
+ * Revision 1.3  1996/03/01 00:20:02  agray
+ * matched changes to da_data.c
+ * ag
+ *
+ * Revision 1.2  1996/02/29  02:32:50  agray
+ * moved write_bin_matrix() and read_bin_matrix() to this module, added type
+ * argument to them
+ * ag
+ *
+ * Revision 1.1  1996/02/28  04:55:24  agray
+ * Initial revision
+ * */
+
+/*==============================================================================
+Data Structures
+==============================================================================*/
+
+/*==============================================================================
+Constants, Macros
+==============================================================================*/
+
+/*==============================================================================
+Variables
+==============================================================================*/
+
+/*==============================================================================
+Function Declarations
+==============================================================================*/
+
+/* ascii matrices */
+
+int read_matrix(char *infile, int nr, int nc, float ***vals);
+int read_cmatrix(char *infile, int nr, int nc, unsigned char ***vals);
+int read_imatrix(char *infile, int nr, int nc, int ***vals);
+int read_dmatrix(char *infile, int nr, int nc, double ***vals);
+
+int read_cmatrix_as_matrix(char *infile, int nr, int nc, float ***vals);
+int read_cmatrix_as_dmatrix(char *infile, int nr, int nc, double ***vals);
+
+int print_matrix(FILE* stream, int nr, int nc, float **mat);
+int print_cmatrix(FILE* stream, int nr, int nc, unsigned char **mat);
+int print_imatrix(FILE* stream, int nr, int nc, int **mat);
+int print_dmatrix(FILE* stream, int nr, int nc, double **mat);
+
+int write_matrix(char *outfile, int nr, int nc, float **mat, char *mode);
+int write_cmatrix(char *outfile, int nr, int nc, unsigned char **mat, 
+                  char *mode);
+int write_imatrix(char *outfile, int nr, int nc, int **mat, char *mode);
+int write_dmatrix(char *outfile, int nr, int nc, double **mat, char *mode);
+
+int print_matrix_as_cmatrix( FILE *stream, int nr, int nc, float **m );
+int print_dmatrix_as_cmatrix( FILE *stream, int nr, int nc, double **m );
+
+int write_matrix_as_cmatrix( char *outfile, int nr, int nc, float **m,
+                             char *mode );
+int write_dmatrix_as_cmatrix( char *outfile, int nr, int nc, double **m,
+                              char *mode );
+
+/* binary-format matrices */
+
+int read_bin_matrix(char *infile, int nr, int nc, float ***vals);
+int read_bin_cmatrix(char *infile, int nr, int nc, unsigned char ***vals);
+int read_bin_imatrix(char *infile, int nr, int nc, int ***vals);
+int read_bin_smatrix(char *infile, int nr, int nc, int ***vals);
+int read_bin_dmatrix(char *infile, int nr, int nc, double ***vals);
+
+int read_bin_cmatrix_as_matrix(char *infile, int nr, int nc, float ***vals);
+int read_bin_cmatrix_as_dmatrix(char *infile, int nr, int nc, double ***vals);
+
+int write_bin_matrix(char *outfile, int nr, int nc, float **mat, char *mode);
+int write_bin_cmatrix(char *outfile, int nr, int nc, unsigned char **mat, 
+                      char *mode);
+int write_bin_imatrix(char *outfile, int nr, int nc, int **mat, char *mode);
+int write_bin_dmatrix(char *outfile, int nr, int nc, double **mat, char *mode);
+
+int write_matrix_as_bin_cmatrix(char *outfile, int nr, int nc, float **mat, 
+                                char *mode);
+int write_dmatrix_as_bin_cmatrix(char *outfile, int nr, int nc, double **mat, 
+                                 char *mode);
+
+/* ascii vectors, row and column formats */
+
+int read_row(char* infile, int dim, float **vec);
+int read_col(char* infile, int dim, float **vec);
+int read_irow(char* infile, int dim, int **vec);
+int read_icol(char* infile, int dim, int **vec);
+int read_drow(char* infile, int dim, double **vec);
+int read_dcol(char* infile, int dim, double **vec);
+int read_crow(char* infile, int dim, unsigned char **vec);
+int read_ccol(char* infile, int dim, unsigned char **vec);
+
+int print_row(FILE* stream, int dim, float *v);
+int print_col(FILE* stream, int dim, float *v);
+int print_irow(FILE* stream, int dim, int *v);
+int print_icol(FILE* stream, int dim, int *v);
+int print_drow(FILE* stream, int dim, double *v);
+int print_dcol(FILE* stream, int dim, double *v);
+int print_crow(FILE* stream, int dim, unsigned char *v);
+int print_ccol(FILE* stream, int dim, unsigned char *v);
+
+int write_row(char *outfile, int dim, float *vec, char *mode);
+int write_col(char *outfile, int dim, float *vec, char *mode);
+int write_irow(char *outfile, int dim, int *vec, char *mode);
+int write_icol(char *outfile, int dim, int *vec, char *mode);
+int write_drow(char *outfile, int dim, double *vec, char *mode);
+int write_dcol(char *outfile, int dim, double *vec, char *mode);
+int write_crow(char *outfile, int dim, unsigned char *vec, char *mode);
+int write_ccol(char *outfile, int dim, unsigned char *vec, char *mode);
+
+/* binary-format vectors */
+
+int read_bin_row(char* infile, int dim, float **vec);
+int read_bin_col(char* infile, int dim, float **vec);
+int read_bin_irow(char* infile, int dim, int **vec);
+int read_bin_icol(char* infile, int dim, int **vec);
+int read_bin_drow(char* infile, int dim, double **vec);
+int read_bin_dcol(char* infile, int dim, double **vec);
+int read_bin_crow(char* infile, int dim, unsigned char **vec);
+int read_bin_ccol(char* infile, int dim, unsigned char **vec);
+
+int write_bin_row(char *outfile, int dim, float *vec, char *mode);
+int write_bin_col(char *outfile, int dim, float *vec, char *mode);
+int write_bin_irow(char *outfile, int dim, int *vec, char *mode);
+int write_bin_icol(char *outfile, int dim, int *vec, char *mode);
+int write_bin_drow(char *outfile, int dim, double *vec, char *mode);
+int write_bin_dcol(char *outfile, int dim, double *vec, char *mode);
+int write_bin_crow(char *outfile, int dim, unsigned char *vec, char *mode);
+int write_bin_ccol(char *outfile, int dim, unsigned char *vec, char *mode);
+
+/* ascii matrices with an index column */
+
+int read_indexed_matrix(char *infile, int nr, int nc, float ***vals, 
+                        float **index);
+int print_indexed_matrix(FILE* stream, int nr, int nc, float **mat,
+                         float *index);
+int write_indexed_matrix(char *outfile, int nr, int nc, float **mat,
+                         float *index, char *mode);
+
+/* ascii vectors with an index column */
+
+int read_indexed_col(char *infile, int dim, float **vals, float **index);
+int print_indexed_col(FILE *stream, int dim, float *vec, float *index);
+int write_indexed_col(char *outfile, int dim, float *vec, float *index, 
+                      char *mode);
+
+/* ascii matrices with the line count as the first line */
+
+int read_lc_matrix(char *infile, int *nr, int nc, float ***vals);
+int write_lc_matrix(char *outfile, int nr, int nc, float **mat);
+
+/* ascii composite structures */
+
+int read_set_of_matrices(char *infile, int num_mats, int num_rows, 
+                         int num_cols, float ****vals);
+int read_set_of_dmatrices(char *infile, int num_mats, int num_rows, 
+                          int num_cols, double ****vals);
+int read_set_of_sets_of_matrices(char *infile, int num_sets, int num_mats, 
+                                 int num_rows, int num_cols, float *****vals);
+int read_set_of_sets_of_dmatrices(char *infile, int num_sets, int num_mats, 
+                                  int num_rows, int num_cols, double *****vals);
+
+int print_set_of_matrices(FILE *stream, float ***mat_set, int num_mats, 
+                          int num_rows, int num_cols);
+int print_set_of_dmatrices(FILE *stream, double ***mat_set, int num_mats, 
+                           int num_rows, int num_cols);
+int print_set_of_sets_of_matrices(FILE *stream, float ****mat_set_set, 
+                                  int num_sets, int num_mats, int num_rows, 
+                                  int num_cols);
+int print_set_of_sets_of_dmatrices(FILE *stream, double ****mat_set_set, 
+                                  int num_sets, int num_mats, int num_rows, 
+                                  int num_cols);
+
+int write_set_of_matrices(char *out_file, float ***mat_set, int num_mats, 
+                          int num_rows, int num_cols, char *mode);
+int write_set_of_dmatrices(char *out_file, double ***mat_set, int num_mats, 
+                           int num_rows, int num_cols, char *mode);
+int write_set_of_sets_of_matrices(char *out_file, float ****mat_set_set, 
+                                  int num_sets, int num_mats, int num_rows,
+                                  int num_cols, char *mode);
+int write_set_of_sets_of_dmatrices(char *out_file, double ****mat_set_set, 
+                                   int num_sets, int num_mats, int num_rows,
+                                  int num_cols, char *mode);
+
+/* ascii files containing Gaussian parameters */
+
+int read_gauss_parms(char *parmsfile, int nc, double **mean, double ***cov);
+
+int print_gauss_parms(FILE* stream, int nc, double *mean, double **cov);
+int print_gauss_parms_set(FILE *stream, int nc, int K, double **means, 
+                          double ***covars);
+int print_unnorm_gauss_parms_set(FILE *stream, int nc, int K, double **means, 
+                                 double ***covars, double *range, double *minval);
+
+int write_gauss_parms(char *parmsfile, int nc, double *mean, double **cov,
+                      char *mode);
+int write_gauss_parms_set(char *parmsfile, int nc, int K, double **means, 
+                          double ***covars, char *mode);
+int write_unnorm_gauss_parms_set(char *parmsfile, int nc, int K, double **means, 
+                                 double ***covars, double *range, double *minval, 
+                                 char *mode);
+
+/* manipulating parts of matrices/vectors */
+
+int read_subset2matrix(char *infile, int startrow, int nr, int nc, 
+                       float ***vals);
+int read_subset2dmatrix(char *infile, int startrow, int nr, int nc, 
+                       double ***vals);
+int read_bin_subset2matrix(char *infile, int startrow, int nr, int nc, 
+                           float ***vals);
+int read_bin_subset2dmatrix(char *infile, int startrow, int nr, int nc, 
+                           double ***vals);
+
+/* applying format transformations */
+
+int read_matrix_transpose(char *infile, int nr, int nc, float ***vals);
+int write_matrix_transpose(char *outfile, int nr, int nc, float **vals,
+                           char *mode);
+
+/* specialized data formats */
+
+int read_landsat(char *infile, int nr, int nc, int nb, float ***vals);
+int skip_header(FILE *fp, char *file_type);
+int read_vicar( char *infile, int nr, int nc, unsigned char ***vals );
+
+#endif /* _DA_IO_H_ */
+
+@
+
+
+1.19
+log
+@added prototypes for unctions to read/write unsigned char matrices
+into/from matrices of doubles and floats
+@
+text
+@d13 1
+a13 1
+static char da_io_h_rcsid[] = "$Id: da_io.h,v 1.18 1997/10/21 14:52:47 granat Exp granat $";
+d19 4
+d229 2
+d233 2
+d238 2
+d243 3
+d249 2
+d254 3
+d260 1
+a260 1
+int read_gauss_parms(char *parmsfile, int nc, float **mean, float ***cov);
+d262 5
+a266 5
+int print_gauss_parms(FILE* stream, int nc, float *mean, float **cov);
+int print_gauss_parms_set(FILE *stream, int nc, int K, float **means, 
+                          float ***covars);
+int print_unnorm_gauss_parms_set(FILE *stream, int nc, int K, float **means, 
+                                 float ***covars, float *range, float *minval);
+d268 1
+a268 1
+int write_gauss_parms(char *parmsfile, int nc, float *mean, float **cov,
+d270 4
+a273 4
+int write_gauss_parms_set(char *parmsfile, int nc, int K, float **means, 
+                          float ***covars, char *mode);
+int write_unnorm_gauss_parms_set(char *parmsfile, int nc, int K, float **means, 
+                                 float ***covars, float *range, float *minval, 
+d280 2
+d284 2
+@
+
+
+1.18
+log
+@added prototypes to match changes in da_io.c
+@
+text
+@d13 1
+a13 1
+static char da_io_h_rcsid[] = "$Id: da_io.h,v 1.17 1997/06/20 22:16:21 granat Exp granat $";
+d19 3
+d107 3
+d121 8
+d137 3
+d145 5
+@
+
+
+1.17
+log
+@fixed bugs introduced by auto-editing script
+@
+text
+@d13 1
+a13 1
+static char da_io_h_rcsid[] = "$Id: da_io.h,v 1.16 1997/03/27 23:02:36 granat Exp granat $";
+d19 3
+d135 4
+d144 4
+d153 4
+d164 4
+d173 4
+@
+
+
+1.16
+log
+@added prototypes for skip_header() and read_vicar()
+@
+text
+@d13 1
+a13 1
+static char da_io_h_rcsid[] = "$Id: da_io.h,v 1.15 1997/01/29 21:30:24 agray Exp granat $";
+d19 3
+d117 1
+@
+
+
+1.15
+log
+@new format.  also added write_matrix_transpose().
+@
+text
+@d10 2
+d13 1
+a13 1
+static char da_io_h_rcsid[] = "$Id: da_io.h,v 1.14 1996/10/31 02:13:49 agray Exp agray $";
+d19 3
+d225 2
+@
+
+
+1.14
+log
+@renamed from "da_data" to "da_io";
+changed .h and .c formats throughout library;
+some reorganizing between modules;
+added some functions from HMM project.
+@
+text
+@d6 2
+a7 2
+#ifndef _DA_IO_H
+#define _DA_IO_H
+d11 1
+a11 1
+static char da_io_h_rcsid[] = "$Id: da_io.h,v 1.13 1996/09/27 17:57:45 agray Exp agray $";
+d17 6
+d70 1
+a70 1
+/*******************************************************************************
+d72 1
+a72 1
+*******************************************************************************/
+d74 1
+a74 1
+/*******************************************************************************
+d76 5
+a80 1
+*******************************************************************************/
+d82 1
+a82 1
+/*******************************************************************************
+d84 1
+a84 1
+*******************************************************************************/
+d214 2
+d221 2
+a222 1
+#endif
+@
+
+
+1.13
+log
+@fixed log message.
+@
+text
+@d1 8
+a8 4
+/* da_data.h */
+
+#ifndef DA_DATA_HDR
+#define DA_DATA_HDR
+d11 1
+a11 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.12 1996/09/27 17:55:46 agray Exp agray $";
+d13 2
+d16 4
+a19 1
+ * $Log: da_data.h,v $
+d64 11
+a74 3
+/* constants */
+
+/* function declarations */
+d76 1
+d94 2
+d107 2
+d124 2
+d136 2
+d145 9
+d157 39
+d201 1
+a201 1
+int read_landsat(char *infile, int nr, int nc, int nb, float ***vals);
+d205 1
+a205 1
+int write_comment(char *outfile, char *string, char *mode);
+d207 1
+@
+
+
+1.12
+log
+@#ifdef __STDC__
+removed k&r prototypes so that this library can be linked with c++ code.
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.11 1996/09/18 16:34:37 granat Exp agray $";
+d11 3
+@
+
+
+1.11
+log
+@Fixed "char" matrix functions so that they use the "unsigned char" type
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.10 1996/08/28 20:15:02 agray Exp granat $";
+d11 3
+a55 1
+#ifdef __STDC__
+a129 69
+#else 
+
+int read_matrix();
+int read_cmatrix();
+int read_imatrix();
+int read_dmatrix();
+
+int print_matrix();
+int print_cmatrix();
+int print_imatrix();
+int print_dmatrix();
+
+int write_matrix();
+int write_cmatrix();
+int write_imatrix();
+int write_dmatrix();
+
+int read_bin_matrix();
+int read_bin_cmatrix();
+int read_bin_imatrix();
+int read_bin_dmatrix();
+
+int write_bin_matrix();
+int write_bin_cmatrix();
+int write_bin_imatrix();
+int write_bin_dmatrix();
+
+int read_row();
+int read_col();
+int read_irow();
+int read_icol();
+
+int print_row();
+int print_col();
+int print_irow();
+int print_icol();
+
+int write_row();
+int write_col();
+int write_irow();
+int write_icol();
+
+int read_bin_row();
+int read_bin_col();
+int read_bin_irow();
+int read_bin_icol();
+
+int write_bin_row();
+int write_bin_col();
+int write_bin_irow();
+int write_bin_icol();
+
+int read_indexed_matrix();
+int print_indexed_matrix();
+int write_indexed_matrix();
+
+int read_lc_matrix();
+int write_lc_matrix();
+
+int read_subset2matrix();
+int read_bin_subset2matrix();
+
+int read_landsat();
+
+int read_matrix_transpose();
+
+int write_comment();
+
+#endif
+@
+
+
+1.10
+log
+@changed read/write_data() to read/write_lc_matrix(); added read/write/print_
+indexed_matrix().
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.9 1996/07/15 18:56:06 agray Exp agray $";
+d11 4
+d56 1
+a56 1
+int read_cmatrix(char *infile, int nr, int nc, char ***vals);
+d61 1
+a61 1
+int print_cmatrix(FILE* stream, int nr, int nc, char **mat);
+d66 2
+a67 1
+int write_cmatrix(char *outfile, int nr, int nc, char **mat, char *mode);
+d72 1
+a72 1
+int read_bin_cmatrix(char *infile, int nr, int nc, char ***vals);
+d77 2
+a78 1
+int write_bin_cmatrix(char *outfile, int nr, int nc, char **mat, char *mode);
+@
+
+
+1.9
+log
+@updated k&r prototypes.
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.8 1996/07/15 18:17:57 agray Exp agray $";
+d11 3
+d101 9
+a109 2
+int read_data(char *infile, int *nr, int nc, float ***vals);
+int write_data(char *outfile, int nr, int nc, float **mat);
+d174 6
+a179 2
+int read_data();
+int write_data();
+@
+
+
+1.8
+log
+@added  write/read_bin_row/col/irow/icol();
+renamed read_bin_subset2matrix().
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.7 1996/07/15 17:25:26 agray Exp agray $";
+d11 4
+a114 2
+int read_subset2matrix();
+int read_binary2matrix();
+d129 35
+d167 2
+a168 9
+int read_bin_matrix();
+int read_cbin_matrix();
+int read_ibin_matrix();
+int read_dbin_matrix();
+
+int write_bin_matrix();
+int write_cbin_matrix();
+int write_ibin_matrix();
+int write_dbin_matrix();
+@
+
+
+1.7
+log
+@rearranged order of functions; added read_row/col/irow/icol().
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.6 1996/07/13 01:07:45 agray Exp agray $";
+d11 3
+d71 2
+a72 2
+int read_irow(char* infile, int dim, float **vec);
+int read_icol(char* infile, int dim, float **vec);
+d84 10
+d99 2
+a100 2
+int read_binary2matrix(char *infile, int startrow, int nr, int nc, 
+                       float ***vals);
+@
+
+
+1.6
+log
+@moved in print/write_row/col/irow/icol() from da_linalg module
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.5 1996/07/11 17:59:41 agray Exp agray $";
+d11 3
+a41 4
+int read_subset2matrix(char *infile, int startrow, int nr, int nc, float ***vals
+);
+int read_binary2matrix(char *infile, int startrow, int nr, int nc, float ***vals
+);
+d56 19
+a74 4
+int print_row(FILE* stream, int nc, float *v);
+int print_col(FILE* stream, int nc, float *v);
+int print_irow(FILE* stream, int nc, int *v);
+int print_icol(FILE* stream, int nc, int *v);
+d84 4
+a87 9
+int read_bin_matrix(char *infile, int nr, int nc, float ***vals);
+int read_bin_cmatrix(char *infile, int nr, int nc, char ***vals);
+int read_bin_imatrix(char *infile, int nr, int nc, int ***vals);
+int read_bin_dmatrix(char *infile, int nr, int nc, double ***vals);
+
+int write_bin_matrix(char *outfile, int nr, int nc, float **mat, char *mode);
+int write_bin_cmatrix(char *outfile, int nr, int nc, char **mat, char *mode);
+int write_bin_imatrix(char *outfile, int nr, int nc, int **mat, char *mode);
+int write_bin_dmatrix(char *outfile, int nr, int nc, double **mat, char *mode);
+@
+
+
+1.5
+log
+@added read_matrix_transpose(), write_comment().  some cosmetic changes.
+/
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.4 1996/05/10 21:06:39 granat Exp agray $";
+d9 6
+a14 1
+/* $Log: da_data.h,v $
+d56 10
+@
+
+
+1.4
+log
+@added prototypes for read_subset2matrix and read_binary2matrix
+rg
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.3 1996/03/01 00:20:02 agray Exp granat $";
+d10 4
+d67 4
+d104 4
+@
+
+
+1.3
+log
+@matched changes to da_data.c
+ag
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.2 1996/02/29 02:32:50 agray Exp agray $";
+d10 4
+d30 4
+d66 2
+@
+
+
+1.2
+log
+@moved write_bin_matrix() and read_bin_matrix() to this module, added type
+argument to them
+ag
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id: da_data.h,v 1.1 1996/02/28 04:55:24 agray Exp agray $";
+d10 5
+d25 4
+a28 3
+int read_bin_matrix(char *infile, int nr, int nc, void ***vals, char* type);
+int write_bin_matrix(char *outfile, int nr, int nc, void **mat, char *mode,
+                     char* type);
+d30 23
+d57 18
+d76 4
+d81 3
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 1
+a7 1
+static char da_data_hdr_rcsid[] = "$Id$";
+d9 4
+a12 1
+/* $Log$ */
+d20 4
+d27 3
+@

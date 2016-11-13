@@ -1,0 +1,5958 @@
+head	1.31;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.31
+date	2000.03.31.01.46.24;	author granat;	state Exp;
+branches;
+next	1.30;
+
+1.30
+date	2000.03.31.01.38.47;	author granat;	state Exp;
+branches;
+next	1.29;
+
+1.29
+date	98.07.24.16.14.01;	author granat;	state Exp;
+branches;
+next	1.28;
+
+1.28
+date	98.05.07.23.51.07;	author granat;	state Exp;
+branches;
+next	1.27;
+
+1.27
+date	98.05.01.20.50.20;	author granat;	state Exp;
+branches;
+next	1.26;
+
+1.26
+date	97.10.21.14.52.24;	author granat;	state Exp;
+branches;
+next	1.25;
+
+1.25
+date	97.09.04.20.21.39;	author granat;	state Exp;
+branches;
+next	1.24;
+
+1.24
+date	97.08.07.17.36.52;	author granat;	state Exp;
+branches;
+next	1.23;
+
+1.23
+date	97.07.31.21.46.14;	author agray;	state Exp;
+branches;
+next	1.22;
+
+1.22
+date	97.06.20.22.12.47;	author granat;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	97.06.02.15.35.42;	author granat;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	97.04.02.03.05.50;	author agray;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	97.03.27.23.03.14;	author granat;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	97.01.29.21.54.01;	author agray;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	96.10.31.02.13.49;	author agray;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	96.09.25.00.50.14;	author granat;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	96.09.18.23.40.11;	author agray;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	96.09.18.16.33.41;	author granat;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	96.09.06.22.16.37;	author agray;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	96.08.28.20.31.19;	author agray;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	96.08.28.19.52.30;	author agray;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	96.07.17.20.42.36;	author agray;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	96.07.15.18.16.52;	author agray;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	96.07.15.17.25.02;	author agray;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	96.07.13.01.06.49;	author agray;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	96.07.11.17.59.00;	author agray;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	96.05.10.17.16.15;	author granat;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	96.04.29.20.25.14;	author granat;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	96.03.01.00.17.28;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	96.02.29.02.32.08;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.02.28.04.55.02;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@module containing special data i/o routines
+ag
+@
+
+
+1.31
+log
+@fixed some compile-time bugs
+@
+text
+@/*******************************************************************************
+MODULE NAME
+da_io
+
+ONE-LINE SYNOPSIS
+General functions related to data input and output.
+
+SCOPE OF THIS MODULE
+All functions in the library pertaining to reading, writing, and printing data
+structures should be in this module.
+
+SEE ALSO
+-
+
+REFERENCE(S)
+-
+
+PROGRAM EXAMPLE(S)
+1. /proj/cooltools/sc, AG.
+2. /proj/cooltools/qf, RG.
+
+NOTES
+-
+
+AG
+*******************************************************************************/
+#ifndef lint
+static char rcsid[] = "$Id: da_io.c,v 1.30 2000/03/31 01:38:47 granat Exp granat $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_io.c,v $
+ * Revision 1.30  2000/03/31 01:38:47  granat
+ * added double precision sets of matrices functions
+ *
+ * Revision 1.29  1998/07/24 16:14:01  granat
+ * fixed bugs in matrix input functions relating to types
+ * eliminated some unused index variables
+ *
+ * Revision 1.28  1998/05/07 23:51:07  granat
+ * made changes to include new da_util module
+ *
+ * Revision 1.27  1998/05/01 20:50:20  granat
+ * added functions to read/write unsigned char matrices into/from matrices
+ * of doubles and floats
+ *
+ * Revision 1.26  1997/10/21 14:52:24  granat
+ * added some functions to read/write vectors of different data types
+ *
+ * Revision 1.25  1997/09/04 20:21:39  granat
+ * fixed bug in skip_header
+ *
+ * Revision 1.24  1997/08/07 17:36:52  granat
+ * fixed bugs from automated scripting of "nr_" convention
+ *
+ * Revision 1.23  1997/07/31 21:46:14  agray
+ * added #include "da_memory.h"
+ *
+ * Revision 1.22  1997/06/20 22:12:47  granat
+ * fixed bugs introduced by auto-editing scripts
+ *
+ * Revision 1.21  1997/06/02 15:35:42  granat
+ * changed to use new NR naming convention
+ *
+ * Revision 1.20  1997/04/02 03:05:50  agray
+ * added assert.h and string.h inclusions.  to fix compile problems introduced by
+ * assert().
+ *
+ * Revision 1.19  1997/03/27 23:03:14  granat
+ * added functions skip_header() and read_vicar()
+ *
+ * Revision 1.18  1997/01/29 21:54:01  agray
+ * new formatting, cleaning up debugging output using ut_output,
+ * added write_matrix_transpose().
+ *
+ * Revision 1.17  1996/10/31 02:13:49  agray
+ * renamed from "da_data" to "da_io";
+ * changed .h and .c formats throughout library;
+ * some reorganizing between modules;
+ * added some functions from HMM project.
+ *
+ * Revision 1.16  1996/09/25 00:50:14  granat
+ * Changed print_cmatrix and read_matrix to use integer conversion becausened character conversion is unavailable.
+ *
+ * Revision 1.15  1996/09/18 23:40:11  agray
+ * cosmetic changes to comments.
+ *
+ * Revision 1.14  1996/09/18 16:33:41  granat
+ * Fixed "char" matrix functions so that they use the "unsigned char" type
+ *
+ * Revision 1.13  1996/09/06 22:16:37  agray
+ * fixed read_irow().
+ *
+ * Revision 1.12  1996/08/28 20:31:19  agray
+ * fixed some bugs, removed duplicated copy of write_matrix().
+ *
+ * Revision 1.11  1996/08/28 19:52:30  agray
+ * changed read/write_data() to read/write_lc_matrix(); added read/write/print_
+ * indexed_matrix(); added write_matrix().
+ *
+ * Revision 1.10  1996/07/17 20:42:36  agray
+ * cosmetic.
+ *
+ * Revision 1.9  1996/07/15 18:16:52  agray
+ * added  write/read_bin_row/col/irow/icol();
+ * renamed and tweaked read_bin_subset2matrix().
+ *
+ * Revision 1.8  1996/07/15 17:25:02  agray
+ * rearranged order of functions; added read_row/col/irow/icol().
+ *
+ * Revision 1.7  1996/07/13 01:06:49  agray
+ * moved in print/write_row/col/irow/icol() from da_linalg module
+ *
+ * Revision 1.6  1996/07/11 17:59:00  agray
+ * added read_matrix_transpose(), write_comment().  some cosmetic changes.
+ *
+ * Revision 1.5  1996/05/10 17:16:15  granat
+ * added read_subset2matrix and read_binary2matrix functions
+ * rg
+ *
+ * Revision 1.4  1996/04/29 20:25:14  granat
+ * cvector function.
+ * rg
+ *
+ * Revision 1.3  1996/03/01 00:17:28  agray
+ * added many i/o functions: read_matrix() (versions for floats, chars, ints, doubles),
+ * write_matrix() (versions for f,c,i,d), print_matrix() (f,c,i,d), read_bin_matrix
+ * (f,c,i,d), write_bin_matrix() (f,c,i,d), read_data() and write_data() (both moved
+ * from da_linalg.c)
+ * ag
+ *
+ * Revision 1.2  1996/02/29  02:32:08  agray
+ * moved write_bin_matrix() and read_bin_matrix() to this module, added type
+ * argument to them
+ * ag
+ *
+ * Revision 1.1  1996/02/28  04:55:02  agray
+ * Initial revision
+ *
+ * */
+
+/* C library */
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <assert.h>
+
+/* UT library */
+#include "ut_types.h"
+#include "ut_error.h"
+#include "ut_output.h"
+#include "ut_file_io.h"
+#include "ut_memory.h"
+
+/* NR library */
+#include "nr.h"
+
+/* DA library */
+#include "da_util.h"
+#include "da_memory.h"
+
+/* this module's header */
+#include "da_io.h"
+
+
+/*******************************************************************************
+READ_MATRIX
+Read in ascii file containing a matrix.
+Allocates the matrix of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_matrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (float**) matrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) 
+    for (j = 1; j <= nc; j++)
+      fscanf(fp, "%g ", (float*) &(*vals)[i][j]); 
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_CMATRIX
+Read in ascii file containing a matrix.
+Allocates the matrix of unsigned chars that will hold the data.
+AG
+*******************************************************************************/
+int read_cmatrix(infile, nr, nc, vals)
+
+  char           *infile;   /* name of file to read */
+  int            nr;        /* number of rows in matrix */
+  int            nc;        /* number of columns in matrix */
+  unsigned char  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+  int    intval;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (unsigned char**) cmatrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++)
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%d ", &intval);
+      (*vals)[i][j] = (unsigned char) intval;
+    }
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_IMATRIX
+Read in ascii file containing a matrix.
+Allocates the matrix of ints that will hold the data.
+AG
+*******************************************************************************/
+int read_imatrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  int    ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (int**) imatrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) 
+    for (j = 1; j <= nc; j++)
+      fscanf(fp, "%d ", (int*) &(*vals)[i][j]);
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_DMATRIX
+Read in ascii file containing a matrix.
+Allocates the matrix of doubles that will hold the data.
+AG
+*******************************************************************************/
+int read_dmatrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  double ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+  double doubleval;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (double**) dmatrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++)
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%lg ", &doubleval); 
+      (*vals)[i][j] = doubleval;
+    }
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_CMATRIX_AS_MATRIX
+Read in ascii file containing a matrix of unsigned chars into a matrix of
+floats.  Allocates the matrix of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_cmatrix_as_matrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (float**) matrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) 
+    for (j = 1; j <= nc; j++)
+      fscanf(fp, "%g ", (float*) &(*vals)[i][j]); 
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_CMATRIX_AS_DMATRIX
+Read in ascii file containing a matrix of unsigned chars into a matrix of
+doubles.  Allocates the matrix of doubles that will hold the data.
+AG
+*******************************************************************************/
+int read_cmatrix_as_dmatrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  double  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (double**) dmatrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) 
+    for (j = 1; j <= nc; j++)
+      fscanf(fp, "%lg ", (double*) &(*vals)[i][j]); 
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_MATRIX
+Print the contents of a matrix of floats.
+AG
+*******************************************************************************/
+int print_matrix(stream, nr, nc, mat)
+
+  FILE*  stream;  /* stream to print to, e.g. stdout, file pointer */
+  int    nr, nc;  /* number of rows, columns of input matrix */
+  float  **mat;   /* matrix to be printed */
+{
+  int i,j;
+
+  for (i = 1; i <= nr; i++) 
+  {    
+	for (j = 1;j <= nc;j++)
+      fprintf(stream, "%g ", mat[i][j]);
+    fprintf(stream, "\n");
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_CMATRIX
+Print the contents of a matrix of unsigned chars.
+AG
+*******************************************************************************/
+int print_cmatrix(stream, nr, nc, mat)
+
+  FILE*          stream;  /* stream to print to, e.g. stdout, file pointer */
+  int            nr, nc;  /* number of rows, columns of input matrix */
+  unsigned char  **mat;   /* matrix to be printed */
+{
+  int i,j;
+
+  for (i = 1; i <= nr; i++)
+  {
+    for (j = 1;j <= nc;j++)
+      fprintf(stream, "%d ", mat[i][j]);
+    fprintf(stream, "\n");
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_IMATRIX
+Print the contents of a matrix of ints.
+AG
+*******************************************************************************/
+int print_imatrix(stream, nr, nc, mat)
+
+  FILE*  stream;  /* stream to print to, e.g. stdout, file pointer */
+  int    nr, nc;  /* number of rows, columns of input matrix */
+  int    **mat;   /* matrix to be printed */
+{
+  int i,j;
+
+  for (i = 1; i <= nr; i++)
+  {
+    for (j = 1;j <= nc;j++)
+      fprintf(stream, "%d ", mat[i][j]);
+    fprintf(stream, "\n");
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_DMATRIX
+Print the contents of a matrix of doubles.
+AG
+*******************************************************************************/
+int print_dmatrix(stream, nr, nc, mat)
+
+  FILE*  stream;  /* stream to print to, e.g. stdout, file pointer */
+  int    nr, nc;  /* number of rows, columns of input matrix */
+  double **mat;   /* matrix to be printed */
+{
+  int i,j;
+
+  for (i = 1; i <= nr; i++)
+  {
+    for (j = 1;j <= nc;j++)
+      fprintf(stream, "%g ", mat[i][j]);
+    fprintf(stream, "\n");
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_MATRIX
+Write a matrix of floats to a file.
+AG
+*******************************************************************************/
+int write_matrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  float  **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen_return_if_fail(outfile, mode, UT_ERROR);
+
+  /* print matrix contents to file */
+  print_matrix(fp, nr, nc, mat);
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_CMATRIX
+Write a matrix of unsigned chars to a file.
+AG
+*******************************************************************************/
+int write_cmatrix(outfile, nr, nc, mat, mode)
+
+  char           *outfile;   /* name of file to write to */
+  int            nr, nc;     /* number of rows, columns in matrix */
+  unsigned char  **mat;      /* matrix to write */
+  char           *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen_return_if_fail(outfile, mode, UT_ERROR);
+
+  /* print matrix contents to file */
+  print_cmatrix(fp, nr, nc, mat);
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_IMATRIX
+Write a matrix of ints to a file.
+AG
+*******************************************************************************/
+int write_imatrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  int    **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen_return_if_fail(outfile, mode, UT_ERROR);
+
+  /* print matrix contents to file */
+  print_imatrix(fp, nr, nc, mat);
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_DMATRIX
+Write a matrix of doubles to a file.
+AG
+*******************************************************************************/
+int write_dmatrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  double **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen_return_if_fail(outfile, mode, UT_ERROR);
+
+  /* print matrix contents to file */
+  print_dmatrix(fp, nr, nc, mat);
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_MATRIX_AS_CMATRIX
+Prints a matrix of floats as unsigned characters from 0 to 255.  Values
+over 255 are thresholded to 255.  Negative values are thresholded to 0.
+RG
+*******************************************************************************/
+int print_matrix_as_cmatrix( FILE *stream, int nr, int nc, float **m )
+{
+  int    i, j;
+ 
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      if (m[i][j] > 255.0)
+        fprintf( stream, "255 ");
+      else if (m[i][j] < 0.0)
+        fprintf( stream, "0 ");
+      else
+        fprintf( stream, "%d ", (int) m[i][j] );
+    }
+    fprintf( stream, "\n" );
+  }
+ 
+  return( UT_OK );
+}
+
+
+/*******************************************************************************
+PRINT_DMATRIX_AS_CMATRIX
+Prints a matrix of doubles as unsigned characters from 0 to 255.  Values
+over 255 are thresholded to 255.  Negative values are thresholded to 0.
+RG
+*******************************************************************************/
+int print_dmatrix_as_cmatrix( FILE *stream, int nr, int nc, double **m )
+{
+  int    i, j;
+ 
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      if (m[i][j] > 255.0)
+        fprintf( stream, "255 ");
+      else if (m[i][j] < 0.0)
+        fprintf( stream, "0 ");
+      else
+        fprintf( stream, "%d ", (int) m[i][j] );
+    }
+    fprintf( stream, "\n" );
+  }
+ 
+  return( UT_OK );
+}
+
+
+/*******************************************************************************
+WRITE_MATRIX_AS_CMATRIX
+Writes a matrix of floats to a file as unsigned characters from 0 to 255.
+Values over 255 are thresholded to 255.  Negative values are thresholded to 0.
+RG
+*******************************************************************************/
+int write_matrix_as_cmatrix( char *outfile, int nr, int nc, float **m,
+                             char *mode )
+{
+  FILE *fp;
+ 
+  /* open file in the specified mode */
+  fp = fopen_return_if_fail(outfile, mode, UT_ERROR);
+ 
+  /* print matrix contents to file */
+  print_matrix_as_cmatrix(fp, nr, nc, m);
+ 
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+ 
+ 
+/*******************************************************************************
+WRITE_DMATRIX_AS_CMATRIX
+Writes a matrix of doubles to a file as unsigned characters from 0 to 255.
+Values over 255 are thresholded to 255.  Negative values are thresholded to 0.
+RG
+*******************************************************************************/
+int write_dmatrix_as_cmatrix( char *outfile, int nr, int nc, double **m,
+                              char *mode )
+{
+  FILE *fp;
+ 
+  /* open file in the specified mode */
+  fp = fopen_return_if_fail(outfile, mode, UT_ERROR);
+ 
+  /* print matrix contents to file */
+  print_dmatrix_as_cmatrix(fp, nr, nc, m);
+ 
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+ 
+ 
+/*******************************************************************************
+READ_BIN_MATRIX
+Read in binary file of floats containing a matrix.
+Allocates the matrix of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_bin_matrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (float**) matrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix, in binary format */
+  for (i = 1; i <= nr; i++) {
+    fread( (float*) &((*vals)[i][1]), sizeof(float), nc, fp );
+  }
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_CMATRIX
+Read in binary file of unsigned chars containing a matrix.
+Allocates the matrix of unsigned chars that will hold the data.
+AG
+*******************************************************************************/
+int read_bin_cmatrix(infile, nr, nc, vals)
+
+  char          *infile;   /* name of file to read */
+  int           nr;        /* number of rows in matrix */
+  int           nc;        /* number of columns in matrix */
+  unsigned char ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = NR_cmatrix(1, nr, 1, nc);
+  if (*vals == (unsigned char**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix, in binary format */
+  for (i = 1; i <= nr; i++) {
+    fread( (unsigned char *) &((*vals)[i][1]), sizeof(unsigned char), nc, fp );
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_IMATRIX
+Read in binary file of ints containing a matrix.
+Allocates the matrix of ints that will hold the data.
+AG
+*******************************************************************************/
+int read_bin_imatrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  int    ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = NR_imatrix(1, nr, 1, nc);
+  if (*vals == (int**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix, in binary format */
+  for (i = 1; i <= nr; i++) {
+    fread( (int*) &((*vals)[i][1]), sizeof(int), nc, fp );
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_SMATRIX
+Read in binary file of shorts containing a matrix.
+Allocates the matrix of ints that will hold the data.
+RG
+*******************************************************************************/
+int read_bin_smatrix(infile, nr, nc, vals)
+ 
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  int    ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i;
+ 
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* allocate data matrix */
+  *vals = NR_imatrix(1, nr, 1, nc);
+  if (*vals == (int**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* read from file into the matrix, in binary format */
+  for (i = 1; i <= nr; i++) {
+    fread( (short*) &((*vals)[i][1]), sizeof(short), nc, fp );
+  }
+ 
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_DMATRIX
+Read in binary file of doubles containing a matrix.
+Allocates the matrix of doubles that will hold the data.
+AG
+*******************************************************************************/
+int read_bin_dmatrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  double ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = NR_dmatrix(1, nr, 1, nc);
+  if (*vals == (double**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix, in binary format */
+  for (i = 1; i <= nr; i++) {
+    fread( (double*) &((*vals)[i][1]), sizeof(double), nc, fp );
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_CMATRIX_AS_MATRIX
+Read in binary file of unsigned chars containing a matrix, and read it into
+a matrix of floats.  Allocates the matrix of floats that will hold the data.
+RG
+*******************************************************************************/
+int read_bin_cmatrix_as_matrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+  unsigned char charval;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (float**) matrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix, in binary format */
+  for (i = 1; i <= nr; i++)
+    for (j = 1; j <= nc; j++) {
+      fread(&charval, sizeof(unsigned char), 1, fp);
+      (*vals)[i][j] = (float) charval;
+    }
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_CMATRIX_AS_DMATRIX
+Read in binary file of unsigned chars containing a matrix, and read it into
+a matrix of doubles.  Allocates the matrix of doubles that will hold the data.
+RG
+*******************************************************************************/
+int read_bin_cmatrix_as_dmatrix(infile, nr, nc, vals)
+
+  char     *infile;   /* name of file to read */
+  int      nr;        /* number of rows in matrix */
+  int      nc;        /* number of columns in matrix */
+  double   ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+  unsigned char charval;
+
+  /* open file for reading */
+  fp = fopen_return_if_fail(infile, "r", UT_ERROR);
+
+  /* allocate data matrix */
+  *vals = (double**) dmatrix_return_if_fail(nr, nc, UT_ERROR);
+
+  /* read from file into the matrix, in binary format */
+  for (i = 1; i <= nr; i++)
+    for (j = 1; j <= nc; j++) {
+      fread(&charval, sizeof(unsigned char), 1, fp);
+      (*vals)[i][j] = (double) charval;
+    }
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_BIN_MATRIX
+Write a matrix to a file, in binary form (floats).
+AG
+*******************************************************************************/
+int write_bin_matrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  float  **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+  int     i;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file, in binary */
+  for (i = 1; i <= nr; i++) {
+    fwrite( (float*) &mat[i][1], sizeof(float), nc, fp );
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_BIN_CMATRIX
+Write a matrix to a file, in binary form (unsigned chars).
+AG
+*******************************************************************************/
+int write_bin_cmatrix(outfile, nr, nc, mat, mode)
+
+  char          *outfile;   /* name of file to write to */
+  int           nr, nc;     /* number of rows, columns in matrix */
+  unsigned char **mat;      /* matrix to write */
+  char          *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+  int     i;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file, in binary */
+  for (i = 1; i <= nr; i++) {
+    fwrite( (unsigned char *) &mat[i][1], sizeof(unsigned char), nc, fp );
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_BIN_IMATRIX
+Write a matrix to a file, in binary form (ints).
+AG
+*******************************************************************************/
+int write_bin_imatrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  int    **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+  int     i;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file, in binary */
+  for (i = 1; i <= nr; i++) {
+    fwrite( (int*) &mat[i][1], sizeof(int), nc, fp );
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_BIN_DMATRIX
+Write a matrix to a file, in binary form (doubles).
+AG
+*******************************************************************************/
+int write_bin_dmatrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  double **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+  int     i;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file, in binary */
+  for (i = 1; i <= nr; i++) {
+    fwrite( (double*) &mat[i][1], sizeof(double), nc, fp );
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_MATRIX_AS_BIN_CMATRIX
+Write a matrix to a file in binarie form (unsigned chars).
+RG
+*******************************************************************************/
+int write_matrix_as_bin_cmatrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  float  **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+  int     i, j;
+  unsigned char charval;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file, in binary */
+  for (i = 1; i <= nr; i++) 
+    for (j = 1; j <= nc; j++) {
+      if (mat[i][j] > 255.0)
+	charval = 255;
+      else if (mat[i][j] < 0.0)
+	charval = 0;
+      else
+	charval = (unsigned char) mat[i][j];
+      fwrite( &charval, sizeof(unsigned char), 1, fp );
+    }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_DMATRIX_AS_BIN_CMATRIX
+Write a matrix to a file in binarie form (unsigned chars).
+RG
+*******************************************************************************/
+int write_dmatrix_as_bin_cmatrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  double **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+  int     i, j;
+  unsigned char charval;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file, in binary */
+  for (i = 1; i <= nr; i++) 
+    for (j = 1; j <= nc; j++) {
+      if (mat[i][j] > 255.0)
+	charval = 255;
+      else if (mat[i][j] < 0.0)
+	charval = 0;
+      else
+	charval = (unsigned char) mat[i][j];
+      fwrite( &charval, sizeof(unsigned char), 1, fp );
+    }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_ROW
+Read in ascii file containing a vector in row form.
+Allocates the vector of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_row(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  float  **vec;     /* pointer to vector to be filled in */
+{
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data vector */
+  *vec = NR_vector(1, dim);
+  if (*vec == (float*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the vector */
+  for (i = 1; i <= dim; i++) {
+    fscanf(fp, "%g ", (float*) &(*vec)[i]);
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_COL
+Read in ascii file containing a vector in column form.
+Allocates the vector of floats that will hold the data.
+Implemented exactly the same as read_row().
+AG
+*******************************************************************************/
+int read_col(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  float  **vec;     /* pointer to vector to be filled in */
+{
+  return( read_row(infile, dim, vec) );
+}
+
+
+/*******************************************************************************
+READ_IROW
+Read in ascii file containing a vector of integers in row form.
+Allocates the vector of integers that will hold the data.
+AG
+*******************************************************************************/
+int read_irow(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  int    **vec;     /* pointer to vector to be filled in */
+{
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data vector */
+  *vec = NR_ivector(1, dim);
+  if (*vec == (int*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the vector */
+  for (i = 1; i <= dim; i++) {
+    fscanf(fp, "%d ", (int*) &(*vec)[i]);
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_ICOL
+Read in ascii file containing a vector of integers in column form.
+Allocates the vector of integers that will hold the data.
+Implemented exactly the same as read_irow().
+AG
+*******************************************************************************/
+int read_icol(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  int    **vec;     /* pointer to vector to be filled in */
+{
+  return( read_irow(infile, dim, vec) );
+}
+
+
+/*******************************************************************************
+READ_DROW
+Read in ascii file containing a vector of doubles in row form.
+Allocates the vector of integers that will hold the data.
+AG
+*******************************************************************************/
+int read_drow(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  double **vec;     /* pointer to vector to be filled in */
+{
+  FILE   *fp;
+  int    i;
+  double doubleval;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data vector */
+  *vec = NR_dvector(1, dim);
+  if (*vec == (double*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the vector */
+  for (i = 1; i <= dim; i++) {
+    fscanf(fp, "%lg ", &doubleval);
+    (*vec)[i] = doubleval;
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_DCOL
+Read in ascii file containing a vector of doubles in column form.
+Allocates the vector of integers that will hold the data.
+Implemented exactly the same as read_irow().
+AG
+*******************************************************************************/
+int read_dcol(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  double **vec;     /* pointer to vector to be filled in */
+{
+  return( read_drow(infile, dim, vec) );
+}
+
+
+/*******************************************************************************
+READ_CROW
+Read in ascii file containing a vector of unsigned chars in row form.
+Allocates the vector of integers that will hold the data.
+AG
+*******************************************************************************/
+int read_crow(infile, dim, vec)
+
+  char              *infile;   /* name of file to read */
+  int               dim;       /* dimension of vector */
+  unsigned char     **vec;     /* pointer to vector to be filled in */
+{
+  FILE   *fp;
+  int    i;
+  int    intval;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data vector */
+  *vec = NR_cvector(1, dim);
+  if (*vec == (unsigned char*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the vector */
+  for (i = 1; i <= dim; i++) {
+    fscanf(fp, "%d ", &intval);
+    (*vec)[i] = intval;
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_CCOL
+Read in ascii file containing a vector of unsigned chars in column form.
+Allocates the vector of integers that will hold the data.
+Implemented exactly the same as read_irow().
+AG
+*******************************************************************************/
+int read_ccol(infile, dim, vec)
+
+  char           *infile;   /* name of file to read */
+  int            dim;       /* dimension of vector */
+  unsigned char  **vec;     /* pointer to vector to be filled in */
+{
+  return( read_crow(infile, dim, vec) );
+}
+
+
+/*******************************************************************************
+PRINT_ROW
+Print the contents of a vector, in row form.
+AG
+*******************************************************************************/
+int print_row(stream, dim, v)
+
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    dim;    /* length of the row vector to be printed */
+  float  *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= dim; i++) {
+      fprintf(stream, "%g ", v[i]);
+  }
+  fprintf(stream, "\n");
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_COL
+Print the contents of a vector, in column form.
+AG
+*******************************************************************************/
+int print_col(stream, dim, v)
+
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    dim;    /* length of the column vector to be printed */
+  float  *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= dim; i++) {
+      fprintf(stream, "%g\n", v[i]);
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_IROW
+Print the contents of an integer vector, in row form.
+AG
+*******************************************************************************/
+int print_irow(stream, dim, v)
+
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    dim;    /* length of the row vector to be printed */
+  int    *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= dim; i++) {
+      fprintf(stream, "%d ", v[i]);
+  }
+  fprintf(stream, "\n");
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_ICOL
+Print the contents of an integer vector, in column form.
+AG
+*******************************************************************************/
+int print_icol(stream, dim, v)
+
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    dim;    /* length of the column vector to be printed */
+  int    *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= dim; i++) {
+      fprintf(stream, "%d\n", v[i]);
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_DROW
+Print the contents of an double vector, in row form.
+AG
+*******************************************************************************/
+int print_drow(stream, dim, v)
+
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    dim;    /* length of the row vector to be printed */
+  double *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= dim; i++) {
+      fprintf(stream, "%g ", v[i]);
+  }
+  fprintf(stream, "\n");
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_DCOL
+Print the contents of an double vector, in column form.
+AG
+*******************************************************************************/
+int print_dcol(stream, dim, v)
+
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    dim;    /* length of the column vector to be printed */
+  double *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= dim; i++) {
+      fprintf(stream, "%g\n", v[i]);
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_CROW
+Print the contents of an unsigned char vector, in row form.
+AG
+*******************************************************************************/
+int print_crow(stream, dim, v)
+
+  FILE*            stream; /* stream to print to, e.g. stdout, file pointer */
+  int              dim;    /* length of the row vector to be printed */
+  unsigned char    *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= dim; i++) {
+      fprintf(stream, "%d ", (int) v[i]);
+  }
+  fprintf(stream, "\n");
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_CCOL
+Print the contents of an unsigned char vector, in column form.
+AG
+*******************************************************************************/
+int print_ccol(stream, dim, v)
+
+  FILE*            stream; /* stream to print to, e.g. stdout, file pointer */
+  int              dim;    /* length of the column vector to be printed */
+  unsigned char    *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= dim; i++) {
+      fprintf(stream, "%d\n", (int) v[i]);
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_ROW
+Write a vector to a file, in row form.
+AG
+*******************************************************************************/
+int write_row(outfile, dim, vec, mode)
+
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the row */
+  float  *vec;      /* row vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_row(fp, dim, vec);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_COL
+Write a vector to a file, in column form.
+AG
+*******************************************************************************/
+int write_col(outfile, dim, vec, mode)
+
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the column */
+  float  *vec;      /* column vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_col(fp, dim, vec);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_IROW
+Write an integer vector to a file, in row form.
+AG
+*******************************************************************************/
+int write_irow(outfile, dim, vec, mode)
+
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the row */
+  int    *vec;      /* row vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_irow(fp, dim, vec);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_ICOL
+Write an integer vector to a file, in column form.
+AG
+*******************************************************************************/
+int write_icol(outfile, dim, vec, mode)
+
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the column */
+  int    *vec;      /* column vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_icol(fp, dim, vec);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_DROW
+Write a vector of doubles to a file, in row form.
+AG
+*******************************************************************************/
+int write_drow(outfile, dim, vec, mode)
+
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the row */
+  double *vec;      /* row vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_drow(fp, dim, vec);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_DCOL
+Write an integer vector to a file, in column form.
+AG
+*******************************************************************************/
+int write_dcol(outfile, dim, vec, mode)
+
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the column */
+  double *vec;      /* column vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_dcol(fp, dim, vec);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_CROW
+Write a vector of unsigned chars to a file, in row form.
+AG
+*******************************************************************************/
+int write_crow(outfile, dim, vec, mode)
+
+  char            *outfile;  /* name of file to write to */
+  int             dim;       /* length of the row */
+  unsigned char   *vec;      /* row vector to be written */
+  char            *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_crow(fp, dim, vec);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_CCOL
+Write an unsigned char vector to a file, in column form.
+AG
+*******************************************************************************/
+int write_ccol(outfile, dim, vec, mode)
+
+  char             *outfile;  /* name of file to write to */
+  int              dim;       /* length of the column */
+  unsigned char    *vec;      /* column vector to be written */
+  char             *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_ccol(fp, dim, vec);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_ROW
+Read in binary file of floats containing a vector in row form.
+Allocates the vector of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_bin_row(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  float  **vec;     /* pointer to vector to be filled in */
+{
+  FILE   *fp;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data vector */
+  *vec = NR_vector(1, dim);
+  if (*vec == (float*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the vector, in binary format */
+  fread( (float*) &((*vec)[1]), sizeof(float), dim, fp );
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_COL
+Read in binary file of floats containing a vector in column form.
+Allocates the vector of floats that will hold the data.
+Implemented exactly the same as read_bin_row() since there is no
+distinction in binary format.
+AG
+*******************************************************************************/
+int read_bin_col(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  float  **vec;     /* pointer to vector to be filled in */
+{
+  return( read_bin_row(infile, dim, vec) );
+}
+
+
+/*******************************************************************************
+READ_BIN_IROW
+Read in binary file of integers containing a vector in row form.
+Allocates the vector of integers that will hold the data.
+AG
+*******************************************************************************/
+int read_bin_irow(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  int    **vec;     /* pointer to vector to be filled in */
+{
+  FILE   *fp;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data vector */
+  *vec = NR_ivector(1, dim);
+  if (*vec == (int*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the vector, in binary format */
+  fread( (int*) &((*vec)[1]), sizeof(int), dim, fp );
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_ICOL
+Read in binary file of integers containing a vector in column form.
+Allocates the vector of integers that will hold the data.
+Implemented exactly the same as read_bin_irow() since there is no
+distinction in binary format.
+AG
+*******************************************************************************/
+int read_bin_icol(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  int    **vec;     /* pointer to vector to be filled in */
+{
+  return( read_bin_irow(infile, dim, vec) );
+}
+
+
+/*******************************************************************************
+READ_BIN_DROW
+Read in binary file of doubles containing a vector in row form.
+Allocates the vector of doubles that will hold the data.
+AG
+*******************************************************************************/
+int read_bin_drow(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  double **vec;     /* pointer to vector to be filled in */
+{
+  FILE   *fp;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data vector */
+  *vec = NR_dvector(1, dim);
+  if (*vec == (double*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the vector, in binary format */
+  fread( (double*) &((*vec)[1]), sizeof(double), dim, fp );
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_DCOL
+Read in binary file of doubles containing a vector in column form.
+Allocates the vector of doubles that will hold the data.
+Implemented exactly the same as read_bin_drow() since there is no
+distinction in binary format.
+AG
+*******************************************************************************/
+int read_bin_dcol(infile, dim, vec)
+
+  char   *infile;   /* name of file to read */
+  int    dim;       /* dimension of vector */
+  double **vec;     /* pointer to vector to be filled in */
+{
+  return( read_bin_drow(infile, dim, vec) );
+}
+
+
+/*******************************************************************************
+READ_BIN_CROW
+Read in binary file of unsigned chars containing a vector in row form.
+Allocates the vector of unsigned chars that will hold the data.
+AG
+*******************************************************************************/
+int read_bin_crow(infile, dim, vec)
+
+  char           *infile;   /* name of file to read */
+  int            dim;       /* dimension of vector */
+  unsigned char  **vec;     /* pointer to vector to be filled in */
+{
+  FILE   *fp;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data vector */
+  *vec = NR_cvector(1, dim);
+  if (*vec == (unsigned char*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the vector, in binary format */
+  fread( (unsigned char*) &((*vec)[1]), sizeof(unsigned char), dim, fp );
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_BIN_CCOL
+Read in binary file of unsigned chars containing a vector in column form.
+Allocates the vector of unsigned chars that will hold the data.
+Implemented exactly the same as read_bin_crow() since there is no
+distinction in binary format.
+AG
+*******************************************************************************/
+int read_bin_ccol(infile, dim, vec)
+
+  char          *infile;   /* name of file to read */
+  int           dim;       /* dimension of vector */
+  unsigned char **vec;     /* pointer to vector to be filled in */
+{
+  return( read_bin_crow(infile, dim, vec) );
+}
+
+
+/*******************************************************************************
+WRITE_BIN_ROW
+Write a row vector to a file, in binary form (floats).
+AG
+*******************************************************************************/
+int write_bin_row(outfile, dim, vec, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    dim;        /* dimension of vector */
+  float  *vec;       /* vector to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file, in binary */
+  fwrite( (float*) &(vec[1]), sizeof(float), dim, fp );
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_BIN_COL
+Write a column vector to a file, in binary form (floats).
+Implemented exactly the same as read_bin_row() since there is no
+distinction in binary format.
+AG
+*******************************************************************************/
+int write_bin_col(outfile, dim, vec, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    dim;        /* dimension of vector */
+  float  *vec;       /* vector to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  return( write_bin_row(outfile, dim, vec, mode) );
+}
+
+
+/*******************************************************************************
+WRITE_BIN_IROW
+Write a row vector to a file, in binary form (integers).
+AG
+*******************************************************************************/
+int write_bin_irow(outfile, dim, vec, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    dim;        /* dimension of vector */
+  int    *vec;       /* vector to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file, in binary */
+  fwrite( (int*) &(vec[1]), sizeof(int), dim, fp );
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_BIN_ICOL
+Write a column vector to a file, in binary form (integers).
+Implemented exactly the same as read_bin_irow() since there is no
+distinction in binary format.
+AG
+*******************************************************************************/
+int write_bin_icol(outfile, dim, vec, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    dim;        /* dimension of vector */
+  int    *vec;       /* vector to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  return( write_bin_irow(outfile, dim, vec, mode) );
+}
+
+
+/*******************************************************************************
+WRITE_BIN_DROW
+Write a row vector to a file, in binary form (doubles).
+AG
+*******************************************************************************/
+int write_bin_drow(outfile, dim, vec, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    dim;        /* dimension of vector */
+  double *vec;       /* vector to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file, in binary */
+  fwrite( (double*) &(vec[1]), sizeof(double), dim, fp );
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_BIN_DCOL
+Write a column vector to a file, in binary form (doubles).
+Implemented exactly the same as read_bin_drow() since there is no
+distinction in binary format.
+AG
+*******************************************************************************/
+int write_bin_dcol(outfile, dim, vec, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    dim;        /* dimension of vector */
+  double *vec;       /* vector to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  return( write_bin_drow(outfile, dim, vec, mode) );
+}
+
+
+/*******************************************************************************
+WRITE_BIN_CROW
+Write a row vector to a file, in binary form (unsigned char).
+AG
+*******************************************************************************/
+int write_bin_crow(outfile, dim, vec, mode)
+
+  char          *outfile;   /* name of file to write to */
+  int           dim;        /* dimension of vector */
+  unsigned char *vec;       /* vector to write */
+  char          *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file, in binary */
+  fwrite( (unsigned char*) &(vec[1]), sizeof(unsigned char), dim, fp );
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_BIN_CCOL
+Write a column vector to a file, in binary form (unsigned chars).
+Implemented exactly the same as read_bin_crow() since there is no
+distinction in binary format.
+AG
+*******************************************************************************/
+int write_bin_ccol(outfile, dim, vec, mode)
+
+  char          *outfile;   /* name of file to write to */
+  int           dim;        /* dimension of vector */
+  unsigned char *vec;       /* vector to write */
+  char          *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  return( write_bin_crow(outfile, dim, vec, mode) );
+}
+
+
+/*******************************************************************************
+READ_INDEXED_MATRIX
+Read in ascii file containing a matrix having the first column as an index
+column.
+Allocates a matrix of floats that will hold the data and a vector of floats
+which will hold the indices.
+AG
+*******************************************************************************/
+int read_indexed_matrix(infile, nr, nc, vals, index)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix, excluding index column */
+  float  ***vals;   /* ptr to matrix to be filled in with data */
+  float  **index;   /* ptr to vector to be filled in with index column */
+{
+  FILE   *fp;
+  int    i, j;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = NR_matrix(1, nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate index vector */
+  *index = NR_vector(1, nr);
+  if (*index == (float*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    fscanf(fp, "%g ", (float*) &(*index)[i]);
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%g ", (float*) &(*vals)[i][j]);
+    }
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_INDEXED_MATRIX
+Print the contents of an indexed matrix, i.e. a matrix of floats and a 
+corresponding index vector of floats.
+AG
+*******************************************************************************/
+int print_indexed_matrix(stream, nr, nc, mat, index)
+
+  FILE*  stream;  /* stream to print to, e.g. stdout, file pointer */
+  int    nr, nc;  /* number of rows, columns of input matrix */
+  float  **mat;   /* matrix to be printed */
+  float  *index;  /* matrix to be printed */
+{
+  int i,j;
+
+  for (i = 1; i <= nr; i++) {
+    fprintf(stream, "%g ", index[i]);
+    for (j = 1;j <= nc;j++) {
+      fprintf(stream, "%g ", mat[i][j]);
+    }
+    fprintf(stream, "\n");
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_INDEXED_MATRIX
+Write the contents of an indexed matrix, i.e. a matrix of floats and a 
+corresponding index vector of floats, to a file.
+AG
+*******************************************************************************/
+int write_indexed_matrix(outfile, nr, nc, mat, index, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  float  **mat;      /* matrix to write */
+  float  *index;     /* index vector to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file */
+  print_indexed_matrix(fp, nr, nc, mat, index);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_INDEXED_COL
+Read in ascii file containing two columns, the first containing arbitrary 
+index values, and the second constituting a vector of float values.
+
+Allocates a vector of floats that will hold the data and a vector of floats
+which will hold the indices.
+AG
+*******************************************************************************/
+int read_indexed_col(char *infile, int dim, float **vals, float **index)
+
+{
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = NR_vector(1, dim);
+  if (*vals == (float*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate index vector */
+  *index = NR_vector(1, dim);
+  if (*index == (float*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (i = 1; i <= dim; i++)
+  {
+    fscanf(fp, "%g ", (float*) &(*index)[i]);
+    fscanf(fp, "%g ", (float*) &(*vals)[i]);
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_INDEXED_COL
+Print the contents of an indexed vector, i.e. a vector of floats and a 
+corresponding index vector of floats, to a stream in column format.
+AG
+*******************************************************************************/
+int print_indexed_col(FILE *stream, int dim, float *vec, float *index)
+
+{
+  int i;
+
+  for (i = 1; i <= dim; i++) 
+  {
+    fprintf(stream, "%g ", index[i]);
+    fprintf(stream, "%g\n", vec[i]);
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_INDEXED_COL
+Write the contents of an indexed vector, i.e. a vector of floats and a 
+corresponding index vector of floats, to a file in column format.
+AG
+*******************************************************************************/
+int write_indexed_col(char *outfile, int dim, float *vec, float *index, 
+                      char *mode)
+
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print vector contents to file */
+  print_indexed_col(fp, dim, vec, index);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_LC_MATRIX
+Read in ascii file containing the rows of data.
+Assumes that the file is in the standard dataset format, with line count at 
+top, separated by spaces.
+Allocates the matrix of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_lc_matrix(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    *nr;       /* ptr to number of rows in data, to be filled in */
+  int    nc;        /* number of columns in data */
+  float  ***vals;   /* ptr to matrix to be filled in with data */
+{
+  FILE    *fp;
+  int     i, j;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* fills in numrows */
+  fscanf(fp, "%d", nr);
+
+  /* allocate data matrix */
+  *vals = NR_matrix(1, *nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (i = 1; i <= *nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%g ", &(*vals)[i][j]);
+    }
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_LC_MATRIX
+Write a matrix of floats to a file in the standard data file format, with 
+line count at top of file.
+AG
+*******************************************************************************/
+int write_lc_matrix(outfile, nr, nc, mat)
+
+  char   *outfile;  /* name of file to write to */
+  int    nr, nc;    /* number of rows, columns of data */
+  float  **mat;     /* matrix of data to be written */
+{
+  FILE    *fp;
+
+  /* open file for writing */
+  fp = fopen(outfile, "w");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print number of lines at top */
+  fprintf(fp, "%d\n", nr);
+  fclose(fp);
+
+  /* open file for appending */
+  fp = fopen(outfile, "a");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file */
+  print_matrix(fp, nr, nc, mat);
+  fclose(fp);
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_SET_OF_MATRICES
+Read in ascii file containing a set of matrices, each separated by a carriage
+return.
+Allocates the vector of matrices of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_set_of_matrices(char *infile, int num_mats, int num_rows, 
+                         int num_cols, float ****vals)
+                                  
+{
+  FILE   *fp;
+  int    i, j, m;
+  float  **curr_mat;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = set_of_matrices(num_mats, num_rows, num_cols);
+  if (*vals == (float***)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (m = 1; m <= num_mats; m++)
+  {
+    curr_mat = (*vals)[m];
+    for (i = 1; i <= num_rows; i++)
+      for (j = 1; j <= num_cols; j++)
+        fscanf(fp, "%g ", (float*) &(curr_mat[i][j]));
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_SET_OF_DMATRICES
+Read in ascii file containing a set of matrices, each separated by a carriage
+return.
+Allocates the vector of matrices of floats that will hold the data.
+RG
+*******************************************************************************/
+int read_set_of_dmatrices(char *infile, int num_mats, int num_rows, 
+                          int num_cols, double ****vals)
+                                  
+{
+  FILE   *fp;
+  int    i, j, m;
+  double **curr_mat;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = set_of_dmatrices(num_mats, num_rows, num_cols);
+  if (*vals == (double***)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (m = 1; m <= num_mats; m++)
+  {
+    curr_mat = (*vals)[m];
+    for (i = 1; i <= num_rows; i++)
+      for (j = 1; j <= num_cols; j++)
+        fscanf(fp, "%lg ", (double*) &(curr_mat[i][j]));
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_SET_OF_SETS_OF_MATRICES
+Read in ascii file containing a set of sets of matrices, where each of the 
+sets of matrices is separated by two carriage returns, and each of the 
+matrices in a set is separated by a single carriage return.
+
+Allocates the vector of vectors of matrices of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_set_of_sets_of_matrices(char *infile, int num_sets, int num_mats, 
+                                 int num_rows, int num_cols, float *****vals)
+                                  
+{
+  FILE   *fp;
+  int    i, j, m, s;
+  float  ***curr_set, **curr_mat;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = set_of_sets_of_matrices(num_sets, num_mats, num_rows, num_cols);
+  if (*vals == (float****)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (s = 1; s <= num_sets; s++)
+  {
+    curr_set = (*vals)[s];
+    for (m = 1; m <= num_mats; m++)
+    {
+      curr_mat = curr_set[m];
+      for (i = 1; i <= num_rows; i++)
+        for (j = 1; j <= num_cols; j++)
+          fscanf(fp, "%g", (float*) &(curr_mat[i][j]));
+    }
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+/*******************************************************************************
+READ_SET_OF_SETS_OF_DMATRICES
+Read in ascii file containing a set of sets of matrices, where each of the 
+sets of matrices is separated by two carriage returns, and each of the 
+matrices in a set is separated by a single carriage return.
+
+Allocates the vector of vectors of matrices of floats that will hold the data.
+RG
+*******************************************************************************/
+int read_set_of_sets_of_dmatrices(char *infile, int num_sets, int num_mats, 
+                                 int num_rows, int num_cols, double *****vals)
+                                  
+{
+  FILE   *fp;
+  int    i, j, m, s;
+  double  ***curr_set, **curr_mat;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = set_of_sets_of_dmatrices(num_sets, num_mats, num_rows, num_cols);
+  if (*vals == (double****)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (s = 1; s <= num_sets; s++)
+  {
+    curr_set = (*vals)[s];
+    for (m = 1; m <= num_mats; m++)
+    {
+      curr_mat = curr_set[m];
+      for (i = 1; i <= num_rows; i++)
+        for (j = 1; j <= num_cols; j++)
+          fscanf(fp, "%lg", (double*) &(curr_mat[i][j]));
+    }
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_SET_OF_MATRICES
+Print the contents of a set-of-matrices structure, laying out the matrices
+one after the other, separated by one carriage return.
+AG
+*******************************************************************************/
+int print_set_of_matrices(FILE *stream, float ***mat_set, int num_mats, 
+                          int num_rows, int num_cols)
+
+{
+  int i;
+
+  for (i = 1; i <= num_mats; i++)
+  {
+    print_matrix(stream, num_rows, num_cols, mat_set[i]);
+    if (i < num_mats)
+      fprintf(stream, "\n");
+  }
+ 
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_SET_OF_DMATRICES
+Print the contents of a set-of-matrices structure, laying out the matrices
+one after the other, separated by one carriage return.
+RG
+*******************************************************************************/
+int print_set_of_dmatrices(FILE *stream, double ***mat_set, int num_mats, 
+                           int num_rows, int num_cols)
+
+{
+  int i;
+
+  for (i = 1; i <= num_mats; i++)
+  {
+    print_dmatrix(stream, num_rows, num_cols, mat_set[i]);
+    if (i < num_mats)
+      fprintf(stream, "\n");
+  }
+ 
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+PRINT_SET_OF_SETS_OF_MATRICES
+Print the contents of a set-of-sets-of-matrices structure, laying out the 
+matrices in the same set one after the other, separated by one carriage return,
+and laying out the sets one after the other, separated by two carriage returns.
+AG
+*******************************************************************************/
+int print_set_of_sets_of_matrices(FILE *stream, float ****mat_set_set, 
+                                  int num_sets, int num_mats, int num_rows, 
+                                  int num_cols)
+
+{
+  int i;
+
+  for (i = 1; i <= num_sets; i++)
+  {
+    print_set_of_matrices(stream, mat_set_set[i], num_mats, num_rows, num_cols);
+    fprintf(stream, "\n\n");
+  }
+ 
+  return (UT_OK);
+}
+
+/*******************************************************************************
+PRINT_SET_OF_SETS_OF_DMATRICES
+Print the contents of a set-of-sets-of-matrices structure, laying out the 
+matrices in the same set one after the other, separated by one carriage return,
+and laying out the sets one after the other, separated by two carriage returns.
+RG
+*******************************************************************************/
+int print_set_of_sets_of_dmatrices(FILE *stream, double ****mat_set_set, 
+                                   int num_sets, int num_mats, int num_rows, 
+                                   int num_cols)
+
+{
+  int i;
+
+  for (i = 1; i <= num_sets; i++)
+  {
+    print_set_of_dmatrices(stream, mat_set_set[i], num_mats, num_rows, num_cols);
+    fprintf(stream, "\n\n");
+  }
+ 
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_SET_OF_MATRICES
+Write the contents of a set-of-matrices structure to a file, laying out the 
+matrices one after the other, separated by one carriage return.
+AG
+*******************************************************************************/
+int write_set_of_matrices(char *out_file, float ***mat_set, int num_mats, 
+                          int num_rows, int num_cols, char *mode)
+
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(out_file, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print structure contents to file */
+  print_set_of_matrices(fp, mat_set, num_mats, num_rows, num_cols);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_SET_OF_DMATRICES
+Write the contents of a set-of-matrices structure to a file, laying out the 
+matrices one after the other, separated by one carriage return.
+RG
+*******************************************************************************/
+int write_set_of_dmatrices(char *out_file, double ***mat_set, int num_mats, 
+                           int num_rows, int num_cols, char *mode)
+
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(out_file, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print structure contents to file */
+  print_set_of_dmatrices(fp, mat_set, num_mats, num_rows, num_cols);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_SET_OF_SETS_OF_MATRICES
+Write the contents of a set-of-sets-of matrices structure to a file, laying 
+out the  matrices one after the other, separated by one carriage return,
+and laying out the sets one after the other, separated by two carriage returns.
+AG
+*******************************************************************************/
+int write_set_of_sets_of_matrices(char *out_file, float ****mat_set_set, 
+                                  int num_sets, int num_mats, int num_rows,
+                                  int num_cols, char *mode)
+
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(out_file, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print structure contents to file */
+  print_set_of_sets_of_matrices(fp, mat_set_set, num_sets, num_mats, num_rows, 
+                                num_cols);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+WRITE_SET_OF_SETS_OF_DMATRICES
+Write the contents of a set-of-sets-of matrices structure to a file, laying 
+out the  matrices one after the other, separated by one carriage return,
+and laying out the sets one after the other, separated by two carriage returns.
+RG
+*******************************************************************************/
+int write_set_of_sets_of_dmatrices(char *out_file, double ****mat_set_set, 
+                                   int num_sets, int num_mats, int num_rows,
+                                   int num_cols, char *mode)
+
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(out_file, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print structure contents to file */
+  print_set_of_sets_of_dmatrices(fp, mat_set_set, num_sets, num_mats, num_rows, 
+                                num_cols);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_GAUSS_PARMS
+Read in a standard file containing mean vector and covariance matrix.
+Allocates the structures that will hold the mean vector and covariance matrix.
+AG
+*******************************************************************************/
+int read_gauss_parms(parmsfile, nc, mean, cov)
+
+  char   *parmsfile;      /* name of file to read */
+  int    nc;              /* number of dimensions of Gaussian */
+  double  **mean, ***cov;  /* ptrs to mean vector and covariance matrix to be 
+                             filled in */
+{
+  FILE    *fp;
+  int     j, k;
+
+  /* open file for reading */
+  fp = fopen(parmsfile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate mean vector */
+  *mean = NR_dvector(1, nc);
+  if (*mean == (double*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate covariance matrix */
+  *cov = NR_dmatrix(1, nc, 1, nc);
+  if (*cov == (double**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read mean vector from file */
+  for (j = 1; j <= nc; j++) {
+    fscanf(fp, "%lg ", &(*mean)[j]);
+  }
+
+  /* read covariance matrix from file */
+  for (j = 1; j <= nc; j++) {
+    for (k = 1; k <= nc; k++) {
+      fscanf(fp, "%lg ", &(*cov)[j][k]);
+    }
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+/*******************************************************************************
+PRINT_GAUSS_PARMS
+Print the contents of a mean vector and of a covariance matrix.
+AG
+*******************************************************************************/
+int print_gauss_parms(stream, nc, mean, cov)
+
+  FILE   *stream;       /* stream to print to, e.g. stdout, file pointer */
+  int    nc;            /* number of dimensions in Gaussian */
+  double  *mean, **cov;  /* mean vector and covariance matrix to write */
+{
+  /* print mean vector */
+  print_drow(stream, nc, mean);
+
+  /* print covariance matrix */
+  print_dmatrix(stream, nc, nc, cov);
+
+  return (UT_OK);
+}
+
+/*******************************************************************************
+PRINT_GAUSS_PARMS_SET
+Print the contents of K mean vectors and covariance matrices.
+AG
+*******************************************************************************/
+int print_gauss_parms_set(stream, nc, K, means, covars)
+
+  FILE   *stream;       /* stream to print to, e.g. stdout, file pointer */
+  int    nc;            /* number of dimensions in Gaussian */
+  int    K;             /* number of Gaussians in the set */
+  double  **means;       /* matrix containing K mean vectors to write */
+  double  ***covars;     /* matrix containing K covariance matrices to write */
+{
+  int k;
+
+  for (k = 1; k<=K; k++)
+  {
+    /* print identification number */
+    fprintf(stream, "#%d\n\n",k);
+
+    /* print mean vector to file */
+    print_drow(stream, nc, means[k]);
+    fprintf(stream, "\n");
+
+    /* print covariance matrix to file */
+    print_dmatrix(stream, nc, nc, covars[k]);
+    fprintf(stream, "\n");
+  }
+
+  return (UT_OK);
+}
+
+/*******************************************************************************
+PRINT_UNNORM_GAUSS_PARMS_SET
+Print the contents of a set of K mean vectors and covariance matrices.
+Takes data which has normalized by the range of values in each attribute,
+and prints it in unnormalized form.
+AG
+*******************************************************************************/
+int print_unnorm_gauss_parms_set(stream, nc, K, means, covars, range,
+                                 minval)
+
+  FILE   *stream;       /* stream to print to, e.g. stdout, file pointer */
+  int    nc;            /* number of dimensions in Gaussian */
+  int    K;             /* number of Gaussians in the set */
+  double  **means;       /* matrix containing K mean vectors to write */
+  double  ***covars;     /* matrix containing K covariance matrices to write */
+  double  *range;        /* range of values for each attribute */
+  double  *minval;       /* minimum value in each attribute */
+{
+  int k;
+
+  for (k = 1; k<=K; k++)
+  {
+    /* print identification number */
+    fprintf(stream, "#%d\n\n",k);
+
+    /* print mean vector to file */
+    print_unnorm_drow(stream, nc, means[k], range, minval);
+    fprintf(stream, "\n");
+
+    /* print covariance matrix to file */
+    print_unnorm_cov_dmatrix(stream, nc, covars[k], range);
+    fprintf(stream, "\n");
+  }
+
+  return (UT_OK);
+}
+
+/*******************************************************************************
+WRITE_GAUSS_PARMS
+Write out a standard file containing mean vector and covariance matrix.
+AG
+*******************************************************************************/
+int write_gauss_parms(parmsfile, nc, mean, cov, mode)
+
+  char   *parmsfile;    /* name of file to write to */
+  int    nc;            /* number of dimensions in Gaussian */
+  double  *mean, **cov;  /* mean vector and covariance matrix to write */
+  char   *mode;         /* file i/o mode to use: e.g. "w" or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(parmsfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  print_gauss_parms(fp, nc, mean, cov);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+/*******************************************************************************
+WRITE_GAUSS_PARMS_SET
+Write the contents of K mean vectors and covariance matrices to a standard
+file.
+AG
+*******************************************************************************/
+int write_gauss_parms_set(parmsfile, nc, K, means, covars, mode)
+
+  char   *parmsfile;    /* name of file to write to */
+  int    nc;            /* number of dimensions in Gaussian */
+  int    K;             /* number of Gaussians in the set */
+  double  **means;       /* matrix containing K mean vectors to write */
+  double  ***covars;     /* matrix containing K covariance matrices to write */
+  char   *mode;         /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(parmsfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  print_gauss_parms_set(fp, nc, K, means, covars);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+/*******************************************************************************
+WRITE_UNNORM_GAUSS_PARMS_SET
+Write out a standard file containing a set of K mean vectors and covariance 
+matrices.  Takes data which has normalized by the range of values in each 
+attribute, and prints it in unnormalized form.
+AG
+*******************************************************************************/
+int write_unnorm_gauss_parms_set(parmsfile, nc, K, means, covars, range,
+                                 minval, mode)
+
+  char   *parmsfile;    /* name of file to write to */
+  int    nc;            /* number of dimensions in Gaussian */
+  int    K;             /* number of Gaussians in the set */
+  double  **means;       /* matrix containing K mean vectors to write */
+  double  ***covars;     /* matrix containing K covariance matrices to write */
+  double  *range;        /* range of values for each attribute */
+  double  *minval;       /* minimum value in each attribute */
+  char   *mode;         /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(parmsfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  print_unnorm_gauss_parms_set(fp, nc, K, means, covars, range, minval);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_SUBSET2MATRIX
+Read in part of an ascii data file into a matrix.
+Allocates the matrix of floats that will hold the data.
+Useful for data-parallel programs, where each processor reads in part of a
+giant data file.  The starting row must be computed beforehand.
+AG
+*******************************************************************************/
+int read_subset2matrix(infile, startrow, nr, nc, vals)
+ 
+  char   *infile;   /* name of file to read */
+  int    startrow;  /* first row of the file to start reading */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+  int    skipsize;  /* number of elements to skip before starting read */
+ 
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* allocate data matrix */
+  *vals = NR_matrix(1, nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* set the file pointer */
+  skipsize = (startrow-1)*nc;
+  for (i = 1; i <= skipsize; i++)
+    fscanf(fp, "%*g ");
+ 
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+        fscanf(fp, "%g ", (float*) &(*vals)[i][j]);
+    }
+  }
+ 
+  fclose(fp);
+  return (UT_OK);
+}
+ 
+ 
+/*******************************************************************************
+READ_SUBSET2DMATRIX
+Read in part of an ascii data file into a matrix.
+Allocates the matrix of floats that will hold the data.
+Useful for data-parallel programs, where each processor reads in part of a
+giant data file.  The starting row must be computed beforehand.
+AG
+*******************************************************************************/
+int read_subset2dmatrix(infile, startrow, nr, nc, vals)
+ 
+  char   *infile;   /* name of file to read */
+  int    startrow;  /* first row of the file to start reading */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  double  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+  double doubleval;
+  int    skipsize;  /* number of elements to skip before starting read */
+ 
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* allocate data matrix */
+  *vals = NR_dmatrix(1, nr, 1, nc);
+  if (*vals == (double**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* set the file pointer */
+  skipsize = (startrow-1)*nc;
+  for (i = 1; i <= skipsize; i++)
+    fscanf(fp, "%*g ");
+ 
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%lg ", &doubleval);
+      (*vals)[i][j] = doubleval;
+    }
+  }
+ 
+  fclose(fp);
+  return (UT_OK);
+}
+ 
+ 
+/*******************************************************************************
+READ_BIN_SUBSET2MATRIX
+Read in part of a binary data file (floats) into a matrix.
+Allocates the matrix of floats that will hold the data.
+Useful for data-parallel programs, where each processor reads in part of a
+giant data file.  The starting row must be computed beforehand.
+AG
+*******************************************************************************/
+int read_bin_subset2matrix(infile, startrow, nr, nc, vals)
+ 
+  char   *infile;   /* name of file to read */
+  int    startrow;  /* first row of the file to start reading */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i;
+ 
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* allocate data matrix */
+  *vals = NR_matrix(1, nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* set the file pointer */
+  fseek(fp,(startrow-1)*nc*sizeof(float),SEEK_SET);
+ 
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    fread((float*) &(*vals)[i][1],sizeof(float),nc,fp);
+  }
+ 
+  fclose(fp);
+  return (UT_OK);
+}
+ 
+
+/*******************************************************************************
+READ_BIN_SUBSET2DMATRIX
+Read in part of a binary data file (floats) into a matrix.
+Allocates the matrix of floats that will hold the data.
+Useful for data-parallel programs, where each processor reads in part of a
+giant data file.  The starting row must be computed beforehand.
+AG
+*******************************************************************************/
+int read_bin_subset2dmatrix(infile, startrow, nr, nc, vals)
+ 
+  char   *infile;   /* name of file to read */
+  int    startrow;  /* first row of the file to start reading */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  double  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i;
+ 
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* allocate data matrix */
+  *vals = NR_dmatrix(1, nr, 1, nc);
+  if (*vals == (double**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* set the file pointer */
+  fseek(fp,(startrow-1)*nc*sizeof(double),SEEK_SET);
+ 
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    fread((double*) &(*vals)[i][1],sizeof(double),nc,fp);
+  }
+ 
+  fclose(fp);
+  return (UT_OK);
+}
+ 
+
+/*******************************************************************************
+READ_MATRIX_TRANSPOSE
+Read in ascii file containing a matrix, into a form where the first (fast) 
+index accesses the columns of the original data.  One way to think of it is
+reading in the matrix 'sideways'.
+Allocates the matrix of floats that will hold the data.
+AG
+*******************************************************************************/
+int read_matrix_transpose(infile, nr, nc, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vals = NR_matrix(1, nc, 1, nr);  /* instead of NR_matrix(1, nr, 1, nc) */
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%g ", (float*) &(*vals)[j][i]);
+    }
+  }
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+/*******************************************************************************
+WRITE_MATRIX_TRANSPOSE
+Write out ascii file containing a matrix, into a transposed form, i.e the rows
+become the columns and vice versa.  One way to think of it is writing out the 
+matrix 'sideways'.
+AG
+*******************************************************************************/
+int write_matrix_transpose(char *outfile, int nr, int nc, float **mat,
+                           char *mode)
+
+{
+  FILE    *fp;
+  int     i,j;
+
+  /* open file in the specified mode */
+  fp = fopen_return_if_fail(outfile, mode, UT_ERROR);
+
+  /* print matrix contents to file */
+  for (j = 1;j <= nc;j++)
+  {    
+    for (i = 1; i <= nr; i++) 
+      fprintf(fp, "%g ", mat[i][j]);
+    fprintf(fp, "\n");
+  }
+
+  fclose_return_if_fail(fp, UT_ERROR);
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+READ_LANDSAT
+Read in file containing a LandSat image, which is in binary form (chars).
+Note that each pixel is one byte (char), and it consists of nr x nc images, in
+scan-line order, nb of them, one after the other.
+It will be stored in a matrix such that each image becomes a single column
+having all its nr x nc pixels strung out.
+Allocates the matrix that will hold the data.
+AG
+*******************************************************************************/
+int read_landsat(infile, nr, nc, nb, vals)
+
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of pixel rows in each image */
+  int    nc;        /* number of pixel columns in each image */
+  int    nb;        /* number of bands, or images */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i,j;
+  unsigned char   *tempcol;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix -
+     each column corresponds to one of the images, one for each band;
+     it will consist of the rows all strung together into one vertical string */
+  *vals = NR_matrix(1, nr*nc, 1, nb);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate vector that will hold each image as it is read in */
+  tempcol = NR_cvector(1, nr*nc);
+  if (tempcol == (unsigned char*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into temporary column, in binary format;
+     then copy to matrix of floats */
+  for (i = 1; i <= nb; i++) {
+    /* more efficient to read in whole block... */
+    fread( (unsigned char*) tempcol, sizeof(char), nr*nc, fp );  
+
+    for (j = 1; j <= nr*nc; j++) {
+      (*vals)[j][i] = (float) *(tempcol+j);  /* convert to float */
+    }
+  }
+
+  /* clean up */
+  NR_free_cvector(tempcol, 1, nr*nc);
+  fclose(fp);
+
+  return (UT_OK);
+}
+
+/*******************************************************************************
+SKIP_HEADER
+Move the file pointer forward in a file to skip the header
+*******************************************************************************/
+int skip_header(FILE *fp, char *file_type)
+{
+    char buf[64]; /* The number 64 is arbitrary */
+    int  len;
+    int  skip;
+ 
+    fseek( fp, 0, SEEK_SET );  /* Make sure that the file pointer is at
+                                   the beginning of the file */
+ 
+    if (!strcmp( file_type, "none" )) /* The file has no header */
+      skip = 0;
+    else if (!strcmp( file_type, "vicar" )) { /* VICAR format */
+ 
+      len = strlen( VIC_HEADER_LABEL );
+      assert( sizeof( buf ) > len + 2 );
+ 
+      fread( buf, 1, sizeof( buf ), fp );
+ 
+      if( strncmp( buf, VIC_HEADER_LABEL, len ) != 0 ) /* not a VICAR file */
+        return( 0 );
+      else {
+        buf[sizeof( buf ) - 1] = 0; /* Terminate the buffer string */
+        skip = atoi( buf + len ); /* Parse the buffer string */
+      }
+    }
+ 
+    fseek( fp, skip, SEEK_SET );
+ 
+    return( UT_OK );
+}
+
+/*******************************************************************************
+READ_VICAR
+Read in an image in vicar format to a matrix of unsigned characters.
+*******************************************************************************/
+int read_vicar( char *infile, int nr, int nc, unsigned char ***vals )
+{
+    FILE   *fp;
+    int    i;
+   
+    /* open file for reading */
+    fp = fopen(infile, "r");
+    if (fp == (FILE*) NULL) {
+      printf("Error in trying to open a file.\n");
+      return (UT_ERROR);
+    }
+   
+    /* allocate data matrix */
+    *vals = NR_cmatrix(1, nr, 1, nc);
+    if (*vals == (unsigned char**)NULL) {
+      printf("Error in memory allocation.\n");
+      return (UT_ERROR);
+    }
+   
+    /* skip the vicar file header */
+    skip_header( fp, "vicar" );
+   
+    /* read in the data */
+    for (i = 1; i <= nr; i++) {
+      fread( (unsigned char *) &((*vals)[i][1]), sizeof(unsigned char), nc, fp );
+    }
+ 
+    fclose(fp);
+ 
+    return( UT_OK );
+}
+
+@
+
+
+1.30
+log
+@added double precision sets of matrices functions
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.29 1998/07/24 16:14:01 granat Exp granat $";
+d34 3
+d2536 1
+a2536 1
+        fscanf(fp, "%g ", (double*) &(curr_mat[i][j]));
+d2602 1
+a2602 1
+                                 int num_rows, int num_cols, float *****vals)
+d2607 1
+a2607 1
+  float  ***curr_set, **curr_mat;
+d2632 1
+a2632 1
+          fscanf(fp, "%g", (double*) &(curr_mat[i][j]));
+d2825 1
+a2825 1
+int write_set_of_sets_of_dmatrices(char *out_file, float ****dmat_set_set, 
+d2887 1
+a2887 1
+    fscanf(fp, "%g ", &(*mean)[j]);
+d2893 1
+a2893 1
+      fscanf(fp, "%g ", &(*cov)[j][k]);
+@
+
+
+1.29
+log
+@fixed bugs in matrix input functions relating to types
+eliminated some unused index variables
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.28 1998/05/07 23:51:07 granat Exp granat $";
+d34 4
+d2499 43
+d2590 49
+d2662 23
+d2708 24
+d2759 27
+d2814 1
+d2816 30
+d2855 1
+a2855 1
+  float  **mean, ***cov;  /* ptrs to mean vector and covariance matrix to be 
+d2869 2
+a2870 2
+  *mean = NR_vector(1, nc);
+  if (*mean == (float*)NULL) {
+d2876 2
+a2877 2
+  *cov = NR_matrix(1, nc, 1, nc);
+  if (*cov == (float**)NULL) {
+d2907 1
+a2907 1
+  float  *mean, **cov;  /* mean vector and covariance matrix to write */
+d2910 1
+a2910 1
+  print_row(stream, nc, mean);
+d2913 1
+a2913 1
+  print_matrix(stream, nc, nc, cov);
+d2928 2
+a2929 2
+  float  **means;       /* matrix containing K mean vectors to write */
+  float  ***covars;     /* matrix containing K covariance matrices to write */
+d2939 1
+a2939 1
+    print_row(stream, nc, means[k]);
+d2943 1
+a2943 1
+    print_matrix(stream, nc, nc, covars[k]);
+d2963 4
+a2966 4
+  float  **means;       /* matrix containing K mean vectors to write */
+  float  ***covars;     /* matrix containing K covariance matrices to write */
+  float  *range;        /* range of values for each attribute */
+  float  *minval;       /* minimum value in each attribute */
+d2976 1
+a2976 1
+    print_unnorm_row(stream, nc, means[k], range, minval);
+d2980 1
+a2980 1
+    print_unnorm_cov_matrix(stream, nc, covars[k], range);
+d2996 1
+a2996 1
+  float  *mean, **cov;  /* mean vector and covariance matrix to write */
+d3025 2
+a3026 2
+  float  **means;       /* matrix containing K mean vectors to write */
+  float  ***covars;     /* matrix containing K covariance matrices to write */
+d3057 4
+a3060 4
+  float  **means;       /* matrix containing K mean vectors to write */
+  float  ***covars;     /* matrix containing K covariance matrices to write */
+  float  *range;        /* range of values for each attribute */
+  float  *minval;       /* minimum value in each attribute */
+d3131 53
+d3194 1
+a3194 1
+  int    startrow;  /* first row of the file to start reading
+d3224 46
+@
+
+
+1.28
+log
+@made changes to include new da_util module
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.27 1998/05/01 20:50:20 granat Exp granat $";
+d34 3
+d275 1
+a275 1
+  double temp;
+d285 4
+a288 3
+    for (j = 1; j <= nc; j++)
+      /*      fscanf(fp, "%g ", (double*) &((*vals)[i][j])); */
+      fscanf(fp, "%lg ", &temp); (*vals)[i][j] = temp;
+d352 1
+a352 1
+      fscanf(fp, "%g ", (double*) &(*vals)[i][j]); 
+d447 1
+a447 1
+      fprintf(stream, "%lg ", mat[i][j]);
+d1247 1
+d1265 2
+a1266 1
+    fscanf(fp, "%d ", (double*) &(*vec)[i]);
+d1305 1
+d1323 2
+a1324 1
+    fscanf(fp, "%d ", (unsigned char*) &(*vec)[i]);
+a2827 1
+  int k;
+a2861 1
+  int k;
+d2946 1
+a2946 1
+  int    i, j;
+d3153 1
+a3153 1
+    int    i, j;
+@
+
+
+1.27
+log
+@added functions to read/write unsigned char matrices into/from matrices
+of doubles and floats
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.26 1997/10/21 14:52:24 granat Exp granat $";
+d34 4
+d151 1
+a151 1
+#include "da_linalg.h"
+@
+
+
+1.26
+log
+@added some functions to read/write vectors of different data types
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.25 1997/09/04 20:21:39 granat Exp granat $";
+d34 3
+d178 2
+a179 2
+	for (j = 1; j <= nc; j++)
+	  fscanf(fp, "%g ", (float*) &(*vals)[i][j]); 
+d185 1
+d201 1
+d211 4
+a214 2
+    for (j = 1; j <= nc; j++)
+      fscanf(fp, "%d ", (unsigned char *) &(*vals)[i][j]);
+d288 64
+d364 1
+a364 1
+  for (i=1; i<=nr; i++) 
+d366 1
+a366 1
+	for (j=1;j<=nc;j++)
+d388 1
+a388 1
+  for (i=1; i<=nr; i++)
+d390 1
+a390 1
+    for (j=1;j<=nc;j++)
+d412 1
+a412 1
+  for (i=1; i<=nr; i++)
+d414 1
+a414 1
+    for (j=1;j<=nc;j++)
+d436 1
+a436 1
+  for (i=1; i<=nr; i++)
+d438 1
+a438 1
+    for (j=1;j<=nc;j++)
+d548 96
+d666 1
+a666 1
+  for (i=1; i<=nr; i++) {
+d706 1
+a706 1
+  for (i=1; i<=nr; i++) {
+d746 1
+a746 1
+  for (i=1; i<=nr; i++) {
+d786 1
+a786 1
+  for (i=1; i<=nr; i++) {
+d826 1
+a826 1
+  for (i=1; i<=nr; i++) {
+d836 70
+d928 1
+a928 1
+  for (i=1; i<=nr; i++) {
+d960 1
+a960 1
+  for (i=1; i<=nr; i++) {
+d992 1
+a992 1
+  for (i=1; i<=nr; i++) {
+d1024 1
+a1024 1
+  for (i=1; i<=nr; i++) {
+d1034 80
+d2213 1
+a2213 1
+  for (i=1; i<=nr; i++) {
+d2215 1
+a2215 1
+    for (j=1;j<=nc;j++) {
+d2315 1
+a2315 1
+  for (i=1; i<=dim; i++) 
+d2542 1
+a2542 1
+  for (i=1; i<=num_mats; i++)
+d2567 1
+a2567 1
+  for (i=1; i<=num_sets; i++)
+d2720 1
+a2720 1
+  for (k=1; k<=K; k++)
+d2757 1
+a2757 1
+  for (k=1; k<=K; k++)
+d3026 1
+a3026 1
+  for (j=1;j<=nc;j++)
+d3028 1
+a3028 1
+    for (i=1; i<=nr; i++) 
+d3085 1
+a3085 1
+  for (i=1; i<=nb; i++) {
+d3089 1
+a3089 1
+    for (j=1; j<=nr*nc; j++) {
+d3163 1
+a3163 1
+    for (i=1; i<=nr; i++) {
+@
+
+
+1.25
+log
+@fixed bug in skip_header
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.24 1997/08/07 17:36:52 granat Exp granat $";
+d34 3
+d909 112
+d1107 86
+d1309 116
+d1533 108
+d1731 94
+@
+
+
+1.24
+log
+@fixed bugs from automated scripting of "nr_" convention
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.23 1997/07/31 21:46:14 agray Exp granat $";
+d34 3
+d2278 1
+a2278 1
+    if (strcmp( file_type, "none" )) /* The file has no header */
+d2280 1
+a2280 1
+    else if (strcmp( file_type, "vicar" )) { /* VICAR format */
+@
+
+
+1.23
+log
+@added #include "da_memory.h"
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.22 1997/06/20 22:12:47 granat Exp agray $";
+d34 3
+d182 1
+a182 1
+int read_NR_cmatrix(infile, nr, nc, vals)
+d214 1
+a214 1
+int read_NR_imatrix(infile, nr, nc, vals)
+d246 1
+a246 1
+int read_NR_dmatrix(infile, nr, nc, vals)
+d303 1
+a303 1
+int print_NR_cmatrix(stream, nr, nc, mat)
+d327 1
+a327 1
+int print_NR_imatrix(stream, nr, nc, mat)
+d351 1
+a351 1
+int print_NR_dmatrix(stream, nr, nc, mat)
+d400 1
+a400 1
+int write_NR_cmatrix(outfile, nr, nc, mat, mode)
+d413 1
+a413 1
+  print_NR_cmatrix(fp, nr, nc, mat);
+d425 1
+a425 1
+int write_NR_imatrix(outfile, nr, nc, mat, mode)
+d438 1
+a438 1
+  print_NR_imatrix(fp, nr, nc, mat);
+d450 1
+a450 1
+int write_NR_dmatrix(outfile, nr, nc, mat, mode)
+d463 1
+a463 1
+  print_NR_dmatrix(fp, nr, nc, mat);
+@
+
+
+1.22
+log
+@fixed bugs introduced by auto-editing scripts
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.21 1997/06/02 15:35:42 granat Exp granat $";
+d34 3
+d136 1
+@
+
+
+1.21
+log
+@changed to use new NR naming convention
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.20 1997/04/02 03:05:50 agray Exp granat $";
+d34 3
+d501 1
+a501 1
+int read_bin_NR_cmatrix(infile, nr, nc, vals)
+d541 1
+a541 1
+int read_bin_NR_imatrix(infile, nr, nc, vals)
+d621 1
+a621 1
+int read_bin_NR_dmatrix(infile, nr, nc, vals)
+d692 1
+a692 1
+int write_bin_NR_cmatrix(outfile, nr, nc, mat, mode)
+d724 1
+a724 1
+int write_bin_NR_imatrix(outfile, nr, nc, mat, mode)
+d756 1
+a756 1
+int write_bin_NR_dmatrix(outfile, nr, nc, mat, mode)
+@
+
+
+1.20
+log
+@added assert.h and string.h inclusions.  to fix compile problems introduced by
+assert().
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.19 1997/03/27 23:03:14 granat Exp agray $";
+d34 4
+a125 1
+#include "nrutil.h"
+d172 1
+a172 1
+int read_cmatrix(infile, nr, nc, vals)
+d204 1
+a204 1
+int read_imatrix(infile, nr, nc, vals)
+d236 1
+a236 1
+int read_dmatrix(infile, nr, nc, vals)
+d293 1
+a293 1
+int print_cmatrix(stream, nr, nc, mat)
+d317 1
+a317 1
+int print_imatrix(stream, nr, nc, mat)
+d341 1
+a341 1
+int print_dmatrix(stream, nr, nc, mat)
+d390 1
+a390 1
+int write_cmatrix(outfile, nr, nc, mat, mode)
+d403 1
+a403 1
+  print_cmatrix(fp, nr, nc, mat);
+d415 1
+a415 1
+int write_imatrix(outfile, nr, nc, mat, mode)
+d428 1
+a428 1
+  print_imatrix(fp, nr, nc, mat);
+d440 1
+a440 1
+int write_dmatrix(outfile, nr, nc, mat, mode)
+d453 1
+a453 1
+  print_dmatrix(fp, nr, nc, mat);
+d498 1
+a498 1
+int read_bin_cmatrix(infile, nr, nc, vals)
+d516 1
+a516 1
+  *vals = cmatrix(1, nr, 1, nc);
+d538 1
+a538 1
+int read_bin_imatrix(infile, nr, nc, vals)
+d556 1
+a556 1
+  *vals = imatrix(1, nr, 1, nc);
+d573 40
+d618 1
+a618 1
+int read_bin_dmatrix(infile, nr, nc, vals)
+d636 1
+a636 1
+  *vals = dmatrix(1, nr, 1, nc);
+d689 1
+a689 1
+int write_bin_cmatrix(outfile, nr, nc, mat, mode)
+d721 1
+a721 1
+int write_bin_imatrix(outfile, nr, nc, mat, mode)
+d753 1
+a753 1
+int write_bin_dmatrix(outfile, nr, nc, mat, mode)
+d803 1
+a803 1
+  *vec = vector(1, dim);
+d859 1
+a859 1
+  *vec = ivector(1, dim);
+d1116 1
+a1116 1
+  *vec = vector(1, dim);
+d1170 1
+a1170 1
+  *vec = ivector(1, dim);
+d1323 1
+a1323 1
+  *vals = matrix(1, nr, 1, nc);
+d1330 1
+a1330 1
+  *index = vector(1, nr);
+d1430 1
+a1430 1
+  *vals = vector(1, dim);
+d1437 1
+a1437 1
+  *index = vector(1, dim);
+d1532 1
+a1532 1
+  *vals = matrix(1, *nr, 1, nc);
+d1807 1
+a1807 1
+  *mean = vector(1, nc);
+d1814 1
+a1814 1
+  *cov = matrix(1, nc, 1, nc);
+d2047 1
+a2047 1
+  *vals = matrix(1, nr, 1, nc);
+d2097 1
+a2097 1
+  *vals = matrix(1, nr, 1, nc);
+d2142 1
+a2142 1
+  *vals = matrix(1, nc, 1, nr);  /* instead of matrix(1, nr, 1, nc) */
+d2221 1
+a2221 1
+  *vals = matrix(1, nr*nc, 1, nb);
+d2228 1
+a2228 1
+  tempcol = cvector(1, nr*nc);
+d2246 1
+a2246 1
+  free_cvector(tempcol, 1, nr*nc);
+d2304 1
+a2304 1
+    *vals = cmatrix(1, nr, 1, nc);
+@
+
+
+1.19
+log
+@added functions skip_header() and read_vicar()
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.18 1997/01/29 21:54:01 agray Exp granat $";
+d34 3
+d110 1
+d112 1
+@
+
+
+1.18
+log
+@new formatting, cleaning up debugging output using ut_output,
+added write_matrix_transpose().
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_io.c,v 1.17 1996/10/31 02:13:49 agray Exp agray $";
+d34 4
+d2202 71
+@
+
+
+1.17
+log
+@renamed from "da_data" to "da_io";
+changed .h and .c formats throughout library;
+some reorganizing between modules;
+added some functions from HMM project.
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_data.c,v 1.16 1996/09/25 00:50:14 granat Exp agray $";
+d33 7
+a39 1
+ * $Log: da_data.c,v $
+d97 1
+d107 4
+a110 1
+#include "ut_string.h"
+d116 3
+d140 1
+a140 5
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d143 1
+a143 5
+  *vals = matrix(1, nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+d146 3
+a148 5
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%g ", (float*) &(*vals)[i][j]);
+    }
+  }
+d150 1
+a150 1
+  fclose(fp);
+a153 1
+
+d171 1
+a171 5
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d174 1
+a174 5
+  *vals = cmatrix(1, nr, 1, nc);
+  if (*vals == (unsigned char **)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+d177 2
+a178 2
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+a179 2
+    }
+  }
+d181 1
+a181 1
+  fclose(fp);
+d203 1
+a203 5
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d206 1
+a206 5
+  *vals = imatrix(1, nr, 1, nc);
+  if (*vals == (int**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+d209 2
+a210 2
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+a211 2
+    }
+  }
+d213 1
+a213 1
+  fclose(fp);
+d236 1
+a236 5
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d239 1
+a239 5
+  *vals = dmatrix(1, nr, 1, nc);
+  if (*vals == (double**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+d242 2
+a243 2
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+d245 1
+a245 4
+      fscanf(fp, "%lg ", &temp);
+      (*vals)[i][j] = temp;
+    }
+  }
+d247 1
+a247 1
+  fclose(fp);
+d265 3
+a267 2
+  for (i=1; i<=nr; i++) {
+    for (j=1;j<=nc;j++) {
+a268 1
+    }
+d289 3
+a291 2
+  for (i=1; i<=nr; i++) {
+    for (j=1;j<=nc;j++) {
+a292 1
+    }
+d313 3
+a315 2
+  for (i=1; i<=nr; i++) {
+    for (j=1;j<=nc;j++) {
+a316 1
+    }
+d337 3
+a339 2
+  for (i=1; i<=nr; i++) {
+    for (j=1;j<=nc;j++) {
+a340 1
+    }
+d363 1
+a363 5
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d368 1
+a368 1
+  fclose(fp);
+d388 1
+a388 5
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d393 1
+a393 1
+  fclose(fp);
+d413 1
+a413 5
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d418 1
+a418 1
+  fclose(fp);
+d438 1
+a438 5
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d443 1
+a443 1
+  fclose(fp);
+d465 1
+a465 5
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d468 1
+a468 5
+  *vals = matrix(1, nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+d475 1
+a475 1
+  fclose(fp);
+d2106 30
+@
+
+
+1.16
+log
+@Changed print_cmatrix and read_matrix to use integer conversion becausened character conversion is unavailable.
+@
+text
+@d2 2
+d5 2
+a6 7
+  Title:     da_data
+  Author:    Alexander Gray
+  Function:  Data analysis routines, Numerical Recipes style.
+             This file contains data i/o routines.
+  Reference: -
+  How used:  First use - ~/cooltools/pca/landsat-test
+  Notes:     - 
+d8 18
+d28 1
+a28 1
+static char rcsid[] = "$Id: da_data.c,v 1.15 1996/09/18 23:40:11 agray Exp granat $";
+d30 2
+d34 3
+d93 1
+d97 2
+d101 2
+d105 4
+a108 1
+#include "da_data.h"
+d111 4
+a114 3
+ READ_MATRIX
+ Read in ascii file containing a matrix.
+ Allocates the matrix of floats that will hold the data.
+d153 4
+a156 3
+ READ_CMATRIX
+ Read in ascii file containing a matrix.
+ Allocates the matrix of unsigned chars that will hold the data.
+d195 4
+a198 3
+ READ_IMATRIX
+ Read in ascii file containing a matrix.
+ Allocates the matrix of ints that will hold the data.
+d237 4
+a240 3
+ READ_DMATRIX
+ Read in ascii file containing a matrix.
+ Allocates the matrix of doubles that will hold the data.
+d282 3
+a284 2
+ PRINT_MATRIX
+ Print the contents of a matrix of floats.
+d306 3
+a308 2
+ PRINT_CMATRIX
+ Print the contents of a matrix of unsigned chars.
+d330 3
+a332 2
+ PRINT_IMATRIX
+ Print the contents of a matrix of ints.
+d354 3
+a356 2
+ PRINT_DMATRIX
+ Print the contents of a matrix of doubles.
+d378 3
+a380 2
+ WRITE_MATRIX
+ Write a matrix of floats to a file.
+d407 3
+a409 2
+ WRITE_CMATRIX
+ Write a matrix of unsigned chars to a file.
+d436 3
+a438 2
+ WRITE_IMATRIX
+ Write a matrix of ints to a file.
+d465 3
+a467 2
+ WRITE_DMATRIX
+ Write a matrix of doubles to a file.
+d494 4
+a497 3
+ READ_BIN_MATRIX
+ Read in binary file of floats containing a matrix.
+ Allocates the matrix of floats that will hold the data.
+d534 4
+a537 3
+ READ_BIN_CMATRIX
+ Read in binary file of unsigned chars containing a matrix.
+ Allocates the matrix of unsigned chars that will hold the data.
+d574 4
+a577 3
+ READ_BIN_IMATRIX
+ Read in binary file of ints containing a matrix.
+ Allocates the matrix of ints that will hold the data.
+d614 4
+a617 3
+ READ_BIN_DMATRIX
+ Read in binary file of doubles containing a matrix.
+ Allocates the matrix of doubles that will hold the data.
+d654 3
+a656 2
+ WRITE_BIN_MATRIX
+ Write a matrix to a file, in binary form (floats).
+d686 3
+a688 2
+ WRITE_BIN_CMATRIX
+ Write a matrix to a file, in binary form (unsigned chars).
+d718 3
+a720 2
+ WRITE_BIN_IMATRIX
+ Write a matrix to a file, in binary form (ints).
+d750 3
+a752 2
+ WRITE_BIN_DMATRIX
+ Write a matrix to a file, in binary form (doubles).
+d782 4
+a785 3
+ READ_ROW
+ Read in ascii file containing a vector in row form.
+ Allocates the vector of floats that will hold the data.
+d821 5
+a825 4
+ READ_COL
+ Read in ascii file containing a vector in column form.
+ Allocates the vector of floats that will hold the data.
+ Implemented exactly the same as read_row().
+d838 4
+a841 3
+ READ_IROW
+ Read in ascii file containing a vector of integers in row form.
+ Allocates the vector of integers that will hold the data.
+d877 5
+a881 4
+ READ_ICOL
+ Read in ascii file containing a vector of integers in column form.
+ Allocates the vector of integers that will hold the data.
+ Implemented exactly the same as read_irow().
+d894 3
+a896 2
+ PRINT_ROW
+ Print the contents of a vector, in row form.
+d916 3
+a918 2
+ PRINT_COL
+ Print the contents of a vector, in column form.
+d937 3
+a939 2
+ PRINT_IROW
+ Print the contents of an integer vector, in row form.
+d959 3
+a961 2
+ PRINT_ICOL
+ Print the contents of an integer vector, in column form.
+d980 3
+a982 2
+ WRITE_ROW
+ Write a vector to a file, in row form.
+d1009 3
+a1011 2
+ WRITE_COL
+ Write a vector to a file, in column form.
+d1038 3
+a1040 2
+ WRITE_IROW
+ Write an integer vector to a file, in row form.
+d1067 3
+a1069 2
+ WRITE_ICOL
+ Write an integer vector to a file, in column form.
+d1096 4
+a1099 3
+ READ_BIN_ROW
+ Read in binary file of floats containing a vector in row form.
+ Allocates the vector of floats that will hold the data.
+d1132 6
+a1137 5
+ READ_BIN_COL
+ Read in binary file of floats containing a vector in column form.
+ Allocates the vector of floats that will hold the data.
+ Implemented exactly the same as read_bin_row() since there is no
+ distinction in binary format.
+d1150 4
+a1153 3
+ READ_BIN_IROW
+ Read in binary file of integers containing a vector in row form.
+ Allocates the vector of integers that will hold the data.
+d1186 6
+a1191 5
+ READ_BIN_ICOL
+ Read in binary file of integers containing a vector in column form.
+ Allocates the vector of integers that will hold the data.
+ Implemented exactly the same as read_bin_irow() since there is no
+ distinction in binary format.
+d1204 3
+a1206 2
+ WRITE_BIN_ROW
+ Write a row vector to a file, in binary form (floats).
+d1233 5
+a1237 4
+ WRITE_BIN_COL
+ Write a column vector to a file, in binary form (floats).
+ Implemented exactly the same as read_bin_row() since there is no
+ distinction in binary format.
+d1251 3
+a1253 2
+ WRITE_BIN_IROW
+ Write a row vector to a file, in binary form (integers).
+d1280 5
+a1284 4
+ WRITE_BIN_ICOL
+ Write a column vector to a file, in binary form (integers).
+ Implemented exactly the same as read_bin_irow() since there is no
+ distinction in binary format.
+d1298 6
+a1303 5
+ READ_INDEXED_MATRIX
+ Read in ascii file containing a matrix having the first column as an index
+ column.
+ Allocates a matrix of floats that will hold the data and a vector of floats
+ which will hold the indices.
+d1351 4
+a1354 3
+ PRINT_INDEXED_MATRIX
+ Print the contents of an indexed matrix, i.e. a matrix of floats and a 
+ corresponding index vector of floats.
+d1378 4
+a1381 3
+ WRITE_INDEXED_MATRIX
+ Write the contents of an indexed matrix, i.e. a matrix of floats and a 
+ corresponding index vector of floats, to a file.
+d1409 102
+a1510 5
+ READ_LC_MATRIX
+ Read in ascii file containing the rows of data.
+ Assumes that the file is in the standard dataset format, with line count at 
+ top, separated by spaces.
+ Allocates the matrix of floats that will hold the data.
+d1552 4
+a1555 3
+ WRITE_LC_MATRIX
+ Write a matrix of floats to a file in the standard data file format, with 
+ line count at top of file.
+d1592 435
+a2026 5
+ READ_SUBSET2MATRIX
+ Read in part of an ascii data file into a matrix.
+ Allocates the matrix of floats that will hold the data.
+ Useful for data-parallel programs, where each processor reads in part of a
+ giant data file.  The starting row must be computed beforehand.
+d2072 6
+a2077 5
+ READ_BIN_SUBSET2MATRIX
+ Read in part of a binary data file (floats) into a matrix.
+ Allocates the matrix of floats that will hold the data.
+ Useful for data-parallel programs, where each processor reads in part of a
+ giant data file.  The starting row must be computed beforehand.
+d2118 6
+a2123 7
+ READ_LANDSAT
+ Read in file containing a LandSat image, which is in binary form (chars).
+ Note that each pixel is one byte (char), and it consists of nr x nc images, in
+ scan-line order, nb of them, one after the other.
+ It will be stored in a matrix such that each image becomes a single column
+ having all its nr x nc pixels strung out.
+ Allocates the matrix that will hold the data.
+d2125 1
+a2125 1
+int read_landsat(infile, nr, nc, nb, vals)
+d2128 2
+a2129 3
+  int    nr;        /* number of pixel rows in each image */
+  int    nc;        /* number of pixel columns in each image */
+  int    nb;        /* number of bands, or images */
+d2133 1
+a2133 2
+  int    i,j;
+  unsigned char   *tempcol;
+d2142 2
+a2143 4
+  /* allocate data matrix -
+     each column corresponds to one of the images, one for each band;
+     it will consist of the rows all strung together into one vertical string */
+  *vals = matrix(1, nr*nc, 1, nb);
+d2149 4
+a2152 15
+  /* allocate vector that will hold each image as it is read in */
+  tempcol = cvector(1, nr*nc);
+  if (tempcol == (unsigned char*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into temporary column, in binary format;
+     then copy to matrix of floats */
+  for (i=1; i<=nb; i++) {
+    /* more efficient to read in whole block... */
+    fread( (unsigned char*) tempcol, sizeof(char), nr*nc, fp );  
+
+    for (j=1; j<=nr*nc; j++) {
+      (*vals)[j][i] = (float) *(tempcol+j);  /* convert to float */
+a2155 2
+  /* clean up */
+  free_cvector(tempcol, 1, nr*nc);
+a2156 1
+
+d2161 8
+a2168 5
+ READ_MATRIX_TRANSPOSE
+ Read in ascii file containing a matrix, into a form where the first (fast) 
+ index accesses the columns of the original data.  One way to think of it is
+ reading in the matrix 'sideways'.
+ Allocates the matrix of floats that will hold the data.
+d2170 1
+a2170 1
+int read_matrix_transpose(infile, nr, nc, vals)
+d2173 3
+a2175 2
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+d2179 2
+a2180 1
+  int    i, j;
+d2189 4
+a2192 2
+  /* allocate data matrix */
+  *vals = matrix(1, nc, 1, nr);  /* instead of matrix(1, nr, 1, nc) */
+d2198 5
+a2202 5
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%g ", (float*) &(*vals)[j][i]);
+    }
+d2205 5
+a2209 3
+  fclose(fp);
+  return (UT_OK);
+}
+d2211 3
+a2213 18
+/*******************************************************************************
+ WRITE_COMMENT
+ Write a string to a file; usually used for adding comments to an output file.
+*******************************************************************************/
+int write_comment(outfile, string, mode)
+
+  char   *outfile;      /* name of file to write to */
+  char   *string;       /* string to write */
+  char   *mode;         /* file i/o mode to use: e.g. "w" or "a" */
+{
+  int k;
+  FILE *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+d2216 3
+a2218 2
+  /* print the string comment */
+  fprintf(fp, string);
+a2219 1
+  fclose(fp);
+@
+
+
+1.15
+log
+@cosmetic changes to comments.
+@
+text
+@d13 1
+a13 1
+static char rcsid[] = "$Id: da_data.c,v 1.14 1996/09/18 16:33:41 granat Exp agray $";
+d17 3
+d155 1
+a155 1
+      fscanf(fp, "%c ", (unsigned char *) &(*vals)[i][j]);
+d286 1
+a286 1
+      fprintf(stream, "%c ", mat[i][j]);
+@
+
+
+1.14
+log
+@Fixed "char" matrix functions so that they use the "unsigned char" type
+@
+text
+@d13 1
+a13 1
+static char rcsid[] = "$Id: da_data.c,v 1.13 1996/09/06 22:16:37 agray Exp granat $";
+d17 3
+a82 2
+ Similar to read_data(), except that the number of data is not at the top of 
+ the file.
+a123 1
+ Similar to read_matrix().
+a164 1
+ Similar to read_matrix().
+a205 1
+ Similar to read_matrix().
+a453 1
+ Similar to read_matrix().
+a492 1
+ Similar to read_bin_matrix().
+a531 1
+ Similar to read_bin_matrix().
+a570 1
+ Similar to read_bin_matrix().
+a639 1
+ Similar to write_bin_matrix().
+a670 1
+ Similar to write_bin_matrix().
+a701 1
+ Similar to write_bin_matrix().
+a1521 1
+ Similar to read_bin_matrix().
+a1581 2
+ Similar to read_data(), except that the number of data is not at the top of 
+ the file.
+@
+
+
+1.13
+log
+@fixed read_irow().
+@
+text
+@d13 1
+a13 1
+static char rcsid[] = "$Id: da_data.c,v 1.12 1996/08/28 20:31:19 agray Exp agray $";
+d17 3
+d122 1
+a122 1
+ Allocates the matrix of chars that will hold the data.
+d127 4
+a130 4
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  char   ***vals;   /* pointer to matrix to be filled in */
+d144 1
+a144 1
+  if (*vals == (char**)NULL) {
+d152 1
+a152 1
+      fscanf(fp, "%c ", (char*) &(*vals)[i][j]);
+d273 1
+a273 1
+ Print the contents of a matrix of chars.
+d277 3
+a279 3
+  FILE*  stream;  /* stream to print to, e.g. stdout, file pointer */
+  int    nr, nc;  /* number of rows, columns of input matrix */
+  char   **mat;   /* matrix to be printed */
+d370 1
+a370 1
+ Write a matrix of chars to a file.
+d374 4
+a377 4
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  char   **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+d494 2
+a495 2
+ Read in binary file of chars containing a matrix.
+ Allocates the matrix of chars that will hold the data.
+d500 4
+a503 4
+  char   *infile;   /* name of file to read */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  char   ***vals;   /* pointer to matrix to be filled in */
+d517 1
+a517 1
+  if (*vals == (char**)NULL) {
+d524 1
+a524 1
+    fread( (char*) &((*vals)[i][1]), sizeof(char), nc, fp );
+d645 1
+a645 1
+ Write a matrix to a file, in binary form (chars).
+d650 4
+a653 4
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  char   **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+d667 1
+a667 1
+    fwrite( (char*) &mat[i][1], sizeof(char), nc, fp );
+@
+
+
+1.12
+log
+@fixed some bugs, removed duplicated copy of write_matrix().
+@
+text
+@d13 1
+a13 1
+static char rcsid[] = "$Id: da_data.c,v 1.11 1996/08/28 19:52:30 agray Exp agray $";
+d17 3
+d820 1
+a820 1
+    fscanf(fp, "%g ", (int*) &(*vec)[i]);
+@
+
+
+1.11
+log
+@changed read/write_data() to read/write_lc_matrix(); added read/write/print_
+indexed_matrix(); added write_matrix().
+@
+text
+@d13 1
+a13 1
+static char rcsid[] = "$Id: da_data.c,v 1.10 1996/07/17 20:42:36 agray Exp agray $";
+d17 4
+a951 27
+ WRITE_MATRIX
+ Write a matrix of floats to a file.
+*******************************************************************************/
+int write_matrix(outfile, nr, nc, mat, mode)
+
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  float  **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file */
+  print_matrix(fp, nr, nc, mat);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+/*******************************************************************************
+d1239 2
+a1240 2
+  int    *nr;       /* ptr to number of rows in data, to be filled in */
+  int    nc;        /* number of columns in data, excluding index column */
+d1262 1
+a1262 1
+  *index = matrix(1, nr);
+@
+
+
+1.10
+log
+@cosmetic.
+@
+text
+@d13 1
+a13 1
+static char rcsid[] = "$Id: da_data.c,v 1.9 1996/07/15 18:16:52 agray Exp agray $";
+d17 3
+d948 27
+d1253 109
+a1361 1
+ READ_DATA
+d1367 2
+a1368 1
+int read_data(infile, nr, nc, vals)
+d1407 1
+a1407 1
+ WRITE_DATA
+d1409 1
+a1409 1
+ number of lines at top of file.
+d1411 1
+a1411 1
+int write_data(outfile, nr, nc, mat)
+@
+
+
+1.9
+log
+@added  write/read_bin_row/col/irow/icol();
+renamed and tweaked read_bin_subset2matrix().
+@
+text
+@a8 3
+
+  Compile:   make
+  Example:   -
+d13 1
+a13 1
+static char rcsid[] = "$Id: da_data.c,v 1.8 1996/07/15 17:25:02 agray Exp agray $";
+d17 4
+@
+
+
+1.8
+log
+@rearranged order of functions; added read_row/col/irow/icol().
+@
+text
+@d16 1
+a16 1
+static char rcsid[] = "$Id: da_data.c,v 1.7 1996/07/13 01:06:49 agray Exp agray $";
+d20 3
+a600 3
+ Note that the NR convention of accessing matrices starting at 1 is implemented
+ by the matrix() allocation function by simply allocating the 0th element also,
+ which is never accessed.
+a631 3
+ Note that the NR convention of accessing matrices starting at 1 is implemented
+ by the matrix() allocation function by simply allocating the 0th element also,
+ which is never accessed.
+a663 3
+ Note that the NR convention of accessing matrices starting at 1 is implemented
+ by the matrix() allocation function by simply allocating the 0th element also,
+ which is never accessed.
+a695 3
+ Note that the NR convention of accessing matrices starting at 1 is implemented
+ by the matrix() allocation function by simply allocating the 0th element also,
+ which is never accessed.
+d733 1
+a733 1
+  int    dim;       /* number of columns in vector */
+d746 1
+a746 1
+  /* allocate data matrix */
+d753 1
+a753 1
+  /* read from file into the matrix */
+d767 1
+a767 1
+ Currently implemented exactly the same as read_row().
+d772 1
+a772 1
+  int    dim;       /* number of columns in vector */
+d775 1
+a775 24
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vec = vector(1, dim);
+  if (*vec == (float*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (i = 1; i <= dim; i++) {
+    fscanf(fp, "%g ", (float*) &(*vec)[i]);
+  }
+
+  fclose(fp);
+  return (UT_OK);
+d787 1
+a787 1
+  int    dim;       /* number of columns in vector */
+d800 1
+a800 1
+  /* allocate data matrix */
+d807 1
+a807 1
+  /* read from file into the matrix */
+d821 1
+d826 1
+a826 1
+  int    dim;       /* number of columns in vector */
+d829 1
+a829 24
+  FILE   *fp;
+  int    i;
+
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate data matrix */
+  *vec = ivector(1, dim);
+  if (*vec == (int*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (i = 1; i <= dim; i++) {
+    fscanf(fp, "%g ", (int*) &(*vec)[i]);
+  }
+
+  fclose(fp);
+  return (UT_OK);
+d935 1
+a935 1
+  /* print matrix contents to file */
+d963 1
+a963 1
+  /* print matrix contents to file */
+d991 1
+a991 1
+  /* print matrix contents to file */
+d1019 1
+a1019 1
+  /* print matrix contents to file */
+d1028 194
+d1307 1
+a1307 1
+ Read in ascii file containing a matrix.
+d1309 2
+a1310 2
+ Similar to read_data(), except that the number of data is not at the top of
+ the file.
+a1338 1
+ 
+d1356 2
+a1357 2
+ READ_BINARY2MATRIX
+ Read in some part of a binary file containing a matrix.
+d1359 2
+a1360 2
+ Similar to read_data(), except that the number of data is not at the top of
+ the file.
+d1362 1
+a1362 1
+int read_binary2matrix(infile, startrow, nr, nc, vals)
+d1392 1
+a1392 3
+    for (j = 1; j <= nc; j++) {
+      fread((float*) &(*vals)[i][j],sizeof(float),1,fp);
+    }
+@
+
+
+1.7
+log
+@moved in print/write_row/col/irow/icol() from da_linalg module
+@
+text
+@d16 1
+a16 1
+static char rcsid[] = "$Id: da_data.c,v 1.6 1996/07/11 17:59:00 agray Exp agray $";
+d20 3
+a102 98
+ READ_SUBSET2MATRIX
+ Read in ascii file containing a matrix.
+ Allocates the matrix of floats that will hold the data.
+ Similar to read_data(), except that the number of data is not at the top of
+ the file.
+*******************************************************************************/
+int read_subset2matrix(infile, startrow, nr, nc, vals)
+ 
+  char   *infile;   /* name of file to read */
+  int    startrow;  /* first row of the file to start reading */
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+  int    skipsize;  /* number of elements to skip before starting read */
+ 
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* allocate data matrix */
+  *vals = matrix(1, nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* set the file pointer */
+ 
+  skipsize = (startrow-1)*nc;
+  for (i = 1; i <= skipsize; i++)
+    fscanf(fp, "%*g ");
+ 
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+        fscanf(fp, "%g ", (float*) &(*vals)[i][j]);
+    }
+  }
+ 
+  fclose(fp);
+  return (UT_OK);
+}
+ 
+ 
+/*******************************************************************************
+ READ_BINARY2MATRIX
+ Read in some part of a binary file containing a matrix.
+ Allocates the matrix of floats that will hold the data.
+ Similar to read_data(), except that the number of data is not at the top of
+ the file.
+*******************************************************************************/
+int read_binary2matrix(infile, startrow, nr, nc, vals)
+ 
+  char   *infile;   /* name of file to read */
+  int    startrow;  /* first row of the file to start reading
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+{
+  FILE   *fp;
+  int    i, j;
+ 
+  /* open file for reading */
+  fp = fopen(infile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* allocate data matrix */
+  *vals = matrix(1, nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+ 
+  /* set the file pointer */
+  fseek(fp,(startrow-1)*nc*sizeof(float),SEEK_SET);
+ 
+  /* read from file into the matrix */
+  for (i = 1; i <= nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      fread((float*) &(*vals)[i][j],sizeof(float),1,fp);
+    }
+  }
+ 
+  fclose(fp);
+  return (UT_OK);
+}
+ 
+
+/*******************************************************************************
+d436 4
+a439 2
+ PRINT_ROW
+ Print the contents of a vector, in row form.
+d441 1
+a441 1
+int print_row(stream, nc, v)
+d443 4
+a446 3
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    nc;     /* length of the row vector to be printed */
+  float  *v;     /* vector to be printed */
+d448 2
+a449 1
+  int     i;
+d451 5
+a455 2
+  for (i = 1; i <= nc; i++) {
+      fprintf(stream, "%g ", v[i]);
+a456 1
+  fprintf(stream, "\n");
+d458 6
+a463 2
+  return (UT_OK);
+}
+d465 3
+a467 15
+
+/*******************************************************************************
+ PRINT_COL
+ Print the contents of a vector, in column form.
+*******************************************************************************/
+int print_col(stream, nc, v)
+
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    nc;     /* length of the column vector to be printed */
+  float  *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= nc; i++) {
+      fprintf(stream, "%g\n", v[i]);
+d470 1
+d476 4
+a479 2
+ PRINT_IROW
+ Print the contents of an integer vector, in row form.
+d481 1
+a481 1
+int print_irow(stream, nc, v)
+d483 4
+a486 3
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    nc;     /* length of the row vector to be printed */
+  int    *v;     /* vector to be printed */
+d488 2
+a489 1
+  int     i;
+d491 5
+a495 2
+  for (i = 1; i <= nc; i++) {
+      fprintf(stream, "%d ", v[i]);
+a496 1
+  fprintf(stream, "\n");
+d498 6
+a503 2
+  return (UT_OK);
+}
+d505 3
+a507 15
+
+/*******************************************************************************
+ PRINT_ICOL
+ Print the contents of an integer vector, in column form.
+*******************************************************************************/
+int print_icol(stream, nc, v)
+
+  FILE*  stream; /* stream to print to, e.g. stdout, file pointer */
+  int    nc;     /* length of the column vector to be printed */
+  int    *v;     /* vector to be printed */
+{
+  int     i;
+
+  for (i = 1; i <= nc; i++) {
+      fprintf(stream, "%d\n", v[i]);
+d510 1
+d516 4
+a519 2
+ WRITE_ROW
+ Write a vector to a file, in row form.
+d521 1
+a521 1
+int write_row(outfile, dim, vec, mode)
+d523 4
+a526 4
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the row */
+  float  *vec;      /* row vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+d528 2
+a529 1
+  FILE    *fp;
+d531 2
+a532 2
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+d538 11
+a548 2
+  /* print matrix contents to file */
+  print_row(fp, dim, vec);
+d556 4
+a559 2
+ WRITE_COL
+ Write a vector to a file, in column form.
+d561 1
+a561 1
+int write_col(outfile, dim, vec, mode)
+d563 4
+a566 4
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the column */
+  float  *vec;      /* column vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+d568 2
+a569 1
+  FILE    *fp;
+d571 2
+a572 2
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+d578 11
+a588 2
+  /* print matrix contents to file */
+  print_col(fp, dim, vec);
+d596 5
+a600 2
+ WRITE_IROW
+ Write an integer vector to a file, in row form.
+d602 1
+a602 1
+int write_irow(outfile, dim, vec, mode)
+d604 4
+a607 4
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the row */
+  int    *vec;      /* row vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+d610 1
+d619 4
+a622 2
+  /* print matrix contents to file */
+  print_irow(fp, dim, vec);
+d630 6
+a635 2
+ WRITE_ICOL
+ Write an integer vector to a file, in column form.
+d637 1
+a637 1
+int write_icol(outfile, dim, vec, mode)
+d639 4
+a642 4
+  char   *outfile;  /* name of file to write to */
+  int    dim;       /* length of the column */
+  int    *vec;      /* column vector to be written */
+  char   *mode;     /* file i/o mode to use: e.g. "w", "r", or "a" */
+d645 1
+d654 4
+a657 2
+  /* print matrix contents to file */
+  print_icol(fp, dim, vec);
+d665 6
+a670 5
+ READ_DATA
+ Read in ascii file containing the rows of data.
+ Assumes that the file is in the standard dataset format, with line count at 
+ top, separated by spaces.
+ Allocates the matrix of floats that will hold the data.
+d672 6
+a677 5
+int read_data(infile, nr, nc, vals)
+  char   *infile;   /* name of file to read */
+  int    *nr;       /* ptr to number of rows in data, to be filled in */
+  int    nc;        /* number of columns in data */
+  float  ***vals;   /* ptr to matrix to be filled in with data */
+d680 1
+a680 1
+  int     i, j;
+d682 2
+a683 2
+  /* open file for reading */
+  fp = fopen(infile, "r");
+d689 3
+a691 15
+  /* fills in numrows */
+  fscanf(fp, "%d", nr);
+
+  /* allocate data matrix */
+  *vals = matrix(1, *nr, 1, nc);
+  if (*vals == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read from file into the matrix */
+  for (i = 1; i <= *nr; i++) {
+    for (j = 1; j <= nc; j++) {
+      fscanf(fp, "%g ", &(*vals)[i][j]);
+    }
+d700 6
+a705 3
+ WRITE_DATA
+ Write a matrix of floats to a file in the standard data file format, with 
+ number of lines at top of file.
+d707 1
+a707 1
+int write_data(outfile, nr, nc, mat)
+d709 4
+a712 3
+  char   *outfile;  /* name of file to write to */
+  int    nr, nc;    /* number of rows, columns of data */
+  float  **mat;     /* matrix of data to be written */
+d715 1
+d717 2
+a718 2
+  /* open file for writing */
+  fp = fopen(outfile, "w");
+d724 3
+a726 9
+  /* print number of lines at top */
+  fprintf(fp, "%d\n", nr);
+  fclose(fp);
+
+  /* open file for appending */
+  fp = fopen(outfile, "a");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+a728 2
+  /* print matrix contents to file */
+  print_matrix(fp, nr, nc, mat);
+a729 1
+
+d735 3
+a737 4
+ READ_BIN_MATRIX
+ Read in binary file of floats containing a matrix.
+ Allocates the matrix of floats that will hold the data.
+ Similar to read_matrix().
+d739 1
+a739 1
+int read_bin_matrix(infile, nr, nc, vals)
+d742 2
+a743 3
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  float  ***vals;   /* pointer to matrix to be filled in */
+d756 2
+a757 2
+  *vals = matrix(1, nr, 1, nc);
+  if (*vals == (float**)NULL) {
+d762 3
+a764 3
+  /* read from file into the matrix, in binary format */
+  for (i=1; i<=nr; i++) {
+    fread( (float*) &((*vals)[i][1]), sizeof(float), nc, fp );
+d773 4
+a776 4
+ READ_BIN_CMATRIX
+ Read in binary file of chars containing a matrix.
+ Allocates the matrix of chars that will hold the data.
+ Similar to read_bin_matrix().
+d778 1
+a778 1
+int read_bin_cmatrix(infile, nr, nc, vals)
+d781 2
+a782 3
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  char   ***vals;   /* pointer to matrix to be filled in */
+d795 2
+a796 2
+  *vals = cmatrix(1, nr, 1, nc);
+  if (*vals == (char**)NULL) {
+d801 3
+a803 3
+  /* read from file into the matrix, in binary format */
+  for (i=1; i<=nr; i++) {
+    fread( (char*) &((*vals)[i][1]), sizeof(char), nc, fp );
+d812 3
+a814 4
+ READ_BIN_IMATRIX
+ Read in binary file of ints containing a matrix.
+ Allocates the matrix of ints that will hold the data.
+ Similar to read_bin_matrix().
+d816 1
+a816 1
+int read_bin_imatrix(infile, nr, nc, vals)
+d819 2
+a820 3
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  int    ***vals;   /* pointer to matrix to be filled in */
+d833 2
+a834 2
+  *vals = imatrix(1, nr, 1, nc);
+  if (*vals == (int**)NULL) {
+d839 3
+a841 3
+  /* read from file into the matrix, in binary format */
+  for (i=1; i<=nr; i++) {
+    fread( (int*) &((*vals)[i][1]), sizeof(int), nc, fp );
+d850 3
+a852 4
+ READ_BIN_DMATRIX
+ Read in binary file of doubles containing a matrix.
+ Allocates the matrix of doubles that will hold the data.
+ Similar to read_bin_matrix().
+d854 1
+a854 1
+int read_bin_dmatrix(infile, nr, nc, vals)
+d857 2
+a858 3
+  int    nr;        /* number of rows in matrix */
+  int    nc;        /* number of columns in matrix */
+  double ***vals;   /* pointer to matrix to be filled in */
+d871 2
+a872 2
+  *vals = dmatrix(1, nr, 1, nc);
+  if (*vals == (double**)NULL) {
+d877 3
+a879 3
+  /* read from file into the matrix, in binary format */
+  for (i=1; i<=nr; i++) {
+    fread( (double*) &((*vals)[i][1]), sizeof(double), nc, fp );
+d888 2
+a889 5
+ WRITE_BIN_MATRIX
+ Write a matrix to a file, in binary form (floats).
+ Note that the NR convention of accessing matrices starting at 1 is implemented
+ by the matrix() allocation function by simply allocating the 0th element also,
+ which is never accessed.
+d891 1
+a891 1
+int write_bin_matrix(outfile, nr, nc, mat, mode)
+d893 3
+a895 4
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  float  **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+a896 1
+  FILE    *fp;
+d899 2
+a900 10
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* print matrix contents to file, in binary */
+  for (i=1; i<=nr; i++) {
+    fwrite( (float*) &mat[i][1], sizeof(float), nc, fp );
+d902 1
+a903 1
+  fclose(fp);
+d909 2
+a910 6
+ WRITE_BIN_CMATRIX
+ Write a matrix to a file, in binary form (chars).
+ Note that the NR convention of accessing matrices starting at 1 is implemented
+ by the matrix() allocation function by simply allocating the 0th element also,
+ which is never accessed.
+ Similar to write_bin_matrix().
+d912 1
+a912 1
+int write_bin_cmatrix(outfile, nr, nc, mat, mode)
+d914 3
+a916 4
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  char   **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+a917 1
+  FILE    *fp;
+d920 2
+a921 5
+  /* open file in the specified mode */
+  fp = fopen(outfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+a923 6
+  /* print matrix contents to file, in binary */
+  for (i=1; i<=nr; i++) {
+    fwrite( (char*) &mat[i][1], sizeof(char), nc, fp );
+  }
+
+  fclose(fp);
+d929 71
+a999 6
+ WRITE_BIN_IMATRIX
+ Write a matrix to a file, in binary form (ints).
+ Note that the NR convention of accessing matrices starting at 1 is implemented
+ by the matrix() allocation function by simply allocating the 0th element also,
+ which is never accessed.
+ Similar to write_bin_matrix().
+d1001 1
+a1001 1
+int write_bin_imatrix(outfile, nr, nc, mat, mode)
+d1003 4
+a1006 4
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  int    **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+a1008 1
+  int     i;
+d1017 26
+a1042 3
+  /* print matrix contents to file, in binary */
+  for (i=1; i<=nr; i++) {
+    fwrite( (int*) &mat[i][1], sizeof(int), nc, fp );
+d1045 3
+d1054 2
+a1055 6
+ WRITE_BIN_DMATRIX
+ Write a matrix to a file, in binary form (doubles).
+ Note that the NR convention of accessing matrices starting at 1 is implemented
+ by the matrix() allocation function by simply allocating the 0th element also,
+ which is never accessed.
+ Similar to write_bin_matrix().
+d1057 1
+a1057 1
+int write_bin_dmatrix(outfile, nr, nc, mat, mode)
+d1059 4
+a1062 4
+  char   *outfile;   /* name of file to write to */
+  int    nr, nc;     /* number of rows, columns in matrix */
+  double **mat;      /* matrix to write */
+  char   *mode;      /* file i/o mode to use: e.g. "w", "r", or "a" */
+a1064 1
+  int     i;
+d1073 82
+a1154 3
+  /* print matrix contents to file, in binary */
+  for (i=1; i<=nr; i++) {
+    fwrite( (double*) &mat[i][1], sizeof(double), nc, fp );
+d1157 2
+d1160 1
+d1164 98
+@
+
+
+1.6
+log
+@added read_matrix_transpose(), write_comment().  some cosmetic changes.
+@
+text
+@d16 1
+a16 1
+static char rcsid[] = "$Id: da_data.c,v 1.5 1996/05/10 17:16:15 granat Exp agray $";
+d20 3
+d524 194
+@
+
+
+1.5
+log
+@added read_subset2matrix and read_binary2matrix functions
+rg
+@
+text
+@d16 1
+a16 1
+static char rcsid[] = "$Id: da_data.c,v 1.4 1996/04/29 20:25:14 granat Exp granat $";
+d18 6
+a23 1
+/* $Log: da_data.c,v $
+d106 1
+a106 1
+  int    startrow;  /* first row of the file to start reading
+d958 3
+a960 2
+    fread( (unsigned char*) tempcol, sizeof(char), nr*nc, fp );  /* more efficient to 
+                                                           read in whole block*/
+d972 72
+@
+
+
+1.4
+log
+@cvector function.
+rg
+@
+text
+@d16 1
+a16 1
+static char rcsid[] = "$Id: da_data.c,v 1.3 1996/03/01 00:17:28 agray Exp granat $";
+d19 4
+d90 98
+@
+
+
+1.3
+log
+@added many i/o functions: read_matrix() (versions for floats, chars, ints, doubles),
+write_matrix() (versions for f,c,i,d), print_matrix() (f,c,i,d), read_bin_matrix
+(f,c,i,d), write_bin_matrix() (f,c,i,d), read_data() and write_data() (both moved
+from da_linalg.c)
+ag
+@
+text
+@d16 1
+a16 1
+static char rcsid[] = "$Id: da_data.c,v 1.2 1996/02/29 02:32:08 agray Exp agray $";
+d19 7
+d823 1
+a823 1
+  char   *tempcol;
+d843 1
+a843 1
+  if (tempcol == (char*)NULL) {
+d851 1
+a851 1
+    fread( (char*) tempcol, sizeof(char), nr*nc, fp );  /* more efficient to 
+@
+
+
+1.2
+log
+@moved write_bin_matrix() and read_bin_matrix() to this module, added type
+argument to them
+ag
+@
+text
+@d16 1
+a16 1
+static char rcsid[] = "$Id: da_data.c,v 1.1 1996/02/28 04:55:02 agray Exp agray $";
+d19 5
+d38 46
+a83 3
+ READ_BIN_MATRIX
+ Read in file containing a matrix, which is in binary form.
+ Allocates the matrix that will hold the data.
+d86 1
+a86 1
+int read_bin_matrix(infile, nr, nc, vals, type)
+d91 1
+a91 3
+  void   ***vals;   /* pointer to matrix to be filled in; could be of type 
+                       char, int, float, double */
+  char   *type;     /* string indicating what data type to use */
+d94 1
+a94 1
+  int    i;
+d104 10
+a113 5
+  if (utEqStr(type, "char")) {
+    (char**) *vals = cmatrix(1, nr, 1, nc);
+    if ((char**) *vals == (char**)NULL) {
+      printf("Error in memory allocation.\n");
+      return (UT_ERROR);
+d116 40
+a155 5
+  else if (utEqStr(type, "int")) {
+    (int**) *vals = imatrix(1, nr, 1, nc);
+    if ((int**) *vals == (int**)NULL) {
+      printf("Error in memory allocation.\n");
+      return (UT_ERROR);
+d158 43
+a200 5
+  else if (utEqStr(type, "float")) {
+    (float**) *vals = matrix(1, nr, 1, nc);
+    if ((float**) *vals == (float**)NULL) {
+      printf("Error in memory allocation.\n");
+      return (UT_ERROR);
+d203 21
+a223 5
+  else if (utEqStr(type, "double")) {
+    (double**) *vals = dmatrix(1, nr, 1, nc);
+    if ((double**) *vals == (double**)NULL) {
+      printf("Error in memory allocation.\n");
+      return (UT_ERROR);
+d225 1
+d228 19
+a246 4
+  /* read from file into the matrix, in binary format */
+  if (utEqStr(type, "char"))
+    for (i=1; i<=nr; i++) {
+      fread( (char*) &((*vals)[i][1]), sizeof(char), nc, fp );
+d248 22
+a269 3
+  else if (utEqStr(type, "int"))
+    for (i=1; i<=nr; i++) {
+      fread( (int*) &((*vals)[i][1]), sizeof(int), nc, fp );
+d271 22
+a292 3
+  else if (utEqStr(type, "float"))
+    for (i=1; i<=nr; i++) {
+      fread( (float*) &((*vals)[i][1]), sizeof(float), nc, fp );
+d294 156
+a449 3
+  else if (utEqStr(type, "double"))
+    for (i=1; i<=nr; i++) {
+      fread( (double*) &((*vals)[i][1]), sizeof(double), nc, fp );
+d451 1
+d459 199
+d659 1
+a659 1
+ Write a matrix to a file, in binary form.
+d664 1
+a664 1
+int write_bin_matrix(outfile, nr, nc, mat, mode, type)
+d668 1
+a668 2
+  void   **mat;      /* matrix to write; could be of type char, int, float, 
+                        double */
+a669 1
+  char   *type;      /* string indicating what data type to use */
+d682 3
+a684 16
+  if (utEqStr(type, "char"))
+    for (i=1; i<=nr; i++) {
+      fwrite( (char*) &mat[i][1], sizeof(char), nc, fp );
+    }
+  if (utEqStr(type, "int"))
+    for (i=1; i<=nr; i++) {
+      fwrite( (int*) &mat[i][1], sizeof(int), nc, fp );
+    }
+  if (utEqStr(type, "float"))
+    for (i=1; i<=nr; i++) {
+      fwrite( (float*) &mat[i][1], sizeof(float), nc, fp );
+    }
+  if (utEqStr(type, "double"))
+    for (i=1; i<=nr; i++) {
+      fwrite( (double*) &mat[i][1], sizeof(double), nc, fp );
+    }
+d692 105
+d798 1
+a798 1
+ Read in file containing a LandSat image, which is in binary form.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d16 1
+a16 1
+static char rcsid[] = "$Id$";
+d18 4
+a21 1
+/* $Log$ */
+d27 1
+d31 127
+@

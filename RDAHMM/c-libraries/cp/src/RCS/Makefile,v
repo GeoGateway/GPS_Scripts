@@ -1,0 +1,336 @@
+head	1.7;
+access
+	agray
+	roden
+	jctran;
+symbols
+	NSWC1:1.3
+	ATT1:1.1
+	Initial:1.1;
+locks
+	granat:1.7; strict;
+comment	@# @;
+
+
+1.7
+date	98.04.20.23.43.39;	author roden;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	98.04.20.22.51.52;	author roden;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	96.05.01.01.41.00;	author agray;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	96.05.01.01.35.44;	author agray;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	95.09.05.18.27.06;	author jctran;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	95.08.03.23.38.08;	author jctran;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	95.07.27.22.07.29;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.7
+log
+@Changed Makefile to conform to other /proj/code/c library Makefiles,
+including use of new CP_HOME, CP_CC and related variables from a new
+cp/setup.csh, and new cp directory structure like the other libraries.
+@
+text
+@# Makefile for command parse library
+
+# $Id: Makefile,v 1.6 1998/04/20 22:51:52 roden Exp roden $
+# $Log: Makefile,v $
+# Revision 1.6  1998/04/20 22:51:52  roden
+# - Simplified $(LIBRARY) rule so that Gnu make doesn't call ar unnecessarily.
+# - Removed %.o rule all together since implicit rule was being used mostly,
+#   and explicit rule caused two compilations under certain circumstances,
+#   not to mention $(OUTPUT_OPTION) was screwing things up under Linux.
+#
+# Revision 1.5  1996/05/01 01:41:00  agray
+# Removed ranlib line, which is unnecessary and possibly confusing.
+#
+# Revision 1.4  1996/05/01 01:35:44  agray
+# Changed install target to match one of Joe's current Solaris makefile examples.
+# Part of the general updating of libcp which is happening as part of this port
+# from SunOS to Solaris.  (We also changed some .c filenames to match our
+# general conventions more closely.)
+#
+# Revision 1.3  1995/09/05 18:27:06  jctran
+# Commented out compiler flag to purify, using ML_CC instead.
+# JCT
+#
+# Revision 1.2  1995/08/03  23:38:08  jctran
+# Added files for compilation.  New files are:
+# cp_string.c, cp_string.h, cp_platform.h, cp_version.h, cp_version.c
+# JCT
+#
+# Revision 1.1  1995/07/27  22:07:29  agray
+# Initial revision
+#
+
+# Library, source code, and objects.
+
+LIBRARY		= libcp.a
+
+DESTDIR		= $(C_CODE_HOME)/lib
+
+SOURCES.c	= \
+			cp_string.c \
+			cp_args.c \
+			cp_version.c
+
+SOURCES.h	= \
+			cp_platform.h \
+			cp_string.h \
+			cp_args.h \
+			cp_version.h
+
+SOURCES	= $(SOURCES.h) $(SOURCES.c)
+
+OBJECTS	= $(SOURCES.c:%.c=%.o)
+
+# Compiler options.
+
+CC			= $(CP_CC)
+#CC			= purify $(CP_CC)
+CFLAGS		= $(CP_CFLAGS)
+#CFLAGS		= -pg $(CP_CFLAGS)
+CPPFLAGS		= -I$(C_CODE_HOME)/include
+
+# Special make commands.
+
+.PRECIOUS:	$(LIBRARY)
+
+# Standard targets.
+
+all:		depend $(SOURCES) $(OBJECTS) $(LIBRARY) install
+objects:	$(SOURCES) $(OBJECTS)
+sources:	$(SOURCES)
+test:
+
+install: 
+			cp $(LIBRARY) $(DESTDIR)
+
+clean:
+			/bin/rm -f core $(OBJECTS) $(LIBRARY)
+
+depend:
+			makedepend -I$(C_CODE_HOME)/include *.c
+
+# Targets' dependencies.
+
+$(LIBRARY):	$(OBJECTS)
+			ar rv $@@ $?
+
+# Using implicit .c.o compile rule
+
+# Specific objects' dependencies.
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+cp_args.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+cp_args.o: /usr/include/string.h cp_platform.h cp_string.h cp_args.h
+cp_string.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+cp_string.o: /usr/include/stdlib.h /usr/include/string.h cp_platform.h
+cp_string.o: cp_string.h
+cp_version.o: /usr/include/stdio.h /usr/include/sys/feature_tests.h
+cp_version.o: cp_version.h
+@
+
+
+1.6
+log
+@- Simplified $(LIBRARY) rule so that Gnu make doesn't call ar unnecessarily.
+- Removed %.o rule all together since implicit rule was being used mostly,
+  and explicit rule caused two compilations under certain circumstances,
+  not to mention $(OUTPUT_OPTION) was screwing things up under Linux.
+@
+text
+@d3 1
+a3 1
+# $Id: Makefile,v 1.5 1996/05/01 01:41:00 agray Exp roden $
+d5 6
+d33 3
+a35 1
+LIBRARY = libcp.a
+d37 1
+a37 1
+DESTDIR = $(ML_HOME)
+d39 4
+a42 4
+SOURCES.c = \
+	cp_string.c \
+	cp_args.c \
+	cp_version.c
+d44 5
+a48 5
+SOURCES.h = \
+	cp_platform.h \
+	cp_string.h \
+	cp_args.h \
+	cp_version.h
+d50 1
+a50 3
+SOURCES = \
+	$(SOURCES.h) \
+	$(SOURCES.c)
+d52 1
+a52 3
+OBJECTS = \
+	$(SOURCES.c:%.c=%.o) \
+	$(TARGETS.c:%.c=%.o)
+d54 1
+a54 1
+# Compiler flags.
+d56 5
+a60 4
+#CC			= purify $(ML_CC)
+CC			= $(ML_CC)
+CFLAGS		= $(ML_CFLAGS)
+CPPFLAGS		= 
+d62 1
+a62 1
+# Make information.
+d64 1
+a64 2
+.KEEP_STATE:
+.PRECIOUS: $(LIBRARY)
+d68 15
+a82 3
+all:	 $(SOURCES) $(LIBRARY) install
+objects: $(SOURCES.c) $(OBJECTS)
+sources: $(SOURCES)
+d84 2
+a85 2
+$(LIBRARY): $(OBJECTS)
+	ar rv $@@ $?
+d89 2
+a90 2
+install: 
+	cp $(LIBRARY) $(DESTDIR)/lib
+d92 7
+a98 2
+clean:
+	$(RM) $(TARGETS) $(OBJECTS) core *.a
+@
+
+
+1.5
+log
+@Removed ranlib line, which is unnecessary and possibly confusing.
+@
+text
+@d3 1
+a3 1
+# $Id: Makefile,v 1.4 1996/05/01 01:35:44 agray Exp agray $
+d5 3
+d68 1
+a68 1
+$(LIBRARY): $(LIBRARY)($(OBJECTS))
+d71 1
+a71 2
+$(LIBRARY)(%.o): %.c
+	$(COMPILE.c) $< $(OUTPUT_OPTION)
+@
+
+
+1.4
+log
+@Changed install target to match one of Joe's current Solaris makefile examples.
+Part of the general updating of libcp which is happening as part of this port
+from SunOS to Solaris.  (We also changed some .c filenames to match our
+general conventions more closely.)
+@
+text
+@d3 1
+a3 1
+# $Id: Makefile,v 1.3 1995/09/05 18:27:06 jctran Exp agray $
+d5 6
+a66 1
+#	ranlib $@@
+@
+
+
+1.3
+log
+@Commented out compiler flag to purify, using ML_CC instead.
+JCT
+@
+text
+@d3 1
+a3 1
+# $Id: Makefile,v 1.2 1995/08/03 23:38:08 jctran Exp jctran $
+d5 4
+d24 1
+a24 1
+	command_parse.c \
+d30 1
+a30 1
+	command_parse.h \
+d67 1
+a67 6
+	install -d $(DESTDIR)/lib
+	(cd $(DESTDIR)/lib ; chmod -f 664 $(LIBRARY))
+	install -m 664 $(LIBRARY) $(DESTDIR)/lib
+#	rm -f $(LIBRARY)
+#	(cd $(DESTDIR)/lib ; ranlib -t $(LIBRARY) ; chmod 444 $(LIBRARY))
+	(cd $(DESTDIR)/lib ; chmod 444 $(LIBRARY))
+@
+
+
+1.2
+log
+@Added files for compilation.  New files are:
+cp_string.c, cp_string.h, cp_platform.h, cp_version.h, cp_version.c
+JCT
+@
+text
+@d3 1
+a3 1
+# $Id: Makefile,v 1.1 1995/07/27 22:07:29 agray Exp jctran $
+d5 5
+d39 2
+a40 2
+CC			= purify $(ML_CC)
+#CC			= $(ML_CC)
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 5
+a7 2
+# $Id$
+# $Log$
+d13 4
+a16 1
+SOURCES.c = command_parse.c
+d18 5
+a22 1
+SOURCES.h = command_parse.h
+@

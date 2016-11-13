@@ -1,0 +1,323 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.2
+date	2003.08.27.18.10.37;	author granat;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2003.08.27.18.02.25;	author granat;	state Exp;
+branches;
+next	;
+
+
+desc
+@main for rdahmm program
+@
+
+
+1.2
+log
+@removed hacks related to OSX symbol problems (solved by compiling libut
+with libtool -c)
+@
+text
+@/*******************************************************************************
+PROGRAM NAME
+rdahmm
+
+AUTHOR
+Robert Granat
+
+DESCRIPTION
+See Robert Granat PhD thesis for details and notation.
+
+COMPILE
+make
+
+NOTES
+Not yet available
+
+RG
+*******************************************************************************/
+#ifndef lint
+static char rcsid[] = "$Id: rdahmm.c,v 1.1 2003/08/27 18:02:25 granat Exp granat $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: rdahmm.c,v $
+ * Revision 1.1  2003/08/27 18:02:25  granat
+ * Initial revision
+ *
+ * */
+
+/* C library */
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+/* CP library */
+#include "cp.h"
+
+/* UT library */
+#include "ut.h"
+
+/* NR library */
+#include "nr.h"
+
+/* DA library */
+#include "da.h"
+
+/* local header files */
+#include "rdahmm_arguments.h"
+#include "rdahmm_gauss_output.h"
+#include "rdahmm_generic.h"
+
+/* this program's header */
+#include "rdahmm.h"
+
+/*******************************************************************************
+ MAIN
+ Driver of program.
+*******************************************************************************/
+int main(int argc, char *argv[])
+
+{
+  /* arguments, used by libcp */
+  arg     args[RDAHMM_NUM_ARGS+1];
+
+  /* filenames */
+  char    *data_file;
+  char    *L_file;
+  char    *Q_file;
+  char    *pi_file;
+  char    *A_file;
+  char    *B_file;
+  
+  /* main program input */
+  double  **cont_data;     /* for continuous input data */
+  int     *discrete_data;  /* for discrete input data */
+  int     T;               /* number of observations */
+  int     D;               /* dimension of the observations */
+  int     N;               /* number of states in the model (model size) */
+
+  /* output distribution type */
+  char    *output_type_names[RDAHMM_NUM_OUTPUT_TYPES];
+  int     output_type;
+
+  /* main program output */
+  double  L;               /* log likelihood of the model */
+  int     *Q;              /* state sequence */
+  double  *pi;             /* vector of initial state probabilities */
+  double  **A;             /* matrix of transition probabilities */
+
+  /* main program output for Gaussian output distributions */
+  double  **mu;
+  double  ***sigma;
+
+  /* secondary program input */
+  double  thresh;          /* convergence threshold */
+  double  peps;            /* perturbation epsilon */
+  int     regularize;      /* flag to perform regularized learning */
+  double  omega_Q1;        /* regularization weighting term */
+  double  omega_Q2;        /* regularization weighting term */
+  double  omega_Q3;        /* regularization weighting term */
+  double  omega_sigma;     /* regularization weighting term (Gaussian output) */
+  int     anneal;          /* flag to perform deterministic annealing */
+  double  anneal_step;     /* temperature step for deterministic annealing */
+  int     seed;            /* seed for initializing random number generator */
+  int     verbose;         /* flag for printing verbose output */
+
+  /* model initialization methods */
+  char    *init_type_names[RDAHMM_NUM_INIT_TYPES];
+  int     init_type;
+
+  /* regularization methods */
+  char    *reg_type_names[RDAHMM_NUM_REG_TYPES];
+  int     reg_type;
+
+  /* miscellaneous variables */
+  int     continuous;
+  double  *min_val;
+  double  *max_val;
+  double  *range;
+  FILE    *fp;
+  int     i;
+
+  /* error checking */
+  int     handle_args_ok;
+
+/*----------------------------------------------------------------------------*/
+  /* Get command line arguments */
+  handle_args_ok = handle_args(argc, argv, args, output_type_names, 
+                               init_type_names, reg_type_names, &data_file, 
+                               &L_file, &Q_file, &pi_file, &A_file, &B_file,
+                               &T, &D, &N, &output_type, &init_type, &thresh, 
+                               &peps, &regularize, &reg_type, &omega_Q1, 
+                               &omega_Q2, &omega_Q3, &omega_sigma, &anneal,
+                               &anneal_step, &seed, &verbose);
+  if (handle_args_ok != UT_OK)
+  {
+    exit(UT_ERROR);
+  }
+
+/*----------------------------------------------------------------------------*/
+  /* check the command-line arguments */
+
+/*----------------------------------------------------------------------------*/
+  /* read in the data matrix */
+
+  if (output_type == RDAHMM_GAUSS_OUTPUT)
+  {
+    read_dmatrix(data_file, T, D, &cont_data);
+    continuous = UT_TRUE;
+  }
+
+/*----------------------------------------------------------------------------*/
+  /* in the case of continuous data, normalize each dimension to a 0-1 scale */
+
+  if (continuous == UT_TRUE)
+  {
+    /* create storage for the normalization */
+    min_val = NR_dvector(1, D);
+    max_val = NR_dvector(1, D);
+    range   = NR_dvector(1, D);
+
+    range_of_dcols(cont_data, min_val, max_val, range, T, D);
+    range_normalize_dcols(cont_data, min_val, range, T, D);
+  }
+
+/*----------------------------------------------------------------------------*/
+  /* seed the random number generator */
+  if (seed == UT_FALSE)
+    set_rand_by_time_of_day();
+  else
+    set_rand(seed);
+
+/*----------------------------------------------------------------------------*/
+  /* allocate memory for the HMM */
+  pi = NR_dvector(1, N);
+  A = NR_dmatrix(1, N, 1, N);
+
+  if (output_type == RDAHMM_GAUSS_OUTPUT)
+  {
+    mu = NR_dmatrix(1, N, 1, D);
+    sigma = set_of_dmatrices(N, D, D);
+  }
+
+  /* underlying state sequence (not strictly a model parameter) */
+  Q = NR_ivector(1, T);
+
+/*----------------------------------------------------------------------------*/
+  /* initialize model */
+  if (output_type == RDAHMM_GAUSS_OUTPUT)
+  {
+    init_gauss_output_hmm(init_type, pi, A, mu, sigma, N, D);
+  }
+
+/*----------------------------------------------------------------------------*/
+  /* learn hmm model */
+  if (output_type == RDAHMM_GAUSS_OUTPUT)
+  {
+    learn_gauss_output_hmm(cont_data, regularize, reg_type, omega_Q1, omega_Q2, 
+                           omega_Q3, omega_sigma, anneal, anneal_step, peps,
+                           thresh, &L, Q, pi, A, mu, sigma, N, T, D, verbose);
+  }
+
+/*----------------------------------------------------------------------------*/
+  /* must unnormalize for continuous case, before writing model */
+  if (output_type == RDAHMM_GAUSS_OUTPUT)
+  {
+    range_unnormalize_dcols(mu, min_val, range, N, D);
+    for (i = 1; i <= N; i++)
+    {
+      range_unnormalize_cov_dmatrix(sigma[i], D, range);
+    }
+  }
+
+/*----------------------------------------------------------------------------*/
+  /* write outputs */
+
+  /* write hmm initial and transition probabilities */
+  write_dcol(pi_file, N, pi, "w");
+  write_dmatrix(A_file, N, N, A, "w");
+
+  /* write state output distribution parameters */
+  if (output_type == RDAHMM_GAUSS_OUTPUT)
+  {
+    write_gauss_output_params(B_file, mu, sigma, N, D);
+  }
+
+  /* write the state sequence file */
+  write_icol(Q_file, T, Q, "w");
+
+  /* write the log likelihood file */
+  fp = fopen_exit_if_fail(L_file, "w");
+  fprintf(fp, "%g\n", L);
+  fclose(fp);
+
+/*----------------------------------------------------------------------------*/
+  /* clean up memory */
+
+  /* observations */
+  if (continuous == UT_TRUE)
+  {
+    NR_free_dmatrix(cont_data, 1, T, 1, D);
+
+    NR_free_dvector(min_val, 1, D);
+    NR_free_dvector(max_val, 1, D);
+    NR_free_dvector(range, 1, D);
+  }
+ 
+  /* model */
+  NR_free_dvector(pi, 1, N);
+  NR_free_dmatrix(A, 1, N, 1, N);
+
+  if (output_type == RDAHMM_GAUSS_OUTPUT)
+  {
+    NR_free_dmatrix(mu, 1, N, 1, D);
+    free_set_of_dmatrices(sigma, N, D, D);
+  }
+
+  /* state sequence */
+  NR_free_ivector(Q, 1, T);
+
+  /* filenames */
+  free(data_file);
+  free(L_file);
+  free(Q_file);
+  free(pi_file);
+  free(A_file);
+  free(B_file);
+
+  return(UT_OK);
+}
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d20 1
+a20 1
+static char rcsid[] = "$Id$";
+d25 4
+a28 1
+ * $Log$
+a272 6
+
+/* WARNING! HACK to get around OSX mystery problem with symbol errors */
+/*
+int  ut_status;
+char *ut_status_ptr;
+*/
+@

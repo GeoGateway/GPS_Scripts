@@ -1,0 +1,30 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	96.04.15.22.05.13;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@header file for test_rand.c.
+granat,agray
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@#ifndef lint
+static char da_test_lib_hdr_rcsid[] = "$Id$";
+#endif
+/* $Log$
+ * */
+@

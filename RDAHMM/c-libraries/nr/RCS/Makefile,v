@@ -1,0 +1,163 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	96.09.26.23.13.24;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	96.09.26.23.11.46;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.09.26.23.08.45;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@Original makefile for NR lib.
+@
+
+
+1.3
+log
+@changed compile command to use setup.csh.
+@
+text
+@# Master makefile for Numerical Recipes
+
+CCKR = cc
+CCANSI = NR_CC
+#gcc has been found to be the best bet
+
+# Important system parameters
+#FFLAGS =
+CFLAGSANSI = -I../include -O2 -g
+CFLAGSKR = -I../include
+# Use -O if you trust your optimizer, and
+# -g to make a debugging version of this library
+# See the document COMPILING and your system documentation for information
+# on values to use here.
+
+# Library names . . .
+CKRLIB = librecipes_ckr.a
+CANSILIB = librecipes_c.a
+FLIB = librecipes_f.a
+# and destination.
+LIBDIR = ../lib
+
+TEST = /usr/ucb/test
+
+AR = /usr/ccs/bin/ar
+ARFLAGS = crv
+
+MAKE = /usr/ccs/bin/make
+
+CBIN = ../bin
+FBIN = ../bin
+# This is internal
+
+SHELL = /bin/sh
+# Just to make sure
+
+COMMON_ENV = "LIBDIR = $(LIBDIR)" \
+	"FC = $(FC)" "CCKR = $(CCKR)" "CCANSI = $(CCANSI)" \
+	"FFLAGS = $(FFLAGS)" \
+	"CFLAGSANSI = $(CFLAGSANSI)" "CFLAGSKR = $(CFLAGSKR)" \
+	"FBIN = $(FBIN)" "CBIN = $(CBIN)" "FLIB = $(FLIB)" \
+	"CANSILIB = $(CANSILIB)" "CKRLIB = $(CKRLIB)" \
+	"AR = $(AR)" "ARFLAGS = $(ARFLAGS)" "SHELL = $(SHELL)"
+
+MAKE_LIST = make_list
+
+all: distributed libs install
+
+clear_dist:
+	/bin/rm -f $(MAKE_LIST)
+	cp /dev/null $(MAKE_LIST)
+
+fortran_if_have:
+	-if $(TEST) -d ../recipes_f; then \
+	echo '../recipes_f' >> $(MAKE_LIST); fi
+
+c_ansi_if_have:
+	-if $(TEST) -d ../recipes_c-ansi; then \
+	echo '../recipes_c-ansi' >> $(MAKE_LIST); fi
+
+c_kr_if_have:
+	-if $(TEST) -d ../recipes_c-kr; then \
+	echo '../recipes_c-kr' >> $(MAKE_LIST); fi
+
+distributed: clear_dist fortran_if_have c_ansi_if_have c_kr_if_have
+
+libs:
+	echo Making Numerical Recipes
+	for distrib in `cat $(MAKE_LIST)`; do \
+	for library in $$distrib/recipes; do \
+	(cd $$library && $(MAKE) all $(COMMON_ENV)); done; done
+
+install: 
+	echo Making Install
+	for distrib in `cat $(MAKE_LIST)`; do \
+	for library in $$distrib/recipes; do \
+	(cd $$library && $(MAKE) install $(COMMON_ENV)); done; done
+
+demobins: 
+	echo Making Numerical Recipes Demonstration output
+	for distrib in `cat $(MAKE_LIST)`; do \
+	for bindir in $$distrib/demo/bin; do \
+	(cd $$bindir && $(MAKE) all $(COMMON_ENV)); done; done
+
+results:
+	echo Making Numerical Recipes Demonstration output
+	for distrib in `cat $(MAKE_LIST)`; do \
+	for resdir in $$distrib/demo/results; do \
+	(cd $$resdir && $(MAKE) all $(COMMON_ENV)); done; done
+
+clean: 
+	echo Making Clean
+	for distrib in `cat $(MAKE_LIST)`; do \
+	for library in $$distrib/recipes; do \
+	(cd $$library && $(MAKE) clean $(COMMON_ENV)); done; done
+@
+
+
+1.2
+log
+@path changes to make it work on our system.
+@
+text
+@d4 1
+a4 1
+CCANSI = gcc
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d9 1
+a9 1
+CFLAGSANSI = -I../include
+d21 1
+a21 1
+LIBDIR = /usr/local/lib
+d23 1
+a23 1
+TEST = /bin/test
+d25 1
+a25 1
+AR = /bin/ar
+d28 1
+a28 1
+MAKE = /bin/make
+@

@@ -1,0 +1,73 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	97.01.29.23.44.54;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@new version after much reformatting/rethinking.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@/*******************************************************************************
+MODULE HEADER:
+ut_args.h
+*******************************************************************************/
+
+#ifndef _UT_ARGS_H_
+#define _UT_ARGS_H_
+/* Protects from multiple inclusion. */
+
+#ifndef lint
+static char ut_args_h_rcsid[] = "$Id$";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log$
+ * */
+
+/*==============================================================================
+Data Structures
+==============================================================================*/
+
+/*==============================================================================
+Constants, Macros
+==============================================================================*/
+
+/*==============================================================================
+Variables
+==============================================================================*/
+
+/*==============================================================================
+Function Declarations
+==============================================================================*/
+
+/* filenames */
+int get_base_name(char *file_name, char *base_name);
+char *make_extended_name(char *base_name, char *ext_name);
+
+/* option names */
+int build_options_string(char *string, char **option_names, int num_options,
+                         char *option_descrip);
+int match_option_name(char *string, char **option_names, int num_options,
+                      char *option_descrip);
+
+#endif /* _UT_ARGS_H_ */
+
+
+
+
+@

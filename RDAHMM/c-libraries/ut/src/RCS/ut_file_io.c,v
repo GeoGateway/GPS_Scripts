@@ -1,0 +1,57 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.1
+date	97.01.29.23.45.59;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@new version after much reformatting/rethinking.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@/*******************************************************************************
+MODULE NAME
+ut_file_io
+
+ONE-LINE SYNOPSIS
+Utility functions related to opening and closing files.
+
+SCOPE OF THIS MODULE
+As stated.
+
+SEE ALSO
+-
+
+REFERENCE(S)
+-
+
+PROGRAM EXAMPLE(S)
+1. /proj/cooltools/hmm, AG.
+
+NOTES
+-
+
+AG
+*******************************************************************************/
+#ifndef lint
+static char rcsid[] = "$Id$";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log$
+ * */
+
+@
