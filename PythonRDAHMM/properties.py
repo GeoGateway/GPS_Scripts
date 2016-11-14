@@ -34,11 +34,11 @@ WORK_DIR = os.getcwd()
 Paths['cron_path']=os.path.join(WORK_DIR, "RDAHMM","CRON_Download/")  
 Paths['download_path']=os.path.join(WORK_DIR,"RDAHMM","Download/")  
 Paths['script_path']=os.path.join(WORK_DIR,"PythonRDAHMM") 
-Paths['data_path']=os.path.join(WORK_DIR,"RDAHMM","Data/")
+Paths['data_path']=os.path.join(WORK_DIR,"RDAHMM","Data")
 # temp_path is the temporary working directory for ingesting raw data
-Paths['temp_path']=os.path.join(WORK_DIR,"RDAHMM","TEMP/")
-Paths['model_path']=os.path.join(WORK_DIR,"RDAHMM","Model/")
-Paths['eval_path']=os.path.join(WORK_DIR,"daily/")
+Paths['temp_path']=os.path.join(WORK_DIR,"RDAHMM","TEMP")
+Paths['model_path']=os.path.join(WORK_DIR,"RDAHMM","Model")
+Paths['eval_path']=os.path.join(WORK_DIR,"daily")
 Paths['train_epoch']="2013-12-31"
 Paths['rdahmm_bin']=os.path.join(WORK_DIR,"RDAHMM", "rdahmm3","bin", "rdahmm")
 Paths['rdahmm_model_parm']="-data <inputFile> -T <dataCount> -D <dimensionCount> -N 5 -output_type gauss -anneal -annealfactor 1.1 -betamin 0.1 -regularize -omega 0 0 1 1.0e-6 -ntries 10 -seed 1234"
