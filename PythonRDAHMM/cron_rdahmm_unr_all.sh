@@ -4,12 +4,11 @@
 python PythonRDAHMM/unr_ingest_single.py igs08
 python PythonRDAHMM/unr_ingest_single.py fid
 
-python PythonRDAHMM/rdahmm_eval_single.py igs08
-python PythonRDAHMM/rdahmm_eval_single.py fid
+python PythonRDAHMM/unr_splice.py
 
-~/GPS_Scripts/PythonRDAHMM/unr_splice.py
-python ~/GPS_Scripts/PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
-~/GPS_Scripts/PythonRDAHMM/create_mongodb.py UNR_SPLICE
+python PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
+
+python PythonRDAHMM/create_mongodb.py UNR_SPLICE
 
 
 # /home/yuma/PythonRDAHMM/cron_rdahmm_unr.py

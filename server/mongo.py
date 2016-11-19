@@ -9,7 +9,7 @@
 #   python mongo.py
 
 # eg: request to service: http://localhost:5000/gps?lat_min=18.005611&lat_max=48.987386&lon_min=-124.626080&lon_max=-62.361014
-#     output: Is a json file containinf information
+#     output: Is a json file containing information
 #             of all stations in the bounding box
 
 #==========================================================================

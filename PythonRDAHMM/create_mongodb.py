@@ -8,10 +8,11 @@
 
 # output:
 # 	MongoDB database named gps_timeseries_database which contains
-# 	two collections-
-# 	collections_meta: Data commom to all stations
-# 	collections_stations: Timeseries for each station
-#	The database is indexed based on latitude and longitude
+#   three tables-
+#   collections_meta_network: Data for that station
+#   collections_meta_stations: Meta data for each station
+#   collections_time_series_stations: Timeseries for each station
+#   The database is indexed based on latitude and longitude
 #===========================================================================
 import os, sys, string, re, json
 from datetime import date, datetime, timedelta, time
