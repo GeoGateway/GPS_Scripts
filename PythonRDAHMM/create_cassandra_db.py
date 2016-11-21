@@ -647,14 +647,10 @@ def daterange(start_date, end_date):
         yield start_date + timedelta(n)
         
 for single_date in daterange(start_date, end_date):
-    batch = BatchStatement()
     
     for station in stations:
-        batch.add(timeseries_insert_stmt, \
+        session.execute(timeseries_insert_stmt, \
           [single_date, station['id'],getStationState(single_date, station)])
-
-    # execute the batch
-    session.execute(batch)
 
 
 # Add data to meta_stations

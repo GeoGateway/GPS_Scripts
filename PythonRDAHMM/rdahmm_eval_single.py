@@ -31,7 +31,7 @@ else:
     sys.exit("Invalid number of parameters!")
 
 data_path = properties('data_path') + "/" + dataset.upper() + "/"
-model_path = properties('model_path') + "/UNR_" + dataset.upper() + "/"
+model_path = properties('model_path') +"/" + dataset.upper() + "/"
 eval_path = properties('eval_path') + "/" + dataset.upper() + "/"
 rdahmm_bin = properties('rdahmm_bin')
 
