@@ -5,14 +5,14 @@ echo
 echo "***********************************"
 echo "Creating virtual environment"
 echo "***********************************"
-virtualenv flask --no-site-packages
+virtualenv flask-cassandra --no-site-packages
 
 echo 
 echo
 echo "***********************************"
 echo "Enabling virtual environment"
 echo "***********************************"
-source flask/bin/activate
+source flask-cassandra/bin/activate
 # alias activate=". flask/bin/activate"
 
 echo 
@@ -30,4 +30,4 @@ echo "***********************************"
 echo "Check if the service has started by typing or pasting following command in a new terminal"
 echo curl "http://localhost:5000/gps?lat_min=18.005611&lat_max=48.987386&long_min=-124.626080&long_max=-62.361014"
 echo "Should display a json file giving data for USA"
-python service-cassandra.py
+python start_server_cassandra.py

@@ -5,14 +5,14 @@ echo
 echo "***********************************"
 echo "Creating virtual environment"
 echo "***********************************"
-virtualenv flask --no-site-packages
+virtualenv flask-mongo --no-site-packages
 
 echo 
 echo
 echo "***********************************"
 echo "Enabling virtual environment"
 echo "***********************************"
-source flask/bin/activate
+source flask-mongo/bin/activate
 # alias activate=". flask/bin/activate"
 
 echo 
