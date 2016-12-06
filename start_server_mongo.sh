@@ -20,7 +20,7 @@ echo
 echo "***********************************"
 echo "Installing server prerequisites"
 echo "***********************************"
-pip install -r requirements-server.txt
+pip install -r requirements-server-mongo.txt
 
 echo 
 echo
