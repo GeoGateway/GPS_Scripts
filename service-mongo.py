@@ -1,4 +1,3 @@
-# mongo.py
 #==========================================================================
 # Starts the service on port 5000 that responds to HTTP get request.
 # The service connects to mongodb which is running on port27017. 
@@ -24,6 +23,8 @@ from flask.ext.jsonpify import jsonify
 import json
 from datetime import datetime
 
+import os 
+
 app = Flask(__name__)
 
 database_name = 'GPS_UNR_SPLICE'
@@ -31,6 +32,10 @@ app.config['MONGO_DBNAME'] = database_name
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/'+database_name
 
 mongo = PyMongo(app)
+
+# http://stackoverflow.com/questions/4534438/typeerror-module-object-is-not-callable
+import PythonRDAHMM.properties
+
 
 @app.route('/'+ database_name+'/time_series', methods=['GET'])
 def get_data_in_bounding_box():
@@ -145,6 +150,28 @@ def get_station_meta_data():
 
 	for i in cursor_meta_stations:
 	    output=i
+
+	# Get the end date when database was created
+	for i in mongo.db.collections_meta_network.find():
+	    end_date = i['end_date']
+	    dataSet = i['data_source']
+
+	# Read the dygraph file in a string
+	dygraph_file_path = os.path.join(PythonRDAHMM.properties.properties('eval_path'), \
+		dataSet,'daily_project_'+ station_id_to_find+'_'+ end_date)
+
+	for file in os.listdir(dygraph_file_path):
+		if file.endswith(".js"):
+			with open(os.path.join(dygraph_file_path, file), 'rb') as js_file:
+				dygraphs=js_file.read()
+# Temp fix, good fix http://stackoverflow.com/questions/12394622/does-jquery-ajax-or-load-allow-for-responsetype-arraybuffer
+			dy_list = dygraphs.split('}')
+			output['d_0'] = dy_list[0]
+			output['d_1'] = dy_list[1]
+			output['d_2'] = dy_list[2]
+			output['d_3'] = dy_list[3]
+			output['d_4'] = dy_list[4]
+			output['d_5'] = dy_list[5]
 
 	return jsonify(output)
 
