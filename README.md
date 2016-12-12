@@ -13,6 +13,7 @@ The deployment is divided into 2 parts-
 For first part you will need-  
 1. [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)    
 2. [Python2.7](https://www.python.org/download/releases/2.7/)  
+3. [Pip] (https://pypi.python.org/pypi/pip)
 
 For the second part (backend) please make sure the following steps are carried out-      
 
@@ -67,30 +68,33 @@ Installation
   ```shell  
   tmux
   ```  
-9. Start mongoDB by-  
-
-  ```shell
-  sudo service mongod start
-  ```  
-  Alternatively you can specify the mongodb database path by  
-  
-  ```shell
-  mongod --dbpath /mnt/data/MongoDB
-  ```  
-10. Detach from the tmux session by pressing together Control, B and D key.  
-11. Start a new tmux session by  
-
-  ```shell  
-  tmux
-  ```   
-12. Execute the runAll.sh file. It will load the data to mongoDB and start the server. 
+9. Execute the start_server_mongo.sh file. It will start the server, however there is no database generated. 
 
  ```shell 
-  source runAll.sh
+  source start_server_mongo.sh
   ```  
-10. You can detach from the tmux session now and let the server run continously by pressing together Control, B and D key.
- 
+10. Detach from the tmux session and let the server run continously by pressing together Control, B and D keys.  
+11. To generate the database first add the model files to the RDAHMM/Model folder  
+  For eg:  
+  
+  ```shell
+  rsync -au --progress -e "ssh -i ~/.ssh/geo-gateway.pem" \
+       /media/hru/Data/_Active_Projects/IS/RDAHMM/Model/UNR_SPLICE.tar.gz \
+       root@ec2-54-85-163-109.compute-1.amazonaws.com:
+  ```  
+12. Start a new tmux session by  
 
+  ```shell
+  tmux
+  ```  
+13.  The data can be added to the database by  
+
+  ```shell
+  sh PythonRDAHMM/cron_rdahmm_unr_all.sh
+  ```  
+14. Detach from the tmux session by pressing together Control, B and D key.  
+
+ 
 Author Information
 ------------------
 
