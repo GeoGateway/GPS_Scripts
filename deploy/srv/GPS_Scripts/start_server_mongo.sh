@@ -25,6 +25,7 @@ echo
 echo "***********************************"
 echo "Creating virtual environment"
 echo "***********************************"
+cd ..
 virtualenv flask-mongo --no-site-packages
 
 echo 
