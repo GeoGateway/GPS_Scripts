@@ -1,0 +1,12 @@
+---
+# tasks file
+- include: backend-prerequisites.yml  
+
+- include: backend-tmux.yml
+
+- include: git.yml
+
+- include: mongodb.yml
+
+- include: backend-upgrade_python.yml
+

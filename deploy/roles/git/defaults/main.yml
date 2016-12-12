@@ -1,0 +1,5 @@
+---
+# defaults file for git
+download_dir: /usr/src/
+git_version: git-2.7.4
+git_dir: "{{ download_dir }}{{ git_version }}"

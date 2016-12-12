@@ -1,0 +1,10 @@
+---
+- name: install prerequites for backend
+  hosts: backend
+  become: yes
+  tasks:
+  - name: upgrade system to latest packages
+    yum: name='*' state=latest
+  - name: install laplack
+    yum: name=lapack-devel state=latest
+

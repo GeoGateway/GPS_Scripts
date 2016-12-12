@@ -1,0 +1,11 @@
+---
+- name: install tmux on backend
+  hosts: backend
+  become: yes
+  tasks:
+    - name: install epel
+      yum: name=epel-release state=latest
+    - name: update system
+      yum: name='*' state=latest
+    - name: install tmux
+      yum: name=tmux state=latest

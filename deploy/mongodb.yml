@@ -1,0 +1,15 @@
+---
+- name: install mongodb to backend
+  hosts: backend
+  become: yes
+  tasks:
+    - name: copy mongodb repository configuration file
+      copy:
+        src: srv/mongodb-org-3.0.repo
+        dest: /etc/yum.repos.d/mongodb-org-3.0.repo
+        owner: root
+        group: root
+        mode: 0644
+    - name: install mongodb
+      command: yum install -y mongodb-org-3.0.13 mongodb-org-server-3.0.13 mongodb-org-shell-3.0.13 mongodb-org-mongos-3.0.13 mongodb-org-tools-3.0.13
+
