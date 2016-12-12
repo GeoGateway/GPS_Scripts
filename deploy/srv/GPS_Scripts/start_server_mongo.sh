@@ -23,15 +23,6 @@ chmod -R 777 rdahmm3
 echo 
 echo
 echo "***********************************"
-echo "Adding data to MongoDB"
-echo "***********************************"
-cd ../
-python PythonRDAHMM/create_mongodb.py UNR_SPLICE
-
-
-echo 
-echo
-echo "***********************************"
 echo "Creating virtual environment"
 echo "***********************************"
 virtualenv flask-mongo --no-site-packages
