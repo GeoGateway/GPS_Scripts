@@ -8,7 +8,7 @@ python PythonRDAHMM/unr_splice.py
 
 python PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
 
-python PythonRDAHMM/create_cassandra_db.py UNR_SPLICE
+#python PythonRDAHMM/create_cassandra_db.py UNR_SPLICE
 python PythonRDAHMM/create_mongodb.py UNR_SPLICE
 
 

@@ -9,6 +9,8 @@
       command: wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
     - name: extract python
       command: tar -xf Python-2.7.12.tgz
+    - name: install libsqlite3-dev for sqlite3
+      yum: name=sqlite-devel state=latest
     - name: configure python
       shell: chdir="{{ python_dir }}" ./configure --enable-loadable-sqlite-extensions && make && make install
     - name: update yum to old python to prevent it from breaking
