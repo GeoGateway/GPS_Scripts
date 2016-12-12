@@ -8,17 +8,9 @@ pip install -r requirements.txt
 echo 
 echo
 echo "***********************************"
-echo "Starting MongoDB"
+echo "Not Starting MongoDB"
 echo "***********************************"
-sudo service mongod start
-
-echo 
-echo
-echo "***********************************"
-echo "Adding data to MongoDB"
-echo "***********************************"
-python PythonRDAHMM/create_mongodb.py UNR_SPLICE
-
+#sudo service mongod start
 
 echo 
 echo
@@ -27,6 +19,14 @@ echo "Changing permissions to Executables"
 echo "***********************************"
 cd /root/GPS_Scripts/RDAHMM
 chmod -R 777 rdahmm3
+
+echo 
+echo
+echo "***********************************"
+echo "Adding data to MongoDB"
+echo "***********************************"
+python PythonRDAHMM/create_mongodb.py UNR_SPLICE
+
 
 echo 
 echo

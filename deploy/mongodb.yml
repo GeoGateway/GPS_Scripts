@@ -11,5 +11,6 @@
         group: root
         mode: 0644
     - name: install mongodb
-      command: yum install -y mongodb-org-3.0.13 mongodb-org-server-3.0.13 mongodb-org-shell-3.0.13 mongodb-org-mongos-3.0.13 mongodb-org-tools-3.0.13
-
+      command: sudo yum install -y mongodb-org
+    - name: start mongodb
+      command: sudo service mongod start

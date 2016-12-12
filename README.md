@@ -67,7 +67,23 @@ Installation
   ```shell  
   tmux
   ```  
-9. Execute the runAll.sh file. It will load the data to mongoDB and start the server. 
+9. Start mongoDB by-  
+
+  ```shell
+  sudo service mongod start
+  ```  
+  Alternatively you can specify the mongodb database path by  
+  
+  ```shell
+  mongod --dbpath /mnt/data/MongoDB
+  ```  
+10. Detach from the tmux session by pressing together Control, B and D key.  
+11. Start a new tmux session by  
+
+  ```shell  
+  tmux
+  ```   
+12. Execute the runAll.sh file. It will load the data to mongoDB and start the server. 
 
  ```shell 
   source runAll.sh
@@ -79,4 +95,5 @@ Author Information
 ------------------
 
 Hrushikesh Dhumal (hrushikesh.dhumal@gmail.com)
+
 
