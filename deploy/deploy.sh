@@ -1,9 +1,16 @@
 #!/bin/bash
 
+echo 
+echo
 echo "***********************************"
-echo "Installing pre requisites"
+echo "Installing prerequisites"
 echo "***********************************"
-pip install -r requirements-deploy.txt 
+sudo apt-get update
+sudo apt-get install python
+sudo apt-get python-pip
+pip install --upgrade pip
+pip install virtualenv
+
 
 echo 
 echo
@@ -19,13 +26,17 @@ echo "Enabling virtual environment"
 echo "***********************************"
 source deploy/bin/activate
 
+echo "***********************************"
+echo "Installing pre requisites"
+echo "***********************************"
+pip install -r requirements-deploy.txt 
+
 echo 
 echo
 echo "***********************************"
 echo "Installing simplejson on server"
 echo "***********************************"
 ansible backend -i inventory -m raw -a "sudo yum install -y python-simplejson"
-
 
 
 echo "***********************************"
