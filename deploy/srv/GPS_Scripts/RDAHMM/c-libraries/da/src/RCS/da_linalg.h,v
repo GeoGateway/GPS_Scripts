@@ -1,0 +1,1517 @@
+head	1.30;
+access;
+symbols
+	Initial:1.1;
+locks
+	granat:1.30; strict;
+comment	@ * @;
+
+
+1.30
+date	2001.01.02.18.46.30;	author granat;	state Exp;
+branches;
+next	1.29;
+
+1.29
+date	98.07.02.01.15.48;	author granat;	state Exp;
+branches;
+next	1.28;
+
+1.28
+date	98.06.29.22.11.37;	author granat;	state Exp;
+branches;
+next	1.27;
+
+1.27
+date	98.05.07.23.56.59;	author granat;	state Exp;
+branches;
+next	1.26;
+
+1.26
+date	98.05.01.17.42.52;	author granat;	state Exp;
+branches;
+next	1.25;
+
+1.25
+date	97.10.21.14.33.16;	author granat;	state Exp;
+branches;
+next	1.24;
+
+1.24
+date	97.09.10.14.50.50;	author granat;	state Exp;
+branches;
+next	1.23;
+
+1.23
+date	97.09.04.20.22.54;	author granat;	state Exp;
+branches;
+next	1.22;
+
+1.22
+date	97.08.11.18.32.12;	author granat;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	97.06.20.22.10.24;	author granat;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	97.06.05.18.54.37;	author granat;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	97.05.06.23.05.49;	author granat;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	97.05.06.22.23.51;	author agray;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	97.05.06.21.19.29;	author granat;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	97.04.05.19.10.43;	author granat;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	97.03.27.18.10.54;	author granat;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	97.03.15.17.51.32;	author granat;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	97.02.14.00.03.37;	author granat;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	97.01.29.21.31.04;	author agray;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	96.10.31.02.16.35;	author agray;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	96.09.27.17.55.46;	author agray;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	96.07.15.18.51.02;	author agray;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	96.07.13.01.25.31;	author agray;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	96.07.11.18.12.16;	author agray;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	96.04.09.02.50.11;	author agray;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	96.04.09.02.44.04;	author agray;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	96.02.29.02.33.55;	author agray;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	96.02.21.03.51.43;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	96.02.21.00.37.41;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.02.06.03.28.23;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@Header file for da_linalg.c.
+AG
+@
+
+
+1.30
+log
+@check-in before major revision transfered from laptop
+@
+text
+@/*******************************************************************************
+MODULE HEADER:
+da_linalg.h
+*******************************************************************************/
+
+#ifndef _DA_LINALG_H_
+#define _DA_LINALG_H_
+/* Protects from multiple inclusion. */
+
+#ifndef lint
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.29 1998/07/02 01:15:48 granat Exp granat $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_linalg.h,v $
+ * Revision 1.29  1998/07/02 01:15:48  granat
+ * added prototypes for fast matrix multiply
+ *
+ * Revision 1.28  1998/06/29 22:11:37  granat
+ * added prototype for LSQR method of Paige and Saunders
+ *
+ * Revision 1.27  1998/05/07 23:56:59  granat
+ * removed prototypes for functions moved to da_util
+ *
+ * Revision 1.26  1998/05/01 17:42:52  granat
+ * edited prototypes to match major changes in da_linalg.c
+ * added comments and grouped functions
+ *
+ * Revision 1.25  1997/10/21 14:33:16  granat
+ * added prototypes to match changes in da_linalg.c
+ *
+ * Revision 1.24  1997/09/10 14:50:50  granat
+ * added fast_set_mat macros
+ *
+ * Revision 1.23  1997/09/04 20:22:54  granat
+ * added protypes for variants of sum_mat
+ * added prototypes for fast_copy_mat_section and variants
+ *
+ * Revision 1.22  1997/08/11 18:32:12  granat
+ * added prototype for set_imat
+ *
+ * Revision 1.21  1997/06/20 22:10:24  granat
+ * changed prototype for transpose function
+ *
+ * Revision 1.20  1997/06/05 18:54:37  granat
+ * added flip_vector, changed prototypes to match with conventions, some cosmetic changes
+ *
+ * Revision 1.19  1997/05/06 23:05:49  granat
+ * fixed bugs in memory setting functions, added fast_zero_mat and other
+ * similar macros
+ *
+ * Revision 1.18  1997/05/06 22:23:51  agray
+ * added some things from dp cooltool.
+ *
+ * Revision 1.17  1997/05/06 21:19:29  granat
+ * added prototype for copy_mat_section()
+ *
+ * Revision 1.16  1997/04/05 19:10:43  granat
+ * added prototypes for sum_mat() and norm_sum_mat()
+ * adjust prototypes of functions so that they all follow input parameter conventions
+ *
+ * Revision 1.15  1997/03/27 18:10:54  granat
+ * added prototypes for transpose_in_situ_alloc_matrix(),
+ * transpose_in_situ_sqr_matrix(), flip_left_right_matrix(),
+ * flip_top_bottom_matrix()
+ *
+ * Revision 1.14  1997/03/15 17:51:32  granat
+ * Added prototypes for flip_left_right_matrix() and flip_top_bottom_matrix()
+ *
+ * Revision 1.13  1997/02/14 00:03:37  granat
+ * changed prototype of transpose to transpose_matrix
+ * added prototype for transpose_imatrix
+ *
+ * Revision 1.12  1997/01/29 21:31:04  agray
+ * new format.
+ * also added copy_sub_vec_to_vec().
+ *
+ * Revision 1.11  1996/10/31 02:16:35  agray
+ * changed .h and .c formats throughout library;
+ * some reorganizing between modules;
+ * added some functions from HMM project.
+ *
+ * Revision 1.10  1996/09/27 17:55:46  agray
+ * removed k&r prototypes so that this library can be linked with c++ code.
+ *
+ * Revision 1.9  1996/07/15 18:51:02  agray
+ * updated k&r prototypes.
+ *
+ * Revision 1.8  1996/07/13 01:25:31  agray
+ * moved out print/write_row/col/irow/icol() to da_data module
+ *
+ * Revision 1.7  1996/07/11 18:12:16  agray
+ * moved out read_gauss_parms(), write_gauss_parms() to da_prob module;
+ * added add_mat(), subtract_mat(), invert_mat_copy(), det_copy(),
+ * restrict_illcond_matrix(), scalar_mult/div/add/subtract_mat/vec(), set_mat(),
+ * set_vec(), mult/div_vec_elt(), sum_vec(), max/min_vec(), arg_max/min_vec(),
+ * copy_vec().
+ *
+ * Revision 1.6  1996/04/09 02:50:11  agray
+ * added print_irow(), print_icol(), write_irow(), write_icol().
+ * ag
+ *
+ * Revision 1.5  1996/04/09  02:44:04  agray
+ * should have gotten checked in with da_linalg.c's changes,
+ * long ago.
+ * ag
+ *
+ * Revision 1.4  1996/02/29  02:33:55  agray
+ * moved write_bin_matrix() and read_bin_matrix() to da_data module
+ * ag
+ *
+ * Revision 1.3  1996/02/21 03:51:43  agray
+ * added pca().
+ * ag
+ *
+ * Revision 1.2  1996/02/21  00:37:41  agray
+ * added write_bin_matrix() and read_bin_matrix()
+ * ag
+ *
+ * Revision 1.1  1996/02/06  03:28:23  agray
+ * Initial revision
+ * */
+
+/*==============================================================================
+Data Structures
+==============================================================================*/
+
+/*==============================================================================
+Constants, Macros
+==============================================================================*/
+
+/*==============================================================================
+Variables
+==============================================================================*/
+
+/*==============================================================================
+Function Declarations
+==============================================================================*/
+
+/* norms of vectors and matrices */
+
+float norm_vec(float *v, int n);
+double norm_dvec(double *v, int n);
+
+float frobenius_norm_mat(float **m, int nr, int nc);
+double frobenius_norm_dmat(double **m, int nr, int nc);
+
+/* transpose of matrices */
+
+int transpose_matrix(float **a, int nr, int nc, float **a_trans);
+int transpose_dmatrix(double **a, int nr, int nc, double **a_trans);
+int transpose_imatrix(int **a, int nr, int nc, int **a_trans);
+int transpose_cmatrix(unsigned char **a, int nr, int nc, unsigned char **a_trans);
+
+int transpose_in_situ_alloc_matrix(float ***a, int nr, int nc, float *temp_vect,
+                                   char *mem_choice);
+int transpose_in_situ_alloc_dmatrix(double ***a, int nr, int nc, 
+		                    double *temp_vect, char *mem_choice);
+int transpose_in_situ_alloc_imatrix(int ***a, int nr, int nc, int *temp_vect, 
+                                    char *mem_choice);
+int transpose_in_situ_alloc_cmatrix(unsigned char ***a, int nr, int nc, 
+		                    unsigned char *temp_vect, char *mem_choice);
+
+int transpose_in_situ_sqr_matrix(float **a, int n);
+int transpose_in_situ_sqr_dmatrix(double **a, int n);
+int transpose_in_situ_sqr_imatrix(int **a, int n);
+int transpose_in_situ_sqr_cmatrix(unsigned char **a, int n);
+
+/* inversion and determinants of matrices */
+
+int invert_alloc_mat(float **mat, int n, float **inv);
+int invert_alloc_dmat(double **mat, int n, double **inv);
+int invert_copy_alloc_mat(float **mat, int n, float **inv);
+int invert_copy_alloc_dmat(double **mat, int n, double **inv);
+int jacobi_invert_copy_alloc_dmat(double **mat, int n, double **inv);
+float det_alloc_mat(float **mat, int n);
+double det_alloc_dmat(double **mat, int n);
+float det_copy_alloc_mat(float **mat, int nc);
+double det_copy_alloc_dmat(double **mat, int nc);
+
+/* conditioning of matrices */
+
+int restrict_illcond_matrix(float **mat, int dim, float min_diag);
+int restrict_illcond_dmatrix(double **mat, int dim, double min_diag);
+
+/* distance metrics */
+
+float euclid_dist_vec(float *v1, float *v2, int n);
+double euclid_dist_dvec(double *v1, double *v2, int n);
+
+/* basic vector and matrix operations */
+
+int right_mult_matrix(float **m, int nr, int nc, float *v, float *result);
+int right_mult_dmatrix(double **m, int nr, int nc, double *v, double *result);
+
+int left_mult_matrix(float **m, int nr, int nc, float *v, float *result);
+int left_mult_dmatrix(double **m, int nr, int nc, double *v, double *result);
+
+int mat_mult(float **a, int nra, int nca, float **b, int nrb, int ncb, 
+             float **c);
+int dmat_mult(double **a, int nra, int nca, double **b, int nrb, int ncb, 
+              double **c);
+int fast_mat_mult(float **A, int nra, int nca, float **B, int nrb, int ncb, 
+                  float **C);
+int fast_dmat_mult(double **A, int nra, int nca, double **B, int nrb, int ncb, 
+                   double **C);
+
+int add_mat(float **m1, float **m2, float **m3, int nr, int nc);
+int add_dmat(double **m1, double **m2, double **m3, int nr, int nc);
+
+int subtract_mat(float **m1, float **m2, float **m3, int nr, int nc);
+int subtract_dmat(double **m1, double **m2, double **m3, int nr, int nc);
+
+int add_vec(float *v1, float *v2, float *v3, int n);
+int add_dvec(double *v1, double *v2, double *v3, int n);
+
+int subtract_vec(float *v1, float *v2, float *v3, int n);
+int subtract_dvec(double *v1, double *v2, double *v3, int n);
+
+float dot_product_vec(float *x, float *y, int n);
+double dot_product_dvec(double *x, double *y, int n);
+
+int outer_product_vec(float *x, float *y, int n, float **prod);
+int outer_product_dvec(double *x, double *y, int n, double **prod);
+
+/* scalar operations on vectors and matrices */
+
+int scalar_mult_vec(float *v, int n, float constant);
+int scalar_mult_dvec(double *v, int n, double constant);
+
+int scalar_div_vec(float *v, int n, float constant);
+int scalar_div_dvec(double *v, int n, double constant);
+
+int scalar_add_vec(float *v, int n, float constant);
+int scalar_add_dvec(double *v, int n, double constant);
+
+int scalar_subtract_vec(float *v, int n, float constant);
+int scalar_subtract_dvec(double *v, int n, double constant);
+
+int scalar_mult_mat(float **m, int nr, int nc, float constant);
+int scalar_mult_dmat(double **m, int nr, int nc, double constant);
+
+int scalar_div_mat(float **m, int nr, int nc, float constant);
+int scalar_div_dmat(double **m, int nr, int nc, double constant);
+
+int scalar_add_mat(float **m, int nr, int nc, float constant);
+int scalar_add_dmat(double **m, int nr, int nc, double constant);
+
+int scalar_subtract_mat(float **m, int nr, int nc, float constant);
+int scalar_subtract_dmat(double **m, int nr, int nc, double constant);
+
+/* element-wise operations on vectors and matrices */
+
+int mult_vec_elt(float *v1, float *v2, float *v3, int n);
+int mult_dvec_elt(double *v1, double *v2, double *v3, int n);
+
+int div_vec_elt(float *v1, float *v2, float *v3, int n);
+int div_dvec_elt(double *v1, double *v2, double *v3, int n);
+
+int mult_mat_elt(float **m1, float **m2, float **m3, int nr, int nc);
+int mult_dmat_elt(double **m1, double **m2, double **m3, int nr, int nc);
+
+int div_mat_elt(float **m1, float **m2, float **m3, int nr, int nc);
+int div_dmat_elt(double **m1, double **m2, double **m3, int nr, int nc);
+
+/* other operations on matrices and vectors */
+
+int pca_mat(float **A, int nr, int nc, float *w, float **VT);
+int pca_alloc_mat(float **A, int nr, int nc, float *w, float **VT);
+
+/* solving systems of linear equations */
+
+int lsqr_mat(float **A, int nr, int nc, float *b, float *x, float *u,
+             float *v, float *w, float atol, float btol, float conlim);
+
+int lsqr_dmat(double **A, int nr, int nc, double *b, double *x, double *u,
+              double *v, double *w, double atol, double btol, double conlim);
+
+#endif /* _DA_LINALG_H_ */
+@
+
+
+1.29
+log
+@added prototypes for fast matrix multiply
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.28 1998/06/29 22:11:37 granat Exp $";
+d17 3
+d173 1
+d175 2
+d178 1
+d180 1
+d185 1
+d270 1
+@
+
+
+1.28
+log
+@added prototype for LSQR method of Paige and Saunders
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.27 1998/05/07 23:56:59 granat Exp granat $";
+d17 3
+d195 4
+@
+
+
+1.27
+log
+@removed prototypes for functions moved to da_util
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.26 1998/05/01 17:42:52 granat Exp granat $";
+d17 3
+d253 9
+a261 1
+int pca(float **A, int nr, int nc, float *w, float **VT);
+@
+
+
+1.26
+log
+@edited prototypes to match major changes in da_linalg.c
+added comments and grouped functions
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.25 1997/10/21 14:33:16 granat Exp granat $";
+d17 4
+a123 69
+/*******************************************************************************
+FAST_SET_VEC
+Sets each of the values of a vector to a specified number, using a more direct
+function rather than a normal loop.
+
+nc is the length of the vector (num. cols).
+v is the input vector.
+constant is the amount to set all the values to.
+AG
+*******************************************************************************/
+#define fast_set_vec(v, nc, constant)  (memset(&v[1], constant, nc*sizeof(float)))
+
+
+/*******************************************************************************
+ZERO_VEC
+Sets each of the values of a vector to zero.
+
+nc is the length of the vector (num. cols).
+v is the input vector.
+AG
+*******************************************************************************/
+#define zero_vec(v, nc)   (set_vec(v, nc, 0.0))
+
+
+/*******************************************************************************
+FAST_ZERO_VEC
+Sets each of the values of a vector to zero, using a more direct function 
+rather than a normal loop.
+
+nc is the length of the vector (num. cols).
+v is the input vector.
+AG
+*******************************************************************************/
+#define fast_zero_vec(v, nc)  (memset(&v[1], 0, nc*sizeof(float)))
+#define fast_zero_ivec(v, nc)  (memset(&v[1], 0, nc*sizeof(int)))
+#define fast_zero_dvec(v, nc)  (memset(&v[1], 0, nc*sizeof(double)))
+#define fast_zero_cvec(v, nc)  (memset(&v[1], 0, nc))
+
+
+/*******************************************************************************
+FAST_SET_MAT
+Sets each of the values of a matrix to specified number, using a more direct 
+function rather than a normal loop.
+ 
+nr is the number of rows of the matrix.
+nc is the number of cols of the matrix.
+m is the input matrix.
+*******************************************************************************/
+#define fast_set_mat(m, nr, nc, constant)  (memset(&m[1][1], constant, (nr*nc)*sizeof(float)))
+#define fast_set_imat(m, nr, nc, constant)  (memset(&m[1][1], constant, (nr*nc)*sizeof(int)))
+#define fast_set_dmat(m, nr, nc, constant)  (memset(&m[1][1], constant, (nr*nc)*sizeof(double)))
+#define fast_set_cmat(m, nr, nc, constant)  (memset(&m[1][1], constant, nr*nc))
+
+
+/*******************************************************************************
+FAST_ZERO_MAT
+Sets each of the values of a matrix to zero, using a more direct function
+rather than a normal loop.
+ 
+nr is the number of rows of the matrix.
+nc is the number of cols of the matrix.
+m is the input matrix.
+*******************************************************************************/
+#define fast_zero_mat(m, nr, nc)  (memset(&m[1][1], 0, (nr*nc)*sizeof(float)))
+#define fast_zero_imat(m, nr, nc)  (memset(&m[1][1], 0, (nr*nc)*sizeof(int)))
+#define fast_zero_dmat(m, nr, nc)  (memset(&m[1][1], 0, (nr*nc)*sizeof(double)))
+#define fast_zero_cmat(m, nr, nc)  (memset(&m[1][1], 0, nr*nc))
+
+
+d140 1
+a140 90
+/* sums of vectors and matrices */
+
+float sum_vec(float *v, int n);
+double sum_dvec(double *v, int n);
+int sum_ivec(int *v, int n);
+int sum_cvec(unsigned char *v, int n);
+
+float sum_mat(float **m, int nr, int nc);
+double sum_dmat(double **m, int nr, int nc);
+int sum_imat(int **m, int nr, int nc);
+int sum_cmat(unsigned char **m, int nr, int nc);
+
+int sum_mat_rows(float **m, float *v, int nr, int nc);
+int sum_dmat_rows(double **m, double *v, int nr, int nc);
+int sum_imat_rows(int **m, int *v, int nr, int nc);
+int sum_cmat_rows(unsigned char **m, int *v, int nr, int nc);
+
+/* normalization by the sum of vectors and matrices */
+
+float normalize_vec(float *v, int n);
+double normalize_dvec(double *v, int n);
+
+float normalize_mat(float **m, int nr, int nc);
+double normalize_dmat(double **m, int nr, int nc);
+
+int norm_sum_mat_rows(float **m, int nr, int nc);
+int norm_sum_dmat_rows(double **m, int nr, int nc);
+
+/* log sum of vectors and matrices */
+
+float sum_log_vec(float *v, int n);
+double sum_log_dvec(double *v, int n);
+
+float sum_log_mat(float **m, int nr, int nc);
+double sum_log_dmat(double **m, int nr, int nc);
+
+/* minima and maxima of vectors and matrices */
+
+float max_vec(float *v, int n);
+double max_dvec(double *v, int n);
+int max_ivec(int *v, int n);
+unsigned char max_cvec(unsigned char *v, int n);
+
+float min_vec(float *v, int n);
+double min_dvec(double *v, int n);
+int min_ivec(int *v, int n);
+unsigned char min_cvec(unsigned char *v, int n);
+
+float max_mat(float **m, int nr, int nc);
+double max_dmat(double **m, int nr, int nc);
+int max_imat(int **m, int nr, int nc);
+unsigned char max_cmat(unsigned char **m, int nr, int nc);
+
+float min_mat(float **m, int nr, int nc);
+double min_dmat(double **m, int nr, int nc);
+int min_imat(int **m, int nr, int nc);
+int min_cmat(unsigned char **m, int nr, int nc);
+
+float range_vec(float *v, int n);
+double range_dvec(double *v, int n);
+
+float range_mat(float **m, int nr, int nc);
+double range_dmat(double **m, int nr, int nc);
+
+int scale_vec(float *v, int n);
+int scale_dvec(double *v, int n);
+
+int scale_mat(float **m, int nr, int nc);
+int scale_dmat(double **m, int nr, int nc);
+
+int scale_range_vec(float *v, int n, float minval, float maxval);
+int scale_range_dvec(double *v, int n, double minval, double maxval);
+
+int scale_range_mat(float **m, int nr, int nc, float minval, float maxval);
+int scale_range_dmat(double **m, int nr, int nc, double minval, double maxval);
+
+int arg_max_vec(float *v, int n);
+int arg_max_dvec(double *v, int n);
+int arg_max_ivec(int *v, int n);
+int arg_max_cvec(unsigned char *v, int n);
+
+int arg_min_vec(float *v, int n);
+int arg_min_dvec(double *v, int n);
+int arg_min_ivec(int *v, int n);
+int arg_min_cvec(unsigned char *v, int n);
+
+int minmax_of_cols(float **mat, int nr, int nc, float *minval, float *maxval, 
+                   float *range);
+
+/* transposes and element reorderings of vectors and matrices */
+a160 15
+int flip_vector(float *v, int n);
+int flip_dvector(double *v, int n);
+int flip_ivector(int *v, int n);
+int flip_cvector(unsigned char *v, int n);
+
+int flip_left_right_matrix(float **a, int nr, int nc);
+int flip_left_right_dmatrix(double **a, int nr, int nc);
+int flip_left_right_imatrix(int **a, int nr, int nc);
+int flip_left_right_cmatrix(unsigned char **a, int nr, int nc);
+
+int flip_top_bottom_matrix(float **a, int nr, int nc);
+int flip_top_bottom_dmatrix(double **a, int nr, int nc);
+int flip_top_bottom_imatrix(int **a, int nr, int nc);
+int flip_top_bottom_cmatrix(unsigned char **a, int nr, int nc);
+
+a167 68
+/* copying and writing vectors and matrices and sections thereof */
+
+int grab_row_mat(float **mat, int index, int nc, float *vec);
+int grab_row_dmat(double **mat, int index, int nc, double *vec);
+int grab_row_imat(int **mat, int index, int nc, int *vec);
+int grab_row_cmat(unsigned char **mat, int index, int nc, unsigned char *vec);
+
+int grab_col_mat(float **mat, int index, int nr, float *vec);
+int grab_col_dmat(double **mat, int index, int nr, double *vec);
+int grab_col_imat(int **mat, int index, int nr, int *vec);
+int grab_col_cmat(unsigned char **mat, int index, int nr, unsigned char *vec);
+
+int copy_mat_section(float **a, float **b, int a_tlr, int a_tlc, int b_tlr,
+                      int b_tlc, int nr, int nc);
+int copy_imat_section(int **a, int **b, int a_tlr, int a_tlc, int b_tlr,
+                       int b_tlc, int nr, int nc);
+int copy_cmat_section(unsigned char **a, unsigned char **b, int a_tlr, 
+                       int a_tlc, int b_tlr, int b_tlc, int nr, int nc);
+int copy_dmat_section(double **a, double **b, int a_tlr, int a_tlc, int b_tlr,
+                       int b_tlc, int nr, int nc);
+
+int overwrite_row_mat(float **mat, int index, int nc, float *vec);
+int overwrite_row_dmat(double **mat, int index, int nc, double *vec);
+int overwrite_row_imat(int **mat, int index, int nc, int *vec);
+int overwrite_row_cmat(unsigned char **mat, int index, int nc, 
+		       unsigned char *vec);
+
+int overwrite_col_mat(float **mat, int index, int nr, float *vec);
+int overwrite_col_dmat(double **mat, int index, int nr, double *vec);
+int overwrite_col_imat(int **mat, int index, int nr, int *vec);
+int overwrite_col_cmat(unsigned char **mat, int index, int nr, 
+                       unsigned char *vec);
+
+int set_mat(float **m, int nr, int nc, float constant);
+int set_imat(int **m, int nr, int nc, int constant);
+int set_vec(float *v, int n, float constant);
+int set_ivec(int *v, int n, int constant);
+
+int set_diag_mat(float **m, int n, float constant);
+int set_diag_dmat(double **m, int n, double constant);
+int set_diag_imat(int **m, int n, int constant);
+int set_diag_cmat(unsigned char **m, int n, unsigned char constant);
+
+int set_band_diag_mat(float **m, int n, int width, float constant);
+int set_band_diag_dmat(double **m, int n, int width, double constant);
+int set_band_diag_imat(int **m, int n, int width, int constant);
+int set_band_diag_cmat(unsigned char **m, int n, int width, 
+		       unsigned char constant);
+
+int copy_mat(float **a, float **b, int nr, int nc);
+int copy_imat(int **a, int **b, int nr, int nc);
+int copy_dmat(double **a, double **b, int nr, int nc);
+int copy_cmat(unsigned char **a, unsigned char **b, int nr, int nc);
+
+int copy_vec(float *a, float *b, int nc);
+int copy_ivec(int *a, int *b, int nc);
+int copy_dvec(double *a, double *b, int nc);
+int copy_cvec(unsigned char *a, unsigned char *b, int nc);
+
+int copy_sub_vec_to_vec(float *sub_vec, float *vec, int sub_vec_size, 
+                        int vec_size, int vec_start_pos);
+int copy_sub_dvec_to_dvec(double *sub_vec, double *vec, int sub_vec_size, 
+                          int vec_size, int vec_start_pos);
+int copy_sub_ivec_to_ivec(int *sub_vec, int *vec, int sub_vec_size, 
+                          int vec_size, int vec_start_pos);
+int copy_sub_cvec_to_cvec(unsigned char *sub_vec, unsigned char *vec, 
+                          int sub_vec_size, int vec_size, int vec_start_pos);
+
+a247 11
+/* composite structures */
+
+float ***set_of_matrices(int num_mats, int num_rows, int num_cols);
+void free_set_of_matrices(float ***mat_set, int num_mats, int num_rows, 
+                          int num_cols);
+
+float ****set_of_sets_of_matrices(int num_sets, int num_mats, int num_rows, 
+                                  int num_cols);
+void free_set_of_sets_of_matrices(float ****mat_set_set, int num_sets, 
+                                  int num_mats, int num_rows, int num_cols);
+
+a250 1
+
+@
+
+
+1.25
+log
+@added prototypes to match changes in da_linalg.c
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.24 1997/09/10 14:50:50 granat Exp granat $";
+d17 3
+d130 1
+a130 1
+#define fast_set_vec(v, nc, constant)  ( memset(&v[1], constant, nc*sizeof(float)) )
+d141 1
+a141 1
+#define zero_vec(v, nc)   ( set_vec(v, nc, 0.0) )
+d153 4
+a156 4
+#define fast_zero_vec(v, nc)  ( memset(&v[1], 0, nc*sizeof(float)) )
+#define fast_zero_ivec(v, nc)  ( memset(&v[1], 0, nc*sizeof(int)) )
+#define fast_zero_dvec(v, nc)  ( memset(&v[1], 0, nc*sizeof(double)) )
+#define fast_zero_cvec(v, nc)  ( memset(&v[1], 0, nc) )
+d197 9
+a205 1
+/* basic unary operations on vectors and matrices */
+a206 2
+float norm(float *v, int n);
+double dnorm(double *v, int n);
+d208 9
+a216 3
+float sum_mat( float **m, int nr, int nc );
+float sum_imat( int **m, int nr, int nc );
+float sum_cmat( unsigned char **m, int nr, int nc );
+d218 12
+a229 2
+float norm_sum_vec(float *v, int n);
+float norm_sum_mat( float **m, int nr, int nc);
+d231 4
+d236 6
+d244 4
+d249 14
+d264 17
+d282 4
+d287 8
+a294 2
+int minmax_of_cols(float **mat, float *minval, float *maxval, 
+                   float *range, int numrows, int numcols);
+d297 1
+d299 2
+d303 7
+d311 9
+d321 4
+d326 43
+a368 17
+int invert_mat(float **mat, int nc, float **inv);
+int invert_mat_copy(float **mat, int nc, float **inv);
+float det(float **mat, int nc);
+float det_copy(float **mat, int nc);
+
+int grab_row(float **mat, int index, int nc, float *vec);
+int grab_col(float **mat, int index, int nr, float *vec);
+int copy_mat_section( float **a, float **b, int a_tlr, int a_tlc, int b_tlr,
+                      int b_tlc, int nr, int nc );
+int copy_imat_section( int **a, int **b, int a_tlr, int a_tlc, int b_tlr,
+                       int b_tlc, int nr, int nc );
+int copy_cmat_section( unsigned char **a, unsigned char **b, int a_tlr, 
+                       int a_tlc, int b_tlr, int b_tlc, int nr, int nc );
+int copy_dmat_section( double **a, double **b, int a_tlr, int a_tlc, int b_tlr,
+                       int b_tlc, int nr, int nc );
+int overwrite_row(float **mat, int index, int nc, float *vec);
+int overwrite_col(float **mat, int index, int nr, float *vec);
+d372 13
+a384 4
+int set_vec(float *v, int nc, float constant);
+int set_ivec(int *ivec, int nc, int constant);
+int set_diag_mat(float **mat, int dim, float constant);
+int set_band_diag_mat(float **mat, int dim, int width, float constant);
+d390 1
+d395 1
+d398 8
+d409 6
+a414 1
+/* basic binary operations on matrices and vectors */
+d416 5
+a420 1
+float euclid_dist(float *v1, float *v2, int length);
+a421 1
+int mat_vec_mult(float **m, int nr, int nc, float *v, float *u);
+d424 2
+d428 2
+d431 1
+d434 2
+d439 7
+a445 2
+float dot_product(float *x, float *y, int n);
+int outer_product(float *x, float *y, int nc, float **prod);
+d449 1
+d452 1
+d454 2
+d457 1
+d460 2
+d463 2
+d466 2
+d469 3
+d474 2
+d477 7
+@
+
+
+1.24
+log
+@added fast_set_mat macros
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.23 1997/09/04 20:22:54 granat Exp granat $";
+d17 3
+d197 1
+d249 3
+d253 3
+d274 1
+d279 6
+a284 4
+int scalar_mult_vec(float *v, int nc, float constant);
+int scalar_div_vec(float *v, int nc, float constant);
+int scalar_add_vec(float *v, int nc, float constant);
+int scalar_subtract_vec(float *v, int nc, float constant);
+@
+
+
+1.23
+log
+@added protypes for variants of sum_mat
+added prototypes for fast_copy_mat_section and variants
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.22 1997/08/11 18:32:12 granat Exp granat $";
+d17 4
+d154 15
+a233 8
+int fast_copy_mat_section( float **a, float **b, int a_tlr, int a_tlc, 
+                           int b_tlr, int b_tlc, int nr, int nc );
+int fast_copy_imat_section( int **a, int **b, int a_tlr, int a_tlc, 
+                            int b_tlr, int b_tlc, int nr, int nc );
+int fast_copy_cmat_section( unsigned char **a, unsigned char **b, int a_tlr, 
+                            int a_tlc, int b_tlr, int b_tlc, int nr, int nc );
+int fast_copy_dmat_section( double **a, double **b, int a_tlr, int a_tlc, 
+                            int b_tlr, int b_tlc, int nr, int nc );
+@
+
+
+1.22
+log
+@added prototype for set_imat
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.21 1997/06/20 22:10:24 granat Exp granat $";
+d17 3
+d177 2
+d209 14
+@
+
+
+1.21
+log
+@changed prototype for transpose function
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.20 1997/06/05 18:54:37 granat Exp granat $";
+d17 3
+d208 1
+@
+
+
+1.20
+log
+@added flip_vector, changed prototypes to match with conventions, some cosmetic changes
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.19 1997/05/06 23:05:49 granat Exp granat $";
+d17 3
+d114 1
+a114 1
+#define fast_set_vec(nc, v, constant)  ( memset(&v[1], constant, nc*sizeof(float)) )
+d125 1
+a125 1
+#define zero_vec(nc, v)   ( set_vec(nc, v, 0.0) )
+d137 4
+a140 4
+#define fast_zero_vec(nc, v)  ( memset(&v[1], 0, nc*sizeof(float)) )
+#define fast_zero_ivec(nc, v)  ( memset(&v[1], 0, nc*sizeof(int)) )
+#define fast_zero_dvec(nc, v)  ( memset(&v[1], 0, nc*sizeof(double)) )
+#define fast_zero_cvec(nc, v)  ( memset(&v[1], 0, nc) )
+d152 4
+a155 4
+#define fast_zero_mat(nr, nc, m)  (memset(&m[1][1], 0, (nr*nc)*sizeof(float)))
+#define fast_zero_imat(nr, nc, m)  (memset(&m[1][1], 0, (nr*nc)*sizeof(int)))
+#define fast_zero_dmat(nr, nc, m)  (memset(&m[1][1], 0, (nr*nc)*sizeof(double)))
+#define fast_zero_cmat(nr, nc, m)  (memset(&m[1][1], 0, nr*nc))
+d187 2
+a188 2
+int transpose_in_situ_alloc_matrix(float ***a, int nr, int nc, 
+                                   float *temp_vect);
+@
+
+
+1.19
+log
+@fixed bugs in memory setting functions, added fast_zero_mat and other
+similar macros
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.18 1997/05/06 22:23:51 agray Exp granat $";
+d17 4
+d176 1
+a176 1
+float range_vec(int n, float *v);
+d201 3
+a203 3
+int set_mat(int nr, int nc, float **m, float constant);
+int set_vec(int nc, float *v, float constant);
+int set_ivec(int nc, int *ivec, int constant);
+d218 1
+a218 1
+int mat_vec_mult(int nr, int nc, float **M, float *v, float *u);
+d222 2
+a223 2
+int add_mat(int nr, int nc, float **m1, float **m2, float **m3);
+int subtract_mat(int nr, int nc, float **m1, float **m2, float **m3);
+d225 2
+a226 2
+int add_vec(int n, float *v1, float *v2, float *v3);
+int subtract_vec(int n, float *v1, float *v2, float *v3);
+d228 2
+a229 2
+float dot_product(float *x, int n, float *y);
+int outer_product(int nc, float *x, float *y, float **prod);
+d231 9
+a239 9
+int scalar_mult_vec(int nc, float *v, float constant);
+int scalar_div_vec(int nc, float *v, float constant);
+int scalar_add_vec(int nc, float *v, float constant);
+int scalar_subtract_vec(int nc, float *v, float constant);
+
+int scalar_mult_mat(int nr, int nc, float **m, float constant);
+int scalar_div_mat(int nr, int nc, float **m, float constant);
+int scalar_add_mat(int nr, int nc, float **m, float constant);
+int scalar_subtract_mat(int nr, int nc, float **m, float constant);
+d241 2
+a242 2
+int mult_vec_elt(int n, float *v1, float *v2, float *v3);
+int div_vec_elt(int n, float *v1, float *v2, float *v3);
+@
+
+
+1.18
+log
+@added some things from dp cooltool.
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.17 1997/05/06 21:19:29 granat Exp agray $";
+d17 3
+d107 1
+a107 1
+#define fast_set_vec(nc, v, constant)  ( memset(v, constant, nc) )
+a127 1
+constant is the amount to set all the values to.
+d130 19
+a148 1
+#define fast_zero_vec(nc, v)  ( memset(v, 0.0, nc) )
+@
+
+
+1.17
+log
+@added prototype for copy_mat_section()
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.16 1997/04/05 19:10:43 granat Exp granat $";
+d17 3
+d94 37
+d152 1
+d155 2
+d162 1
+a162 1
+int trnaspose_in_situ_sqr_matrix(float **a, int n);
+d174 2
+@
+
+
+1.16
+log
+@added prototypes for sum_mat() and norm_sum_mat()
+adjust prototypes of functions so that they all follow input parameter conventions
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.15 1997/03/27 18:10:54 granat Exp granat $";
+d17 4
+d129 2
+@
+
+
+1.15
+log
+@added prototypes for transpose_in_situ_alloc_matrix(),
+transpose_in_situ_sqr_matrix(), flip_left_right_matrix(),
+flip_top_bottom_matrix()
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.14 1997/03/15 17:51:32 granat Exp granat $";
+d17 5
+d97 13
+a109 12
+float norm(int nc, float *v);
+
+float sum_vec(int n, float *v);
+int sum_mat_rows(float **mat, float *vec, int nr, int nc);
+float norm_sum_vec(float *vec, int dim);
+int norm_sum_mat_rows(float **mat, int nr, int nc);
+float sum_log_vec(float *vec, int dim);
+
+float max_vec(int n, float *v);
+float min_vec(int n, float *v);
+int arg_max_vec(int n, float *v);
+int arg_min_vec(int n, float *v);
+@
+
+
+1.14
+log
+@Added prototypes for flip_left_right_matrix() and flip_top_bottom_matrix()
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.13 1997/02/14 00:03:37 granat Exp granat $";
+d17 3
+d107 3
+@
+
+
+1.13
+log
+@changed prototype of transpose to transpose_matrix
+added prototype for transpose_imatrix
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.12 1997/01/29 21:31:04 agray Exp granat $";
+d17 4
+d104 2
+@
+
+
+1.12
+log
+@new format.
+also added copy_sub_vec_to_vec().
+@
+text
+@d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.11 1996/10/31 02:16:35 agray Exp agray $";
+d17 4
+d98 2
+a99 1
+int transpose(float **a, int nr, int nc, float **a_trans);
+@
+
+
+1.11
+log
+@changed .h and .c formats throughout library;
+some reorganizing between modules;
+added some functions from HMM project.
+@
+text
+@d6 2
+a7 2
+#ifndef _DA_LINALG_H
+#define _DA_LINALG_H
+d11 1
+a11 1
+static char da_linalg_h_rcsid[] = "$Id: da_linalg.h,v 1.10 1996/09/27 17:55:46 agray Exp agray $";
+d17 5
+d63 1
+a63 1
+/*******************************************************************************
+d65 1
+a65 1
+*******************************************************************************/
+d67 1
+a67 1
+/*******************************************************************************
+d69 5
+a73 1
+*******************************************************************************/
+d75 1
+a75 1
+/*******************************************************************************
+d77 1
+a77 1
+*******************************************************************************/
+d111 2
+d122 1
+a122 1
+           float **c);
+d162 1
+a162 1
+#endif
+@
+
+
+1.10
+log
+@removed k&r prototypes so that this library can be linked with c++ code.
+@
+text
+@d1 8
+a8 4
+/* da_linalg.h */
+
+#ifndef DA_LINALG_HDR
+#define DA_LINALG_HDR
+d11 1
+a11 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.9 1996/07/15 18:51:02 agray Exp agray $";
+d13 2
+d17 3
+d58 11
+a68 1
+/* constants */
+d70 1
+a70 1
+/* function declarations */
+d72 1
+a72 3
+int mat_vec_mult(int nr, int nc, float **M, float *v, float *u);
+int mat_mult(float **a, int nra, int nca, float **b, int nrb, int ncb, 
+           float **c);
+d74 5
+a78 2
+int add_mat(int nr, int nc, float **m1, float **m2, float **m3);
+int subtract_mat(int nr, int nc, float **m1, float **m2, float **m3);
+d80 4
+a83 8
+int add_vec(int n, float *v1, float *v2, float *v3);
+int subtract_vec(int n, float *v1, float *v2, float *v3);
+
+float dot_product(float *x, int n, float *y);
+int outer_product(int nc, float *x, float *y, float **prod);
+float norm(int nc, float *v);
+
+int copy_mat(float **a, float **b, int nr, int nc);
+d94 8
+a101 1
+int pca(float **A, int nr, int nc, float *w, float **VT);
+d105 17
+a131 3
+int set_mat(int nr, int nc, float **m, float constant);
+int set_vec(int nc, float *v, float constant);
+
+d135 10
+a144 1
+float sum_vec(int n, float *v);
+d146 1
+a146 4
+float max_vec(int n, float *v);
+float min_vec(int n, float *v);
+int arg_max_vec(int n, float *v);
+int arg_min_vec(int n, float *v);
+d148 1
+a148 1
+int copy_vec(float *a, float *b, int nc);
+@
+
+
+1.9
+log
+@updated k&r prototypes.
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.8 1996/07/13 01:25:31 agray Exp agray $";
+d11 3
+a52 2
+#ifdef __STDC__
+
+a106 58
+
+#else 
+
+int mat_vec_mult();
+int mat_mult();
+
+int add_mat();
+int subtract_mat();
+
+int add_vec();
+int subtract_vec();
+
+float dot_product();
+int outer_product();
+float norm();
+
+int copy_mat();
+
+int transpose();
+int invert_mat();
+int invert_mat_copy();
+float det();
+float det_copy();
+
+int grab_row();
+int grab_col();
+
+int pca();
+
+int restrict_illcond_matrix();
+
+int scalar_mult_vec();
+int scalar_div_vec();
+int scalar_add_vec();
+int scalar_subtract_vec();
+
+int scalar_mult_mat();
+int scalar_div_mat();
+int scalar_add_mat();
+int scalar_subtract_mat();
+
+int set_mat();
+int set_vec();
+
+int mult_vec_elt();
+int div_vec_elt();
+
+float sum_vec();
+
+float max_vec();
+float min_vec();
+int arg_max_vec();
+int arg_min_vec();
+
+int copy_vec();
+
+
+#endif
+@
+
+
+1.8
+log
+@moved out print/write_row/col/irow/icol() to da_data module
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.7 1996/07/11 18:12:16 agray Exp agray $";
+d11 3
+a131 10
+
+int print_row();
+int print_col();
+int write_row();
+int write_col();
+
+int print_irow();
+int print_icol();
+int write_irow();
+int write_icol();
+@
+
+
+1.7
+log
+@moved out read_gauss_parms(), write_gauss_parms() to da_prob module;
+added add_mat(), subtract_mat(), invert_mat_copy(), det_copy(),
+restrict_illcond_matrix(), scalar_mult/div/add/subtract_mat/vec(), set_mat(),
+set_vec(), mult/div_vec_elt(), sum_vec(), max/min_vec(), arg_max/min_vec(),
+copy_vec().
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.6 1996/04/09 02:50:11 agray Exp agray $";
+d11 7
+a72 10
+
+int print_row(FILE* stream, int nc, float *v);
+int print_col(FILE* stream, int nc, float *v);
+int write_row(char *outfile, int dim, float *vec, char *mode);
+int write_col(char *outfile, int dim, float *vec, char *mode);
+
+int print_irow(FILE* stream, int nc, int *v);
+int print_icol(FILE* stream, int nc, int *v);
+int write_irow(char *outfile, int dim, int *vec, char *mode);
+int write_icol(char *outfile, int dim, int *vec, char *mode);
+@
+
+
+1.6
+log
+@added print_irow(), print_icol(), write_irow(), write_icol().
+ag
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.5 1996/04/09 02:44:04 agray Exp agray $";
+d9 6
+a14 1
+/* $Log: da_linalg.h,v $
+a41 3
+int read_gauss_parms(char *parmsfile, int nc, float **mean, float ***cov);
+int write_gauss_parms(char *parmsfile, int nc, float *mean, float **cov);
+
+d46 3
+d60 1
+d62 1
+d79 28
+a108 3
+int read_gauss_parms();
+int write_gauss_parms();
+
+d112 3
+d126 1
+d128 1
+d144 28
+@
+
+
+1.5
+log
+@should have gotten checked in with da_linalg.c's changes,
+long ago.
+ag
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.4 1996/02/29 02:33:55 agray Exp agray $";
+d10 5
+d65 5
+d100 5
+@
+
+
+1.4
+log
+@moved write_bin_matrix() and read_bin_matrix() to da_data module
+ag
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.3 1996/02/21 03:51:43 agray Exp agray $";
+d10 4
+a31 4
+int read_matrix(char *infile, int nr, int nc, float ***vals);
+int print_matrix(FILE* stream, int nr, int nc, float **mat);
+int write_matrix(char *outfile, int nr, int nc, float **mat, char *mode);
+
+a34 3
+int read_data(char *infile, int *nr, int nc, float ***vals);
+int write_data(char *outfile, int nr, int nc, float **mat);
+
+a63 4
+int read_matrix();
+int print_matrix();
+int write_matrix();
+
+a65 3
+
+int read_data();
+int write_data();
+@
+
+
+1.3
+log
+@added pca().
+ag
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.2 1996/02/21 00:37:41 agray Exp agray $";
+d10 4
+a30 3
+
+int read_bin_matrix(char *infile, int nr, int nc, float ***vals);
+int write_bin_matrix(char *outfile, int nr, int nc, float **mat, char *mode);
+@
+
+
+1.2
+log
+@added write_bin_matrix() and read_bin_matrix()
+ag
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id: da_linalg.h,v 1.1 1996/02/06 03:28:23 agray Exp agray $";
+d10 4
+d62 2
+d99 2
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 1
+a7 1
+static char da_linalg_hdr_rcsid[] = "$Id$";
+d9 4
+a12 1
+/* $Log$ */
+d23 3
+@

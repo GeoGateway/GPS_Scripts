@@ -1,0 +1,73 @@
+head	1.1;
+access;
+symbols;
+locks
+	agray:1.1; strict;
+comment	@ * @;
+
+
+1.1
+date	97.01.29.23.45.59;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@new version after much reformatting/rethinking.
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@/*******************************************************************************
+MODULE NAME
+ut_error
+
+ONE-LINE SYNOPSIS
+Utility functions related to checking for and handling error conditions.
+
+SCOPE OF THIS MODULE
+As stated.
+
+SEE ALSO
+The reporting of error conditions falls in the realm of ut_output.
+
+REFERENCE(S)
+-
+
+PROGRAM EXAMPLE(S)
+1. /proj/cooltools/hmm, AG.
+
+NOTES
+-
+
+AG
+*******************************************************************************/
+#ifndef lint
+static char rcsid[] = "$Id$";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log$
+ * */
+
+/* C library */
+#include <stdio.h>
+#include <string.h>
+
+/* UT library */
+#include "ut_output.h"
+
+/* this module's header */
+#include "ut_error.h"
+
+/* global variables */
+int   ut_status;
+void *ut_status_ptr;
+
+
+@

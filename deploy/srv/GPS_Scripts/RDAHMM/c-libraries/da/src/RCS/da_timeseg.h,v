@@ -1,0 +1,323 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.4
+date	99.07.20.17.34.48;	author granat;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	97.03.06.02.25.31;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	97.01.29.21.41.01;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.10.31.02.22.30;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@Header file for da_timeseg.
+@
+
+
+1.4
+log
+@changed to double precision
+@
+text
+@/*******************************************************************************
+MODULE HEADER:
+da_timeseg.h
+*******************************************************************************/
+
+#ifndef _DA_TIMESEG_H_
+#define _DA_TIMESEG_H_
+/* Protects from multiple inclusion. */
+
+#ifndef lint
+static char da_timeseg_h_rcsid[] = "$Id: da_timeseg.h,v 1.3 1997/03/06 02:25:31 agray Exp granat $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_timeseg.h,v $
+ * Revision 1.3  1997/03/06 02:25:31  agray
+ * updated name of init_hmm_model_type_names().
+ *
+ * Revision 1.2  1997/01/29 21:41:01  agray
+ * moved initialization-type variables to hmm driver.
+ * added model-type names.
+ * new format.
+ *
+ * Revision 1.1  1996/10/31 02:22:30  agray
+ * Initial revision
+ *
+ * */
+
+/*==============================================================================
+Data Structures
+==============================================================================*/
+
+/* HMM */
+
+struct da_hmm_struct {
+  int       model_type;   /* discrete, single gaussian, or mixture */
+  int       num_states;   /* N, number of states */
+  int       num_symbols;  /* M, number of discrete output symbols */
+  int       num_comps;    /* K, number of continuous mixture components */
+  int       num_dims;     /* number of dimensions/features in data */
+  double**   prob_trans;   /* A, state transition probability matrix */
+  double**   prob_symbol;  /* B, output symbol probabilities for each state */
+  double*    prob_init;    /* pi, initial probability of being in each state */
+  double***  means;        /* mu's, means of continuous mixture model */
+  double**** covars;       /* U's, covariance matrices of cont. mixture model */
+  double**   weights;      /* c's, mixing proportions of cont. mixture model */
+};
+
+typedef struct da_hmm_struct HMM;
+
+/* maybe later:
+  def*    def;          * structure containing attributes' type & name info *
+#define name_of_attr(H,I)     ((H->def)[I]) */
+
+/*==============================================================================
+Constants, Macros
+==============================================================================*/
+
+/* model types */
+
+#define HMM_DISCRETE_MODEL   1
+#define HMM_GAUSSIAN_MODEL   2
+#define HMM_MIXTURE_MODEL    3
+
+#define HMM_NUM_MODEL_TYPES  3
+
+#define HMM_DISCRETE_MODEL_NAME "discrete"
+#define HMM_GAUSSIAN_MODEL_NAME "gaussian"
+#define HMM_MIXTURE_MODEL_NAME  "mixture"
+
+/*==============================================================================
+Variables
+==============================================================================*/
+
+/*==============================================================================
+Function Declarations
+==============================================================================*/
+
+/* general HMM utilities */
+
+HMM *hmm(int model_type, int num_states, int num_symbols, int num_comps,
+         int num_dims);
+void free_hmm(HMM *the_hmm);
+
+
+/* learning/scoring discrete HMM's */
+
+double learn_disc_hmm_using_em(HMM *the_hmm, HMM *last_hmm,
+                              int *data, int num_data, 
+                              double **alpha, double **beta, double *scale,
+                              double **sum_t_xi, double **sum_t_gamma_by_symbol,
+                              double *sum_t_gamma, double **zeta_t, 
+                              double *gamma_t, double threshold);
+double compute_disc_hmm_likelihood(HMM *the_hmm, int *data, int num_data, 
+                                  double **alpha, double **beta, double *scale);
+int estimate_disc_hmm_params(HMM *old_hmm, HMM *new_hmm,
+                             int *data, int num_data, 
+                             double **alpha, double **beta, 
+                             double **sum_t_xi, double **sum_t_gamma_by_symbol,
+                             double *sum_t_gamma, double **zeta_t,double *gamma_t);
+
+/* learning/scoring continuous HMM's */
+
+double learn_cont_hmm_using_em(HMM *the_hmm, HMM *last_hmm, 
+                              double **data, int num_data,
+                              double **alpha, double **beta, double *scale,
+                              double **sum_t_xi, double **sum_t_gamma_by_comp,
+                              double *sum_t_gamma, double **zeta_t,double *gamma_t,
+                              double *mixture_densities, double **comp_densities, 
+                              double *diff_vec, double threshold, double min_diag);
+double compute_cont_hmm_likelihood(HMM *the_hmm, double **data, int num_data, 
+                                  double **alpha, double **beta, double *scale,
+                                  double min_diag);
+int estimate_cont_hmm_params(HMM *old_hmm, HMM *new_hmm, 
+                             double **data, int num_data, 
+                             double **alpha, double **beta, 
+                             double **sum_t_xi, double **sum_t_gamma_by_comp,
+                             double *sum_t_gamma, double **zeta_t, double *gamma_t,
+                             double *mixture_densities, double **comp_densities, 
+                             double *diff, double min_diag);
+
+/* simulating data from HMM's */
+
+int simulate_data_using_disc_hmm(HMM* the_hmm, int *data, int *states,
+                                 int num_data, double *cum_prob_states, 
+                                 double *cum_prob_symbols, int seed);
+int simulate_data_using_cont_hmm(HMM* the_hmm, double **data, int *states,
+                                 int num_data, double *cum_prob_states,
+                                 double *cum_prob_comps, double **chol_factor,
+                                 double *diag, int seed);
+
+/* state assignment */
+
+int assign_states_using_iml(int *states, double **alpha, double **beta, 
+                            int num_states, int num_data);
+
+/* predefined names */
+
+int init_hmm_model_type_names(char **model_type_names);
+
+#endif /* _DA_TIMESEG_H_ */
+@
+
+
+1.3
+log
+@updated name of init_hmm_model_type_names().
+@
+text
+@d11 1
+a11 1
+static char da_timeseg_h_rcsid[] = "$Id: da_timeseg.h,v 1.2 1997/01/29 21:41:01 agray Exp agray $";
+d17 3
+d42 6
+a47 6
+  float**   prob_trans;   /* A, state transition probability matrix */
+  float**   prob_symbol;  /* B, output symbol probabilities for each state */
+  float*    prob_init;    /* pi, initial probability of being in each state */
+  float***  means;        /* mu's, means of continuous mixture model */
+  float**** covars;       /* U's, covariance matrices of cont. mixture model */
+  float**   weights;      /* c's, mixing proportions of cont. mixture model */
+d89 1
+a89 1
+float learn_disc_hmm_using_em(HMM *the_hmm, HMM *last_hmm,
+d91 6
+a96 6
+                              float **alpha, float **beta, float *scale,
+                              float **sum_t_xi, float **sum_t_gamma_by_symbol,
+                              float *sum_t_gamma, float **zeta_t, 
+                              float *gamma_t, float threshold);
+float compute_disc_hmm_likelihood(HMM *the_hmm, int *data, int num_data, 
+                                  float **alpha, float **beta, float *scale);
+d99 3
+a101 3
+                             float **alpha, float **beta, 
+                             float **sum_t_xi, float **sum_t_gamma_by_symbol,
+                             float *sum_t_gamma, float **zeta_t,float *gamma_t);
+d105 10
+a114 10
+float learn_cont_hmm_using_em(HMM *the_hmm, HMM *last_hmm, 
+                              float **data, int num_data,
+                              float **alpha, float **beta, float *scale,
+                              float **sum_t_xi, float **sum_t_gamma_by_comp,
+                              float *sum_t_gamma, float **zeta_t,float *gamma_t,
+                              float *mixture_densities, float **comp_densities, 
+                              float *diff_vec, float threshold, float min_diag);
+float compute_cont_hmm_likelihood(HMM *the_hmm, float **data, int num_data, 
+                                  float **alpha, float **beta, float *scale,
+                                  float min_diag);
+d116 6
+a121 6
+                             float **data, int num_data, 
+                             float **alpha, float **beta, 
+                             float **sum_t_xi, float **sum_t_gamma_by_comp,
+                             float *sum_t_gamma, float **zeta_t, float *gamma_t,
+                             float *mixture_densities, float **comp_densities, 
+                             float *diff, float min_diag);
+d126 6
+a131 6
+                                 int num_data, float *cum_prob_states, 
+                                 float *cum_prob_symbols, int seed);
+int simulate_data_using_cont_hmm(HMM* the_hmm, float **data, int *states,
+                                 int num_data, float *cum_prob_states,
+                                 float *cum_prob_comps, float **chol_factor,
+                                 float *diag, int seed);
+d135 1
+a135 1
+int assign_states_using_iml(int *states, float **alpha, float **beta, 
+@
+
+
+1.2
+log
+@moved initialization-type variables to hmm driver.
+added model-type names.
+new format.
+@
+text
+@d11 1
+a11 1
+static char da_timeseg_h_rcsid[] = "$Id: da_timeseg.h,v 1.1 1996/10/31 02:22:30 agray Exp agray $";
+d17 5
+d137 1
+a137 1
+int init_model_type_names(char **model_type_names);
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d6 2
+a7 2
+#ifndef _DA_TIMESEG_H
+#define _DA_TIMESEG_H
+d11 1
+a11 1
+static char da_timeseg_h_rcsid[] = "$Id$";
+d16 4
+a19 1
+ * $Log$
+d22 1
+a22 1
+/*******************************************************************************
+d24 1
+a24 1
+*******************************************************************************/
+d48 1
+a48 1
+/*******************************************************************************
+d50 1
+a50 1
+*******************************************************************************/
+d60 7
+a66 1
+/* values initialization methods */
+d68 1
+a68 17
+#define HMM_RANDOM_DISCRETE_INIT    1
+#define HMM_K_MEANS_GAUSSIAN_INIT   2
+#define HMM_RANDOM_MIXTURE_INIT     3
+#define HMM_K_MEANS_MIXTURE_INIT    4
+
+#define HMM_NUM_VALUES_INIT_METHODS 4
+
+/* transition matrix initialization methods */
+
+#define HMM_RANDOM_TRANS_INIT       1
+#define HMM_DIAG_TRANS_INIT         2
+#define HMM_BAND_DIAG_TRANS_INIT    3
+
+#define HMM_NUM_TRANS_INIT_METHODS  3
+
+
+/*******************************************************************************
+d70 1
+a70 1
+*******************************************************************************/
+d130 5
+a134 1
+#endif
+@

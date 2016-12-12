@@ -1,0 +1,91 @@
+head	1.2;
+access;
+symbols;
+locks
+	granat:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	98.06.05.21.50.27;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	98.04.20.23.41.36;	author roden;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@changed to use higher-level location variable
+@
+text
+@#!/bin/csh -f
+
+# $Id: setup.csh,v 1.1 1998/04/20 23:41:36 roden Exp agray $
+# $Log: setup.csh,v $
+# Revision 1.1  1998/04/20 23:41:36  roden
+# Initial revision
+#
+#
+
+################################################################################
+#   setup.csh
+################################################################################
+#
+#   This file contains the machine-specific information that is necessary for
+#   using these shared C codes.  You should set each environment 
+#   variable, etc. as appropriate for your machine.  Individual users may 
+#   copy and source a customized version of this file if user-specific 
+#   variables are desired.
+#
+#   * * * IMPORTANT NOTICE * * *
+#
+#   If you are setting up these codes for the first time on your machine,
+#   you may need to change any software which refers explicitly to this file,
+#   so that it knows how to find this file.
+#
+################################################################################
+
+################################################################################
+# The following steps set environment variables which describe the directories 
+# where everything is located.
+################################################################################
+
+# CP_HOME is the top-level directory for this library
+
+setenv CP_HOME                $C_CODE_HOME/cp
+
+# Set the compile command used by makefiles for compiling the library
+
+setenv CP_CC                  gcc
+#setenv CP_CC                  purify gcc
+
+# Set the compile options used by makefiles for compiling the library
+
+#setenv CP_CFLAGS              "-g -O2"
+#setenv CP_CFLAGS              "-g -Wall"
+setenv CP_CFLAGS              "-g"
+setenv CP_FAST_CFLAGS         "-O5"
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 5
+a7 2
+# $Id$
+# $Log$
+d35 1
+a35 1
+setenv CP_HOME                /proj/code/c/cp
+@

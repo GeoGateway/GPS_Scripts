@@ -1,0 +1,319 @@
+head	1.1;
+access;
+symbols;
+locks
+	granat:1.1; strict;
+comment	@ * @;
+
+
+1.1
+date	2003.08.27.18.04.04;	author granat;	state Exp;
+branches;
+next	;
+
+
+desc
+@functions relating to generic hmm computation for support of rdahmm
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@/*******************************************************************************
+MODULE NAME
+rdahmm_generic
+
+AUTHOR
+Robert Granat
+
+DESCRIPTION
+See Robert Granat PhD thesis for details and notation.
+
+COMPILE
+make
+
+NOTES
+Not yet available
+
+RG
+*******************************************************************************/
+#ifndef lint
+static char rcsid[] = "$Id$";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log$
+ * */
+
+/* C library */
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <float.h>
+
+/* CP library */
+#include "cp.h"
+
+/* UT library */
+#include "ut.h"
+
+/* NR library */
+#include "nr.h"
+
+/* DA library */
+#include "da.h"
+
+/* local header files */
+
+/* this program's header */
+#include "rdahmm_generic.h"
+
+
+/*******************************************************************************
+ CALC_LOG_LIKELIHOOD
+*******************************************************************************/
+double calc_log_likelihood(double *scale, int T)
+{
+  int    t;
+  double L;
+
+  L = 0.0;
+  for (t = 1; t <= T; t++)
+  {
+    L -= log(scale[t] + DBL_MIN);
+  }
+
+  return(L);
+}
+
+/*******************************************************************************
+ CALC_Q-FUNCTION
+*******************************************************************************/
+double calc_Q_function(double **tau_it, double ***tau_ijt, double *pi,
+                       double **A, double **prob_data, int N, int T)
+{
+  int    i, j, t; 
+  double Qfunc;
+
+  Qfunc = 0.0;
+  
+  for (i = 1; i <= N; i++)
+  {
+    Qfunc += tau_it[i][1] * log(pi[i] + DBL_MIN); 
+    for (t = 1; t < T; t++)
+    {
+      Qfunc += tau_it[i][t] * log(prob_data[t][i] + DBL_MIN);
+      for (j = 1; j <= N; j++)
+      {
+        Qfunc += tau_ijt[i][j][t] * log(A[i][j] + DBL_MIN);
+      }
+    }
+    Qfunc += tau_it[i][T] * log(prob_data[T][i] + DBL_MIN);
+  }
+
+  return(Qfunc);
+}
+
+/*******************************************************************************
+ UPDATE_INIT_PROBS
+*******************************************************************************/
+int update_init_probs(double *pi, double **tau_it, double omega_Q1, 
+                      int regularization, int N)
+{
+  int i;
+
+  for (i = 1; i <= N; i++)
+  {
+    pi[i] = tau_it[i][1];
+  }
+  if (regularization == UT_TRUE)
+  {
+    for (i = 1; i <= N; i++)
+    {
+      pi[i] += omega_Q1;
+    }
+  }
+  normalize_dvec(pi, N);
+
+  return(UT_OK);
+}
+
+/*******************************************************************************
+ UPDATE_TRANS_PROBS
+*******************************************************************************/
+int update_trans_probs(double **A, double **sum_t_tau_ijt, 
+                       double *sum_t_tau_it, double omega_Q2, 
+                       int regularization, int N)
+{
+  int i, j;
+
+  if (regularization == UT_FALSE)
+  {
+    for (i = 1; i <= N; i++)
+    {
+      for (j = 1; j <= N; j++)
+      {
+        A[i][j] = sum_t_tau_ijt[i][j] / sum_t_tau_it[i];
+      }
+    }
+  }
+  else
+  {
+    for (i = 1; i <= N; i++)
+    {
+      for (j = 1; j <= N; j++)
+      {
+        A[i][j] = (sum_t_tau_ijt[i][j] + omega_Q2) /
+                  (sum_t_tau_it[i] + ((double) N) * omega_Q2);
+      }
+    }
+  }
+
+  return(UT_OK);
+}
+
+/*******************************************************************************
+ FORWARD_BACKWARD
+*******************************************************************************/
+int forward_backward(double *pi, double **A, double **prob_data, 
+                     double **alpha, double **beta, double *scale, 
+                     int N, int T)
+{
+  int    i, j, t;
+  double sum;
+
+  /* forward initialization */
+  scale[1] = 0.0;
+
+  for (i = 1; i <= N; i++)
+  {
+    alpha[1][i] = pi[i] * prob_data[1][i];
+    scale[1] += alpha[1][i];
+  }
+
+  scale[1] = 1.0 / scale[1];
+
+  for (i = 1; i <= N; i++)
+  {
+    alpha[1][i] *= scale[1];
+  }
+
+  /* calculate for t = 2,...,T */
+  for (t = 2; t <= T; t++)
+  {
+    scale[t] = 0.0;
+
+    for (i = 1; i <= N; i++)
+    {
+      sum = 0.0;
+      for (j = 1; j <= N; j++)
+      {
+        sum += alpha[t-1][j] * A[j][i];
+      }
+      alpha[t][i] = sum * prob_data[t][i];
+ 
+      scale[t] += alpha[t][i];
+    }
+
+    scale[t] = 1.0 / scale[t];
+
+    for (i = 1; i <= N; i++)
+    {
+      alpha[t][i] *= scale[t];
+    }
+  }
+
+  /* backwards initialization */
+  for (i = 1; i <= N; i++)
+  {
+    beta[T][i] = scale[T];
+  }
+
+  /* calculate for t = T-1,...,1 */
+  for (t = T-1; t >= 1; t--)
+  {
+    for (i = 1; i <= N; i++)
+    {
+      beta[t][i] = 0.0;
+      for (j = 1; j <= N; j++)
+      {
+        beta[t][i] += A[i][j] * prob_data[t+1][j] * beta[t+1][j];
+      }
+ 
+      beta[t][i] *= scale[t];
+    }
+  }
+
+  return(UT_OK);
+}
+
+/*******************************************************************************
+ ESTIMATE_HIDDEN
+*******************************************************************************/
+int estimate_hidden(double **alpha, double **beta, double **A, 
+                    double **prob_data, double **tau_it, double ***tau_ijt,
+                    int N, int T)
+{
+  int    i, j, t;
+  double sum;
+
+  for (t = 1; t < T; t++)
+  {
+    /* calculate tau_ijt */
+    sum = 0.0;
+
+    for (i = 1; i <= N; i++)
+    {
+      for (j = 1; j <= N; j++)
+      {
+        tau_ijt[i][j][t] = alpha[t][i] * A[i][j] * prob_data[t+1][j] *
+                           beta[t+1][j];
+        sum += tau_ijt[i][j][t];
+      }
+    }
+
+    for (i = 1; i <= N; i++)
+    {
+      for (j = 1; j <= N; j++)
+      {
+        tau_ijt[i][j][t] /= sum;
+      }
+    }
+
+    /* calculate tau_it */
+    sum = 0.0;
+
+    for (i = 1; i <= N; i++)
+    {
+      tau_it[i][t] = alpha[t][i] * beta[t][i];
+      sum += tau_it[i][t];
+    }
+
+    for (i = 1; i <= N; i++)
+    {
+      tau_it[i][t] /= sum;
+    }
+  }
+
+  /* finish tau_it for t = T */
+  sum = 0.0;
+
+  for (i = 1; i <= N; i++)
+  {
+    tau_it[i][T] = alpha[T][i] * beta[T][i];
+    sum += tau_it[i][T];
+  }
+
+  for (i = 1; i <= N; i++)
+  {
+    tau_it[i][T] /= sum;
+  }
+ 
+  return(UT_OK);
+}
+@

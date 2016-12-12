@@ -1,0 +1,13 @@
+Some Conventions
+----------------
+
+- function names that end in _pp denote parallel functions, i.e. functions that
+	do a different thing depending on which pe you are
+
+- malloc memory at the highest level in the program rather than where it is
+	directly needed; i.e. pass in all arrays, etc. from the highest level (main)
+	- this is better for efficiency, esp. when the function is called multiple
+		times
+	- shows you exactly what the memory requirement is; less hidden costs
+
+

@@ -1,0 +1,324 @@
+/*******************************************************************************
+MODULE HEADER:
+da_util.h
+*******************************************************************************/
+
+#ifndef _DA_UTIL_H_
+#define _DA_UTIL_H_
+/* Protects from multiple inclusion. */
+
+#ifndef lint
+static char da_util_h_rcsid[] = "$Id: da_util.h,v 1.3 1999/07/20 17:35:34 granat Exp granat $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_util.h,v $
+ * Revision 1.3  1999/07/20 17:35:34  granat
+ * added double precision versions of some functions
+ *
+ * Revision 1.2  1998/06/29 22:07:39  granat
+ * added structures for sparse matrices
+ *
+ * Revision 1.1  1998/05/07 23:54:37  granat
+ * Initial revision
+ *
+ * */
+
+/*==============================================================================
+Data Structures
+==============================================================================*/
+typedef struct s_matrix {
+  float   *val;         /* Vector of nonzero values counting across the rows */
+  int     *col;         /* Column in which the corresponding value lies */
+  int     *nnz;         /* Number of nonzero elements in each row */
+} sparse_matrix;
+ 
+typedef struct s_cmatrix {
+  unsigned char  *val;  /* Vector of nonzero values counting across the rows */
+  int            *col;  /* Column in which the corresponding value lies */
+  int            *nnz;  /* Number of nonzero elements in each row */
+} sparse_cmatrix;
+ 
+typedef struct s_imatrix {
+  int            *val;  /* Vector of nonzero values counting across the rows */
+  int            *col;  /* Column in which the corresponding value lies */
+  int            *nnz;  /* Number of nonzero elements in each row */
+} sparse_imatrix;
+ 
+typedef struct s_dmatrix {
+  double         *val;  /* Vector of nonzero values counting across the rows */
+  int            *col;  /* Column in which the corresponding value lies */
+  int            *nnz;  /* Number of nonzero elements in each row */
+} sparse_dmatrix;
+ 
+/*==============================================================================
+Constants, Macros
+==============================================================================*/
+
+/*==============================================================================
+Variables
+==============================================================================*/
+
+/*==============================================================================
+Function Declarations
+==============================================================================*/
+
+/* normalization of values by their range */
+
+int range_of_cols(float **mat, float *minval, float *maxval, float *range,
+                  int numrows, int numcols);
+int range_of_dcols(double **mat, double *minval, double *maxval, double *range,
+                  int numrows, int numcols);
+int range_normalize_cols(float **mat, float *minval, float *range,
+                         int numrows, int numcols);
+int range_normalize_dcols(double **mat, double *minval, double *range,
+                         int numrows, int numcols);
+int range_unnormalize_cols(float **mat, float *minval, float *range,
+                         int numrows, int numcols);
+int range_unnormalize_dcols(double **mat, double *minval, double *range,
+                         int numrows, int numcols);
+int range_unnormalize_cov_matrix(float **mat, int nc, float *range);
+int range_unnormalize_cov_dmatrix(double **mat, int nc, double *range);
+int range_unnormalize_vector(float *vec, int nc, float *range, float *minval);
+int range_unnormalize_dvector(double *vec, int nc, double *range, double *minval);
+
+int print_unnorm_matrix(FILE *stream, int nr, int nc, float **mat,
+                        float *range, float *minval);
+int print_unnorm_dmatrix(FILE *stream, int nr, int nc, double **mat,
+                        double *range, double *minval);
+int print_unnorm_cov_matrix(FILE *stream, int nc, float **mat,
+                            float *range);
+int print_unnorm_cov_dmatrix(FILE *stream, int nc, double **mat,
+                            double *range);
+int print_unnorm_row(FILE *stream, int nc, float *v, float *range,
+                     float *minval);
+int print_unnorm_drow(FILE *stream, int nc, double *v, double *range,
+                     double *minval);
+int print_unnorm_col(FILE *stream, int nc, float *v, float *range,
+                     float *minval);
+int print_unnorm_dcol(FILE *stream, int nc, double *v, double *range,
+                     double *minval);
+
+/* sums of vectors and matrices */
+
+float sum_vec(float *v, int n);
+double sum_dvec(double *v, int n);
+int sum_ivec(int *v, int n);
+int sum_cvec(unsigned char *v, int n);
+
+float sum_mat(float **m, int nr, int nc);
+double sum_dmat(double **m, int nr, int nc);
+int sum_imat(int **m, int nr, int nc);
+int sum_cmat(unsigned char **m, int nr, int nc);
+
+int sum_mat_rows(float **m, float *v, int nr, int nc);
+int sum_dmat_rows(double **m, double *v, int nr, int nc);
+int sum_imat_rows(int **m, int *v, int nr, int nc);
+int sum_cmat_rows(unsigned char **m, int *v, int nr, int nc);
+
+/* normalization by the sum of vectors and matrices */
+
+float normalize_vec(float *v, int n);
+double normalize_dvec(double *v, int n);
+
+float normalize_mat(float **m, int nr, int nc);
+double normalize_dmat(double **m, int nr, int nc);
+
+int normalize_mat_rows(float **m, int nr, int nc);
+int normalize_dmat_rows(double **m, int nr, int nc);
+
+/* log sum of vectors and matrices */
+
+float sum_log_vec(float *v, int n);
+double sum_log_dvec(double *v, int n);
+
+float sum_log_mat(float **m, int nr, int nc);
+double sum_log_dmat(double **m, int nr, int nc);
+
+/* minima and maxima of vectors and matrices */
+
+float max_vec(float *v, int n);
+double max_dvec(double *v, int n);
+int max_ivec(int *v, int n);
+unsigned char max_cvec(unsigned char *v, int n);
+
+float min_vec(float *v, int n);
+double min_dvec(double *v, int n);
+int min_ivec(int *v, int n);
+unsigned char min_cvec(unsigned char *v, int n);
+
+float max_mat(float **m, int nr, int nc);
+double max_dmat(double **m, int nr, int nc);
+int max_imat(int **m, int nr, int nc);
+unsigned char max_cmat(unsigned char **m, int nr, int nc);
+
+float min_mat(float **m, int nr, int nc);
+double min_dmat(double **m, int nr, int nc);
+int min_imat(int **m, int nr, int nc);
+int min_cmat(unsigned char **m, int nr, int nc);
+
+float range_vec(float *v, int n);
+double range_dvec(double *v, int n);
+
+float range_mat(float **m, int nr, int nc);
+double range_dmat(double **m, int nr, int nc);
+
+int scale_vec(float *v, int n);
+int scale_dvec(double *v, int n);
+
+int scale_mat(float **m, int nr, int nc);
+int scale_dmat(double **m, int nr, int nc);
+
+int scale_range_vec(float *v, int n, float minval, float maxval);
+int scale_range_dvec(double *v, int n, double minval, double maxval);
+
+int scale_range_mat(float **m, int nr, int nc, float minval, float maxval);
+int scale_range_dmat(double **m, int nr, int nc, double minval, double maxval);
+
+int arg_max_vec(float *v, int n);
+int arg_max_dvec(double *v, int n);
+int arg_max_ivec(int *v, int n);
+int arg_max_cvec(unsigned char *v, int n);
+
+int arg_min_vec(float *v, int n);
+int arg_min_dvec(double *v, int n);
+int arg_min_ivec(int *v, int n);
+int arg_min_cvec(unsigned char *v, int n);
+
+int minmax_of_cols(float **mat, int nr, int nc, float *minval, float *maxval, 
+                   float *range);
+
+/* element reorderings of vectors and matrices */
+
+int flip_vector(float *v, int n);
+int flip_dvector(double *v, int n);
+int flip_ivector(int *v, int n);
+int flip_cvector(unsigned char *v, int n);
+
+int flip_left_right_matrix(float **a, int nr, int nc);
+int flip_left_right_dmatrix(double **a, int nr, int nc);
+int flip_left_right_imatrix(int **a, int nr, int nc);
+int flip_left_right_cmatrix(unsigned char **a, int nr, int nc);
+
+int flip_top_bottom_matrix(float **a, int nr, int nc);
+int flip_top_bottom_dmatrix(double **a, int nr, int nc);
+int flip_top_bottom_imatrix(int **a, int nr, int nc);
+int flip_top_bottom_cmatrix(unsigned char **a, int nr, int nc);
+
+/* copying and writing vectors and matrices and sections thereof */
+
+int grab_row_mat(float **mat, int index, int nc, float *vec);
+int grab_row_dmat(double **mat, int index, int nc, double *vec);
+int grab_row_imat(int **mat, int index, int nc, int *vec);
+int grab_row_cmat(unsigned char **mat, int index, int nc, unsigned char *vec);
+
+int grab_col_mat(float **mat, int index, int nr, float *vec);
+int grab_col_dmat(double **mat, int index, int nr, double *vec);
+int grab_col_imat(int **mat, int index, int nr, int *vec);
+int grab_col_cmat(unsigned char **mat, int index, int nr, unsigned char *vec);
+
+int copy_mat_section(float **a, float **b, int a_tlr, int a_tlc, int b_tlr,
+                      int b_tlc, int nr, int nc);
+int copy_imat_section(int **a, int **b, int a_tlr, int a_tlc, int b_tlr,
+                       int b_tlc, int nr, int nc);
+int copy_cmat_section(unsigned char **a, unsigned char **b, int a_tlr, 
+                       int a_tlc, int b_tlr, int b_tlc, int nr, int nc);
+int copy_dmat_section(double **a, double **b, int a_tlr, int a_tlc, int b_tlr,
+                       int b_tlc, int nr, int nc);
+
+int overwrite_row_mat(float **mat, int index, int nc, float *vec);
+int overwrite_row_dmat(double **mat, int index, int nc, double *vec);
+int overwrite_row_imat(int **mat, int index, int nc, int *vec);
+int overwrite_row_cmat(unsigned char **mat, int index, int nc, 
+		       unsigned char *vec);
+
+int overwrite_col_mat(float **mat, int index, int nr, float *vec);
+int overwrite_col_dmat(double **mat, int index, int nr, double *vec);
+int overwrite_col_imat(int **mat, int index, int nr, int *vec);
+int overwrite_col_cmat(unsigned char **mat, int index, int nr, 
+                       unsigned char *vec);
+
+int set_mat(float **m, int nr, int nc, float constant);
+int set_dmat(double **m, int nr, int nc, double constant);
+int set_imat(int **m, int nr, int nc, int constant);
+int set_cmat(unsigned char **m, int nr, int nc, unsigned char constant);
+
+int fast_set_mat(float **m, int nr, int nc, float constant);
+int fast_set_dmat(double **m, int nr, int nc, double constant);
+int fast_set_imat(int **m, int nr, int nc, int constant);
+int fast_set_cmat(unsigned char **m, int nr, int nc, unsigned char constant);
+
+int fast_zero_mat(float **m, int nr, int nc);
+int fast_zero_dmat(double **m, int nr, int nc);
+int fast_zero_imat(int **m, int nr, int nc);
+int fast_zero_cmat(unsigned char **m, int nr, int nc);
+
+int set_vec(float *v, int n, float constant);
+int set_dvec(double *v, int n, double constant);
+int set_ivec(int *v, int n, int constant);
+int set_cvec(unsigned char *v, int n, unsigned char constant);
+
+int fast_set_vec(float *v, int n, float constant);
+int fast_set_dvec(double *v, int n, double constant);
+int fast_set_ivec(int *v, int n, int constant);
+int fast_set_cvec(unsigned char *v, int n, unsigned char constant);
+
+int fast_zero_vec(float *v, int n);
+int fast_zero_dvec(double *v, int n);
+int fast_zero_ivec(int *v, int n);
+int fast_zero_cvec(unsigned char *v, int n);
+
+int set_diag_mat(float **m, int n, float constant);
+int set_diag_dmat(double **m, int n, double constant);
+int set_diag_imat(int **m, int n, int constant);
+int set_diag_cmat(unsigned char **m, int n, unsigned char constant);
+
+int set_band_diag_mat(float **m, int n, int width, float constant);
+int set_band_diag_dmat(double **m, int n, int width, double constant);
+int set_band_diag_imat(int **m, int n, int width, int constant);
+int set_band_diag_cmat(unsigned char **m, int n, int width, 
+		       unsigned char constant);
+
+int copy_mat(float **a, float **b, int nr, int nc);
+int copy_imat(int **a, int **b, int nr, int nc);
+int copy_dmat(double **a, double **b, int nr, int nc);
+int copy_dmat_slow(double **a, double **b, int nr, int nc);
+int copy_cmat(unsigned char **a, unsigned char **b, int nr, int nc);
+
+int copy_vec(float *a, float *b, int nc);
+int copy_ivec(int *a, int *b, int nc);
+int copy_dvec(double *a, double *b, int nc);
+int copy_cvec(unsigned char *a, unsigned char *b, int nc);
+
+int copy_sub_vec_to_vec(float *sub_vec, float *vec, int sub_vec_size, 
+                        int vec_size, int vec_start_pos);
+int copy_sub_dvec_to_dvec(double *sub_vec, double *vec, int sub_vec_size, 
+                          int vec_size, int vec_start_pos);
+int copy_sub_ivec_to_ivec(int *sub_vec, int *vec, int sub_vec_size, 
+                          int vec_size, int vec_start_pos);
+int copy_sub_cvec_to_cvec(unsigned char *sub_vec, unsigned char *vec, 
+                          int sub_vec_size, int vec_size, int vec_start_pos);
+
+/* composite structures */
+
+float ***set_of_matrices(int num_mats, int num_rows, int num_cols);
+int ***set_of_imatrices(int num_mats, int num_rows, int num_cols);
+double ***set_of_dmatrices(int num_mats, int num_rows, int num_cols);
+void free_set_of_matrices(float ***mat_set, int num_mats, int num_rows, 
+                          int num_cols);
+void free_set_of_imatrices(int ***mat_set, int num_mats, int num_rows, 
+                          int num_cols);
+void free_set_of_dmatrices(double ***mat_set, int num_mats, int num_rows, 
+                          int num_cols);
+
+float ****set_of_sets_of_matrices(int num_sets, int num_mats, int num_rows, 
+                                  int num_cols);
+double ****set_of_sets_of_dmatrices(int num_sets, int num_mats, int num_rows, 
+                                  int num_cols);
+void free_set_of_sets_of_matrices(float ****mat_set_set, int num_sets, 
+                                  int num_mats, int num_rows, int num_cols);
+void free_set_of_sets_of_dmatrices(double ****mat_set_set, int num_sets, 
+                                  int num_mats, int num_rows, int num_cols);
+
+#endif /* _DA_UTIL_H_ */

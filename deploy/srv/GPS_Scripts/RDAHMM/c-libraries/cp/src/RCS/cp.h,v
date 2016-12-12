@@ -1,0 +1,64 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.2
+date	96.09.27.18.11.15;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.05.01.01.26.11;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@added end-quote to rcsid string.
+@
+text
+@/* cp.h */
+
+#ifndef CP_HDR
+#define CP_HDR
+
+#ifndef lint
+static char cp_hdr_rcsid[] = "$Id: cp.h,v 1.1 1996/05/01 01:26:11 agray Exp agray $";
+#endif
+/* 
+ * $Log: cp.h,v $
+ * Revision 1.1  1996/05/01 01:26:11  agray
+ * Initial revision
+ *
+ * */
+
+/* inclusion set */
+#include "cp_platform.h"
+#include "cp_string.h"
+#include "cp_args.h"
+#include "cp_version.h"
+
+#endif
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 1
+a7 1
+static char cp_hdr_rcsid[] = "$Id$;
+d10 4
+a13 1
+ * $Log$
+@

@@ -1,0 +1,85 @@
+head	1.2;
+access;
+symbols
+	NSWC1:1.2;
+locks; strict;
+comment	@ * @;
+
+
+1.2
+date	95.08.03.23.38.08;	author jctran;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	95.08.03.23.26.10;	author jctran;	state Exp;
+branches;
+next	;
+
+
+desc
+@Version Management: keeps the trace of the different version of the
+project.  The latest version of this file is the latest version of
+the project.
+JC Tran
+@
+
+
+1.2
+log
+@*** See cp_version.h to see the version update logs ***
+JCT
+@
+text
+@/* cp_version.c */
+
+#ifndef lint
+static char rcsid[] = "$Id: cp_version.c,v 1.1 1995/08/03 23:26:10 jctran Exp jctran $";
+#endif
+/* $Log: cp_version.c,v $
+ * Revision 1.1  1995/08/03  23:26:10  jctran
+ * Initial revision
+ * */
+
+/**************************************************************************
+ * This is a module that generate the version log for this library
+ * such that it complies with our standards for use under rcs.  The general
+ * purpose of this is to keep an updatable log that allow the users to know
+ * the specifics for the checked out version.
+ **************************************************************************/
+
+#include <stdio.h>
+#include "cp_version.h"
+
+
+
+int cpPrintVersionLog()
+   {
+   int i=0;
+   int j=0;
+
+   printf("Version %s\n", cpVerNum);
+   printf("-----------------------\n");
+   printf("%s", cpVerLog);
+   printf("\n");
+   return(0);
+   } /* end cpPrintVersionLog */
+
+
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d4 1
+a4 1
+static char rcsid[] = "$Id$";
+d6 4
+a9 2
+/* $Log$ */
+
+@

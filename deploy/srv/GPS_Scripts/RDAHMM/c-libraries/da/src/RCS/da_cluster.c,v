@@ -1,0 +1,1498 @@
+head	1.15;
+access;
+symbols;
+locks
+	granat:1.15; strict;
+comment	@ * @;
+
+
+1.15
+date	98.06.26.02.04.31;	author agray;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	98.05.07.23.51.48;	author granat;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	98.03.09.00.38.06;	author granat;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	97.06.05.18.55.23;	author granat;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	97.06.02.15.34.48;	author granat;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	97.04.05.19.07.59;	author granat;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	97.01.29.21.42.41;	author agray;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	96.10.31.02.03.03;	author agray;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	96.10.30.20.29.09;	author agray;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	96.09.19.22.45.22;	author agray;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	96.08.28.19.41.15;	author agray;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	96.07.17.20.41.48;	author agray;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	96.07.11.16.38.23;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	96.05.14.01.03.02;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.05.07.20.47.06;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@clustering module.
+@
+
+
+1.15
+log
+@updated some function names; updated includes
+@
+text
+@/*******************************************************************************
+MODULE NAME
+da_cluster
+
+ONE-LINE SYNOPSIS
+Functions related to clustering.
+
+SCOPE OF THIS MODULE
+Any functions relating directly to static clustering should fall into this 
+module.  Functions relating to clustering in time series, or time series
+segmentation, should instead go into the da_timeseg module.
+
+SEE ALSO
+Many functions which are analogous to those in this module are in da_timeseg.
+
+REFERENCE(S)
+-
+
+PROGRAM EXAMPLE(S)
+1. /proj/cooltools/sc, AG.
+2. /proj/cooltools/kmeans, AG.
+
+
+NOTES
+-
+
+AG
+*******************************************************************************/
+#ifndef lint
+static char rcsid[] = "$Id: da_cluster.c,v 1.14 1998/05/07 23:51:48 granat Exp agray $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_cluster.c,v $
+ * Revision 1.14  1998/05/07 23:51:48  granat
+ * made changes to include new da_util module
+ *
+ * Revision 1.13  1998/03/09 00:38:06  granat
+ * fixed boolean bug
+ *
+ * Revision 1.12  1997/06/05 18:55:23  granat
+ * edited to conform to changes in da_linalg
+ *
+ * Revision 1.11  1997/06/02 15:34:48  granat
+ * changed to use new NR naming convention
+ *
+ * Revision 1.10  1997/04/05 19:07:59  granat
+ * made adjustments to account for changes in da_linalg
+ *
+ * Revision 1.9  1997/01/29 21:42:41  agray
+ * new formatting, cleaning up debugging output using ut_output.
+ *
+ * Revision 1.8  1996/10/31 02:03:03  agray
+ * renamed from "da_clust" to "da_cluster";
+ * added functions from HMM project;
+ * changed .h and .c formats throughout library;
+ * some reorganizing between modules.
+ * 
+ * Revision 1.7  1996/10/30 20:29:09  agray
+ * changed naming from "mixmod" to "mixture", other naming changes.
+ * 
+ * Revision 1.6  1996/09/19 22:45:22  agray
+ * changed name of prob_gauss() to gauss_eval(); similar for vector_prob_gauss().
+ * 
+ * Revision 1.5  1996/08/28 19:41:15  agray
+ * changed random_means() and random_means_from_data() to wrappers around
+ * functions in da_rand.
+ * 
+ * Revision 1.4  1996/07/17 20:41:48  agray
+ * cosmetic.
+ * 
+ * Revision 1.3  1996/07/11 16:38:23  agray
+ * major edits to kmeans(); changed randomize_means() to random_means();
+ * added random_means_from_data(), mixmod_likelihood(), estimate_mixmod_
+ * params().
+ * 
+ * Revision 1.2  1996/05/14 01:03:02  agray
+ * minor compile problems.
+ * 
+ * Revision 1.1  1996/05/07 20:47:06  agray
+ * Initial revision
+ * 
+ * */
+
+/* C library */
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+/* UT library */
+#include "ut_types.h"
+#include "ut_error.h"
+#include "ut_output.h"
+
+/* NR library */
+#include "nr.h"
+
+/* DA library */
+#include "da_util.h"
+#include "da_io.h"
+#include "da_linalg.h"
+#include "da_probstat.h"
+#include "da_random.h"
+
+/* this module's header */
+#include "da_cluster.h"
+
+
+/*******************************************************************************
+K_MEANS
+Perform the k-means clustering algorithm on a dataset of continuous values,
+returning the matrix of k mean vectors and a class labelling for each of the
+data.  The input matrices and vectors are all assumed to have been allocated
+before calling this function.  The argument initmeans should contain the
+mean vectors which will start off the k-means iterations.  The data is assumed
+to be stored in row vector form (i.e. each row is a datum).
+
+NOTE: In practice, it is a good idea to normalize the columns of the data to
+the same scale before performing k-means. (See the function range_normalize_
+cols()).
+AG
+*******************************************************************************/
+int k_means(float **data, int numrows, int numcols, float **means, 
+            float **initmeans, int *clustsize, int *class, int K,
+            int *numiters, int *num_empty_clusters, boolean empty_cluster_ok)
+
+{
+    float          **oldmeans, **tempmeans;
+    int            i, j, k;
+    int            bestclass;
+    float          dist, mindist;
+    boolean        stable;
+    int            empty_clusters, iters;
+
+    /* initialize before iterating */
+    stable = UT_FALSE;
+    empty_clusters = 0;
+    iters = 0;
+    
+    /* create storage for temporary information */
+    oldmeans = initmeans;
+
+    /* perform k-means iterations */
+    while (stable == UT_FALSE)
+    {
+      stable = UT_TRUE;
+
+      /* zero out new means */
+      for (k=1; k<=K; k++)
+        for (j=1; j<=numcols; j++)
+          means[k][j] = 0;
+
+      /* zero out new cluster sizes */
+      for (k=1; k<=K; k++)
+        clustsize[k] = 0;
+
+      /* compute distance of each datum to each mean */
+      for (i=1; i<=numrows; i++)
+      {
+       
+        mindist = euclid_dist_vec(data[i],oldmeans[1],numcols);
+        bestclass = 1;
+          /* 
+            printf("item %d to mean %d: %f\n",
+                   i,1,euclid_dist_vec(data[i],oldmeans[1],numcols));
+             */
+        for (k=2; k<=K; k++)
+        {
+          /*
+            printf("item %d to mean %d: %f\n",
+                   i,k,euclid_dist_vec(data[i],oldmeans[k],numcols));
+           */
+
+          if ((dist = euclid_dist_vec(data[i],oldmeans[k],numcols)) < mindist)
+          {
+            mindist = dist;
+            bestclass = k;
+          }
+        }
+
+        /* assign class and see if different from last iteration */
+        if (class[i] != bestclass)
+        {
+          class[i] = bestclass;
+          stable = UT_FALSE;
+        }
+
+        /* contribute to the new mean based on class assignment */
+        for (j=1; j<=numcols; j++)
+          means[class[i]][j] += data[i][j];
+        clustsize[class[i]] += 1;
+
+      }
+
+      /* keep track of num iterations */
+      iters++;
+      if (verbose_output())
+        log_printf("iteration %d\n", iters);
+
+      /* check for eliminated clusters */
+      for (k=1; k<=K; k++)
+        if (clustsize[k] == 0)
+          empty_clusters++;
+
+      /* decide what to do if a cluster was eliminated, based on flag */
+      if (empty_clusters > 0)
+      {
+        if (empty_cluster_ok == UT_FALSE)
+        {
+          /* set some values to be returned */
+          *num_empty_clusters = empty_clusters;
+          *numiters = iters;
+
+          return (UT_ERROR);
+        }
+        else
+        {
+          K -= empty_clusters;  /* caller must also do this */
+          /* also get rid of the corresponding means in the means matrix */
+          printf("This option does not work yet.\n");
+
+          /* set some values to be returned */
+          *num_empty_clusters = empty_clusters;
+          *numiters = iters;
+
+          return (UT_ERROR);  /* for now... when this works, just continue
+                                 with smaller K */
+        }
+      }
+
+      /* finish computing new means */
+      for (k=1; k<=K; k++)
+        for (j=1; j<=numcols; j++)
+          means[k][j] /= (float) clustsize[k];
+
+      /* make the new means into the oldmeans for next iteration */
+      tempmeans = oldmeans; oldmeans = means; means = tempmeans;
+
+      /* 
+      print_matrix(ut_log_fp, K, numcols, means);
+       */
+
+    }
+    
+    /* set some values to be returned */
+    *num_empty_clusters = empty_clusters;
+    *numiters = iters;
+
+    return (UT_OK);
+}
+
+
+/*******************************************************************************
+K_MEANS_MIXTURE_ESTIMATE
+Compute covariance matrices and mixture weights based on the means and cluster
+memberships resulting from a k-means run.
+AG
+*******************************************************************************/
+int k_means_mixture_estimate(float **data, float **means, float ***covars, 
+                             float *weights, int *clust_label, 
+                             int num_data, int num_dims, int K)
+
+{
+  int i, j, j2, k;
+  float **covar_k, *mean_k, *data_i;
+
+  /* set up parameters for summing */
+  set_vec(weights, K, 0.0);
+  for (k = 1; k <= K; k++)
+    set_mat(covars[k], num_dims, num_dims, 0.0);
+
+  for (i = 1; i <= num_data; i++)
+  {
+    k = clust_label[i];
+        
+    /* get the parameters corresponding to the class of this datum */
+    covar_k = covars[k];
+    mean_k  = means[k];
+
+    /* estimate mixture weights given members of k-means clusters */
+    /* add the contribution of this datum to its class */
+    weights[k]++;
+        
+    /* estimate initial covariance matrices given members of k-means 
+       clusters */
+    /* add the square of the deviation vectors to the right position in the
+       covariance */
+    for (j = 1; j <= num_dims; j++)
+    {
+      data_i = data[i];
+      for (j2 = j; j2 <= num_dims; j2++)
+        covar_k[j][j2] += (data_i[j] - mean_k[j]) * (data_i[j2] - mean_k[j2]);
+    }
+  }
+
+  /* normalize weights by number of data */
+  scalar_div_vec(weights, K, num_data);
+
+  /* normalize the covariance matrices by the number of data */
+  for (k = 1; k <= K; k++)
+    scalar_div_mat(covars[k], num_dims, num_dims, num_data);
+
+  /* fill in the lower triangle of each covariance matrix based on upper 
+     triangle */
+  for (k = 1; k <= K; k++)
+  {
+    covar_k = covars[k];
+    for (j=1; j<=num_dims; j++)
+      for (j2 = 1; j2 < j; j2++)
+        covar_k[j][j2] = covar_k[j2][j];
+  }
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+BEST_K_MEANS_MIXTURE_ESTIMATE
+Performs the k-means algorithm a specified number of times on a dataset, each
+time also estimating covariance matrices and mixture weights corresponding to
+the resulting mean vectors and k-means cluster memberships, in order to learn
+an estimate of a mixture model based on each k-means run.  The likelihood of
+the data given the model is computed for each mixture estimate, and the para-
+meters of the best mixture estimate chosen by that metric are returned.  The
+return value of the function is the corresponding log-likelihood.
+
+Seeds the random number generator before beginning.  Assumes dataset has been
+range-normalized.
+AG
+*******************************************************************************/
+float best_k_means_mixture_estimate(float **data, float num_data,
+                                    float num_dims, float **means, 
+                                    float ***covars, float *weights, 
+                                    float **best_means, float ***best_covars,
+                                    float *best_weights, float **init_means,
+                                    float **probs, float *prob_data, 
+                                    float *sum_probs, float num_tries, 
+                                    float min_diag, float *min_val, 
+                                    float *range, int K, int *clust_size,
+                                    int *clust_label, int empty_clust_ok)
+
+{
+  int i, k, num_iters, num_empty_clust;
+  float log_likelihood, best_log_likelihood;
+
+  if (verbose_output())
+    log_printf("%d tries of k-means mixture estimates:\n\n", num_tries);
+
+  best_log_likelihood = 0.0;
+  for (i = 1; i <= num_tries; i++)
+  {
+    if (verbose_output())
+      log_printf("--> try # %d of k-means:\n", i);
+
+    /* choose K random points in the data as starting means for this run */
+    random_means_from_data(init_means, K, num_dims, data, num_data);
+
+    if (verbose_output())
+    {
+      log_printf("initial means given to k-means\n");
+      print_unnorm_matrix(ut_log_fp, K, num_dims, init_means, range, min_val);
+    }
+
+    /* perform k-means */
+    k_means(data, num_data, num_dims, means, init_means, clust_size, 
+            clust_label, K, &num_iters, &num_empty_clust, empty_clust_ok);
+    
+    if (verbose_output())
+    {
+      log_printf("means determined by k-means\n");
+      print_unnorm_matrix(ut_log_fp, K, num_dims, means, range, min_val);
+    }
+
+    /* compute covariance matrices and mixture weights based on means and 
+       cluster memberships */
+    k_means_mixture_estimate(data, means, covars, weights, clust_label,
+                             num_data, num_dims, K);
+
+    if (debug_output())
+    {
+      log_printf("covariance matrices after computing\n");
+      for (k = 1; k <= K; k++)
+        print_unnorm_cov_matrix(ut_log_fp, num_dims, covars[k], range);
+      log_printf("class weights after computing\n");
+      print_row(ut_log_fp, K, weights);
+    }
+
+    /* given the parameters, compute the likelihood of this model */
+    log_likelihood = mixture_likelihood(K, means, covars, weights, data, 
+                                        probs, prob_data, sum_probs, num_data, 
+                                        num_dims, "rows", min_diag);
+
+    /* save the current best set of parameters */
+    if (log_likelihood > best_log_likelihood)
+    {
+      best_log_likelihood = log_likelihood;
+      for (k = 1; k <= K; k++)
+      {
+        copy_vec(means[k], best_means[k], num_dims);
+        copy_mat(covars[k], best_covars[k], num_dims, num_dims);
+      }
+    }
+        
+    /* report the parameters found */
+    if (normal_output())
+    {
+      log_printf("log-likelihood = %g\n", log_likelihood);
+      log_printf("\nk-means mixture estimate parameters\n");
+      log_printf(  "-----------------------------------\n\n");
+
+      print_unnorm_gauss_parms_set(ut_log_fp, num_dims, K, means, covars, range,
+                                   min_val);
+    }
+  }  /* end k-means loop over numtries */
+
+  return (best_log_likelihood);
+}
+
+
+/*******************************************************************************
+MIXTURE_LIKELIHOOD
+Given mixture model parameters, a dataset, and allocated space for storing
+all the intermediate probabilities, compute the log-likelihood of the model 
+given the data.
+
+K is the number of components in the mixture.
+means is the  matrix of mean vectors, where each row is a mean.
+covars is the array of covariance matrices.
+weights is the vector of class weights.
+data is the dataset.
+probs is the matrix to contain all intermediate probabilities.
+prob_data is the vector to contain the posterior probability of each datum
+given the model.
+sum_probs is the vector to contain the posterior probability of each class
+given the data.
+numrows is the number of data.
+numcols is the number of attributes.
+rows_or_cols is the string specifying whether data are stored as rows or as
+columns.
+min_diag is a small number for perturbing ill-conditioned covariance matrices.
+AG
+*******************************************************************************/
+float mixture_likelihood(int K, float **means, float ***covars, float *weights,
+                         float **data, float **probs, float *prob_data, 
+                         float *sum_probs, int numrows, int numcols, 
+                         char *rows_or_cols, float min_diag)
+
+{
+  int      i,k;
+  float    log_likelihood;
+  float   *mean_k, **covar_k, *probs_k;
+
+  /* initialize */
+  set_vec(prob_data, numrows, 0.0);
+  set_vec(sum_probs, K, 0.0);
+  log_likelihood = 0.0;
+
+  for (k=1; k<=K; k++)
+  {
+    /* get the parameters corresponding to this class; also get the place
+       where the probabilities will be stored */
+    mean_k  = means[k];
+    covar_k = covars[k];
+    probs_k = probs[k];
+    
+    /* note that the following 3 operations all cycle over the data; they
+       should be consolidated for efficiency */
+
+    /* A. first compute the LIKELIHOOD of the data given the parameters for
+       this class; store it in the array probs[k] */
+    vector_prob_gauss(data, mean_k, covar_k, numcols, numrows, probs_k,
+                      min_diag, rows_or_cols);
+    
+    if (debug_output())
+    {
+      log_printf("First three density values from vector_prob_gauss\n");
+      print_row(ut_log_fp, 3, probs_k);
+      log_printf("%f %f %f\n", probs_k[1],probs_k[2],probs_k[3]);
+      log_printf("%g %g %g\n", probs_k[1],probs_k[2],probs_k[3]);
+    }
+
+    /* B. multiply by the class prior, or weight, to get the JOINT
+       probability of the data and the parameters; store it in probs[k] */
+    scalar_mult_vec(probs_k, numrows, weights[k]);
+
+    /* contribute to the probability of each datum across all models */
+    for (i=1; i<=numrows; i++)
+      prob_data[i] += probs_k[i];
+    /*
+    add_vec(numrows, probs_k, prob_data, prob_data);
+    */
+  }
+
+  if (debug_output())
+  {
+    log_printf("First three density values from prob_data\n");
+    print_row(ut_log_fp, 3, prob_data);
+  }
+
+  /* C. normalize by the probability of the data across all models to get 
+     the POSTERIOR probability of each datum; store it in probs[k] */
+  for (k=1; k<=K; k++)
+  {
+    probs_k = probs[k];
+    for (i=1; i<=numrows; i++)
+      if (prob_data[i] != 0)
+        probs_k[i] /= prob_data[i];
+  }
+  /*
+    div_vec_elt(numrows, probs_k, prob_data, probs_k);
+    */
+
+  if (debug_output())
+    for (k=1; k<=K; k++) 
+    {
+      log_printf("first three posterior probabilities for class %d\n", k);
+      log_printf("    in true class A\n");
+      print_row(ut_log_fp, 3, probs[k]);
+      log_printf("first three posterior probabilities for class %d\n", k);
+      log_printf("    in true class B\n");
+      for (i=251; i<=253; i++)
+        log_printf("%g ",probs[k][i]);
+      log_printf("\n");
+    }
+
+  /* compute the SUM OF THE POSTERIOR probabilities for each class, which
+     is used in computing the parameters later */
+  for (k=1; k<=K; k++)
+    sum_probs[k] = sum_vec(probs[k], numrows);
+
+  if (debug_output()) {
+    log_printf("sum of posteriors for all classes\n");
+    print_row(ut_log_fp, K, sum_probs);
+  }
+
+  /* compute the log-likelihood of all the data given the mixture model */
+  for (i=1; i<=numrows; i++)
+    log_likelihood += (float) log((float) prob_data[i]);
+
+  if (debug_output()) {
+    log_printf("log-likelihood = %g\n", log_likelihood);
+  }
+
+  return(log_likelihood);
+}
+
+
+/*******************************************************************************
+ESTIMATE_MIXTURE_PARAMS
+Given the matrix containing the posterior probability of each datum belonging
+to each class in the mixture model, a dataset, and allocated space for storing
+all the parameters to be computed, estimate the mixture model parameters from
+the class probabilities.
+Assumes the data are stored in columns, not rows.
+K is the number of components in the mixture.
+means is the  matrix of mean vectors, where each row is a mean.
+covars is the array of covariance matrices.
+weights is the vector of class weights.
+data is the dataset.
+probs is the matrix to contain all intermediate probabilities.
+sum_probs is the vector to contain the posterior probability of each class
+given the data.
+numrows is the number of data.
+numcols is the number of attributes.
+min_weight is the minimum class weight; it determines when a class is consi-
+dered to have collapsed.
+num_empty_clusters is the number of classes that have collapsed.
+empty_cluster_ok is the flag indicating whether to continue in the empty
+cluster case.
+AG
+*******************************************************************************/
+int estimate_mixture_params(int K, float **means, float ***covars, 
+                            float *weights, float **data, float **probs, 
+                            float *sum_probs, int numrows, int numcols, 
+                            float min_weight, int *num_empty_clusters, 
+                            boolean empty_cluster_ok)
+
+{
+  int      i,j,j2,k;
+  float    log_likelihood;
+  float    *mean_k, **covar_k, *probs_k, *data_j, *data_j2;
+  int      empty_clusters;
+
+  /* A. compute the class WEIGHTS, or priors */
+  for (k=1; k<=K; k++)
+    weights[k] = sum_probs[k] / numrows;
+  
+  if (debug_output()) {
+    log_printf("weights for all classes\n");
+    print_row(ut_log_fp, K, weights);
+  }
+
+  /* check for eliminated clusters */
+  empty_clusters = 0;
+  for (k=1; k<=K; k++)
+    if (weights[k] <= min_weight)
+      empty_clusters++;
+
+  /* decide what to do if a cluster was eliminated, based on flag */
+  if (empty_clusters > 0)
+  {
+    if (empty_cluster_ok == UT_FALSE)
+    {
+      /* set some values to be returned */
+      *num_empty_clusters = empty_clusters;
+
+      return (UT_ERROR);
+    }
+    else
+    {
+      K -= empty_clusters;  /* caller must also do this */
+      /* also get rid of the corresponding means in the means matrix 
+         and covar. matrices and weights */
+      log_printf("This option does not work yet.\n");
+
+      /* set some values to be returned */
+      *num_empty_clusters = empty_clusters;
+
+      return (UT_ERROR);  /* for now... when this works, just continue
+                             with smaller K */
+    }
+  }
+      
+  /* B. compute the class MEAN vectors */
+  /* can i just use mat_mult() here ???  I think so. */
+  for (k=1; k<=K; k++)
+  {
+    mean_k  = means[k];
+    probs_k = probs[k];
+      
+    /* first multiply the posteriors matrix by the data matrix */
+    for (j=1; j<=numcols; j++)
+    {
+      data_j = data[j];
+
+      mean_k[j] = 0.0;
+      for (i=1; i<=numrows; i++)
+        mean_k[j] += probs_k[i] * data_j[i];
+    }
+
+    /* then normalize the means by the sum of the posteriors */
+    scalar_div_vec(mean_k, numcols, sum_probs[k]);
+  }
+
+  /*
+  if (debug_output()) {
+    log_printf("means for all classes\n");
+    print_unnorm_matrix(ut_log_fp, K, numcols, means, range, minval);
+  }
+  */
+
+  /* C. compute the class COVARIANCE matrices */
+  for (k=1; k<=K; k++)
+  {
+    covar_k = covars[k];
+    mean_k  = means[k];
+    probs_k = probs[k];
+
+    /* multiply the deviation vectors by the posteriors;
+       also normalize by the sum of the posteriors */
+    for (j=1; j<=numcols; j++)
+    {
+      data_j = data[j];
+      for (j2=j; j2<=numcols; j2++)
+      {
+        data_j2 = data[j2];
+        
+        covar_k[j][j2] = 0.0;
+        for (i=1; i<=numrows; i++)
+          covar_k[j][j2] += (data_j[i] - mean_k[j]) * (data_j2[i] - mean_k[j2])
+                            * probs_k[i];
+
+        covar_k[j][j2] /= sum_probs[k];
+      }
+    }
+
+    /* fill in the lower triangle of the matrix based on upper triangle */
+    for (j=1; j<=numcols; j++)
+      for (j2=1; j2<j; j2++)
+        covar_k[j][j2] = covar_k[j2][j];
+
+    /*
+    if (debug_output()) {
+      log_printf("cov. matrix for class %d\n", k);
+      print_unnorm_cov_matrix(ut_log_fp, numcols, numcols, covar_k, range);
+    }
+    */
+
+  }
+
+  /* set some values to be returned */
+  *num_empty_clusters = empty_clusters;
+
+  return (UT_OK);
+}
+
+/*******************************************************************************
+RANDOM_MEANS
+Randomly set the mean vectors, drawing from 0-1 uniform distribution for each
+attribute value.  The matrix means contains the resulting row vectors.
+AG
+*******************************************************************************/
+int random_means(float **means, int num_means, int num_cols)
+
+{
+
+  return ( random_matrix(means, num_means, num_cols) );
+}
+
+
+/*******************************************************************************
+RANDOM_MEANS_FROM_DATA
+Randomly set the mean vectors by drawing randomly from the row vectors of a
+dataset.  The matrix means contains the resulting row vectors.
+AG
+*******************************************************************************/
+int random_means_from_data(float **means, int num_means, int num_cols, 
+                               float **data, int num_data)
+
+{
+  boolean *selected;
+
+  /* allocate temporary storage */
+  selected = (boolean*) NR_cvector(1, num_data);
+
+  random_select_rows(data, num_data, num_cols, means, num_means, selected);
+
+  NR_free_cvector(selected, 1, num_data);
+  return (UT_OK);
+}
+
+@
+
+
+1.14
+log
+@made changes to include new da_util module
+@
+text
+@d30 1
+a30 1
+static char rcsid[] = "$Id: da_cluster.c,v 1.13 1998/03/09 00:38:06 granat Exp granat $";
+d36 3
+d101 1
+d103 1
+a104 1
+#include "da_signal.h"
+d162 1
+a162 1
+        mindist = euclid_dist(data[i],oldmeans[1],numcols);
+d166 1
+a166 1
+                   i,1,euclid_dist(data[i],oldmeans[1],numcols));
+d172 1
+a172 1
+                   i,k,euclid_dist(data[i],oldmeans[k],numcols));
+d175 1
+a175 1
+          if ((dist = euclid_dist(data[i],oldmeans[k],numcols)) < mindist)
+d725 1
+a725 1
+  selected = (boolean*) cvector(1, num_data);
+d729 1
+a729 1
+  free_cvector(selected, 1, num_data);
+@
+
+
+1.13
+log
+@fixed boolean bug
+@
+text
+@d30 1
+a30 1
+static char rcsid[] = "$Id: da_cluster.c,v 1.12 1997/06/05 18:55:23 granat Exp granat $";
+d36 3
+d97 1
+@
+
+
+1.12
+log
+@edited to conform to changes in da_linalg
+@
+text
+@d30 1
+a30 1
+static char rcsid[] = "$Id: da_cluster.c,v 1.11 1997/06/02 15:34:48 granat Exp granat $";
+d36 3
+d118 1
+a118 1
+            int *numiters, int *num_empty_clusters, bool empty_cluster_ok)
+d125 1
+a125 1
+    bool           stable;
+d569 1
+a569 1
+                            bool empty_cluster_ok)
+d714 1
+a714 1
+  bool *selected;
+d717 1
+a717 1
+  selected = (bool*) cvector(1, num_data);
+@
+
+
+1.11
+log
+@changed to use new NR naming convention
+@
+text
+@d30 1
+a30 1
+static char rcsid[] = "$Id: da_cluster.c,v 1.10 1997/04/05 19:07:59 granat Exp granat $";
+d36 3
+d258 1
+a258 1
+  set_vec(K, weights, 0.0);
+d260 1
+a260 1
+    set_mat(num_dims, num_dims, covars[k], 0.0);
+d287 1
+a287 1
+  scalar_div_vec(K, weights, num_data);
+d291 1
+a291 1
+    scalar_div_mat(num_dims, num_dims, covars[k], num_data);
+d444 2
+a445 2
+  set_vec(numrows, prob_data, 0.0);
+  set_vec(K, sum_probs, 0.0);
+d474 1
+a474 1
+    scalar_mult_vec(numrows, probs_k, weights[k]);
+d632 1
+a632 1
+    scalar_div_vec(numcols, mean_k, sum_probs[k]);
+@
+
+
+1.10
+log
+@made adjustments to account for changes in da_linalg
+@
+text
+@d30 1
+a30 1
+static char rcsid[] = "$Id: da_cluster.c,v 1.9 1997/01/29 21:42:41 agray Exp granat $";
+d36 3
+a84 1
+#include "nrutil.h"
+@
+
+
+1.9
+log
+@new formatting, cleaning up debugging output using ut_output.
+@
+text
+@d30 1
+a30 1
+static char rcsid[] = "$Id: da_cluster.c,v 1.8 1996/10/31 02:03:03 agray Exp agray $";
+d36 3
+d514 1
+a514 1
+    sum_probs[k] = sum_vec(numrows, probs[k]);
+@
+
+
+1.8
+log
+@renamed from "da_clust" to "da_cluster";
+added functions from HMM project;
+changed .h and .c formats throughout library;
+some reorganizing between modules.
+@
+text
+@d30 1
+a30 1
+static char rcsid[] = "$Id: da_cluster.c,v 1.7 1996/10/30 20:29:09 agray Exp agray $";
+d32 2
+d35 31
+a65 25
+ *$Log: da_cluster.c,v $
+ *Revision 1.7  1996/10/30 20:29:09  agray
+ *changed naming from "mixmod" to "mixture", other naming changes.
+ *
+ *Revision 1.6  1996/09/19 22:45:22  agray
+ *changed name of prob_gauss() to gauss_eval(); similar for vector_prob_gauss().
+ *
+ *Revision 1.5  1996/08/28 19:41:15  agray
+ *changed random_means() and random_means_from_data() to wrappers around
+ *functions in da_rand.
+ *
+ *Revision 1.4  1996/07/17 20:41:48  agray
+ *cosmetic.
+ *
+ *Revision 1.3  1996/07/11 16:38:23  agray
+ *major edits to kmeans(); changed randomize_means() to random_means();
+ *added random_means_from_data(), mixmod_likelihood(), estimate_mixmod_
+ *params().
+ *
+ *Revision 1.2  1996/05/14 01:03:02  agray
+ *minor compile problems.
+ *
+ *Revision 1.1  1996/05/07 20:47:06  agray
+ *Initial revision
+ *
+d75 2
+a76 3
+#include "ut_rand.h"
+#include "ut_string.h"
+#include "ut_debug.h"
+d83 2
+a85 1
+#include "da_random.h"
+d179 2
+a180 3
+      if (utDebugLevel > 0) {
+        printf("iter# %d\n", iters);
+      }
+d222 1
+a222 1
+      print_matrix(stdout, K, numcols, means);
+d353 1
+a353 1
+      print_unnorm_matrix(stdout, K, num_dims, means, range, min_val);
+a402 27
+RANDOM_MEANS
+Randomly set the mean vectors, drawing from 0-1 uniform distribution for each
+attribute value.
+AG
+*******************************************************************************/
+int random_means(float **means, int num_means, int num_cols)
+
+{
+  return ( random_matrix(means, num_means, num_cols) );
+}
+
+
+/*******************************************************************************
+RANDOM_MEANS_FROM_DATA
+Randomly set the mean vectors by drawing randomly from the row vectors of a
+dataset.
+AG
+*******************************************************************************/
+int random_means_from_data(float **means, int num_means, int num_cols, 
+                           float **data, int num_data)
+
+{
+    return ( random_select_rows(data, num_data, num_cols, means, num_means) );
+}
+
+
+/*******************************************************************************
+d456 6
+a461 5
+    if (utDebugLevel > 0) {
+      printf("first three density values from vector_prob_gauss\n");
+      print_row(stdout, 3, probs_k);
+      printf("%f %f %f\n", probs_k[1],probs_k[2],probs_k[3]);
+      printf("%g %g %g\n", probs_k[1],probs_k[2],probs_k[3]);
+d476 4
+a479 3
+  if (utDebugLevel > 0) {
+    printf("first three density values from prob_data\n");
+    print_row(stdout, 3, prob_data);
+d495 8
+a502 7
+  if (utDebugLevel > 0) {
+    for (k=1; k<=K; k++) {
+      printf("first three posterior probabilities for class %d\n", k);
+      printf("    in true class A\n");
+      print_row(stdout, 3, probs[k]);
+      printf("first three posterior probabilities for class %d\n", k);
+      printf("    in true class B\n");
+d504 2
+a505 2
+        printf("%g ",probs[k][i]);
+      printf("\n");
+a506 1
+  }
+d513 3
+a515 3
+  if (utDebugLevel > 0) {
+    printf("sum of posteriors for all classes\n");
+    print_row(stdout, K, sum_probs);
+d522 2
+a523 2
+  if (utDebugLevel > 0) {
+    printf("log-likelihood = %g\n", log_likelihood);
+d570 3
+a572 3
+  if (utDebugLevel > 0) {
+    printf("weights for all classes\n");
+    print_row(stdout, K, weights);
+d596 1
+a596 1
+      printf("This option does not work yet.\n");
+d628 3
+a630 3
+  if (utDebugLevel > 0) {
+    printf("means for all classes\n");
+    print_unnorm_matrix(stdout, K, numcols, means, range, minval);
+d665 3
+a667 3
+    if (utDebugLevel > 0) {
+      printf("cov. matrix for class %d\n", k);
+      print_unnorm_cov_matrix(stdout, numcols, numcols, covar_k, range);
+d678 36
+@
+
+
+1.7
+log
+@changed naming from "mixmod" to "mixture", other naming changes.
+@
+text
+@d2 2
+d5 2
+a6 9
+  Title:     da_clust
+  Author:    Alexander Gray
+  Function:  Data analysis routines, Numerical Recipes style.
+             This file contains clustering methods and related functions,
+             for unsupervised learning of meaningful groupings in multivariate
+             data.
+  Reference: -
+  How used:  First use - in ~/unsup/em/em.c.
+  Notes:     - 
+d8 20
+d30 1
+a30 1
+static char rcsid[] = "$Id: da_clust.c,v 1.6 1996/09/19 22:45:22 agray Exp agray $";
+d33 4
+a36 1
+ *$Log: da_clust.c,v $
+d60 1
+d65 1
+d71 1
+d75 6
+a80 3
+#include "da_dist.h"
+#include "da_rand.h"
+#include "da_clust.h"
+d84 12
+a95 11
+ K_MEANS
+ Perform the k-means clustering algorithm on a dataset of continuous values,
+ returning the matrix of k mean vectors and a class labelling for each of the
+ data.  The input matrices and vectors are all assumed to have been allocated
+ before calling this function.  The argument initmeans should contain the
+ mean vectors which will start off the k-means iterations.  The data is assumed
+ to be stored in row vector form (i.e. each row is a datum).
+
+ NOTE: In practice, it is a good idea to normalize the columns of the data to
+ the same scale before performing k-means. (See the function range_normalize_
+ cols()).
+d229 171
+a399 3
+ RANDOM_MEANS
+ Randomly set the mean vectors, drawing from 0-1 uniform distribution for each
+ attribute value.
+d409 4
+a412 3
+ RANDOM_MEANS_FROM_DATA
+ Randomly set the mean vectors by drawing randomly from the row vectors of a
+ dataset.
+d423 21
+a443 20
+ MIXTURE_LIKELIHOOD
+ Given mixture model parameters, a dataset, and allocated space for storing
+ all the intermediate probabilities, compute the log-likelihood of the model 
+ given the data.
+
+ K is the number of components in the mixture.
+ means is the  matrix of mean vectors, where each row is a mean.
+ covars is the array of covariance matrices.
+ weights is the vector of class weights.
+ data is the dataset.
+ probs is the matrix to contain all intermediate probabilities.
+ prob_data is the vector to contain the posterior probability of each datum
+ given the model.
+ sum_probs is the vector to contain the posterior probability of each class
+ given the data.
+ numrows is the number of data.
+ numcols is the number of attributes.
+ rows_or_cols is the string specifying whether data are stored as rows or as
+ columns.
+ min_diag is a small number for perturbing ill-conditioned covariance matrices.
+d549 22
+a570 21
+ ESTIMATE_MIXTURE_PARAMS
+ Given the matrix containing the posterior probability of each datum belonging
+ to each class in the mixture model, a dataset, and allocated space for storing
+ all the parameters to be computed, estimate the mixture model parameters from
+ the class probabilities.
+ Assumes the data are stored in columns, not rows.
+ K is the number of components in the mixture.
+ means is the  matrix of mean vectors, where each row is a mean.
+ covars is the array of covariance matrices.
+ weights is the vector of class weights.
+ data is the dataset.
+ probs is the matrix to contain all intermediate probabilities.
+ sum_probs is the vector to contain the posterior probability of each class
+ given the data.
+ numrows is the number of data.
+ numcols is the number of attributes.
+ min_weight is the minimum class weight; it determines when a class is consi-
+ dered to have collapsed.
+ num_empty_clusters is the number of classes that have collapsed.
+ empty_cluster_ok is the flag indicating whether to continue in the empty
+ cluster case.
+@
+
+
+1.6
+log
+@changed name of prob_gauss() to gauss_eval(); similar for vector_prob_gauss().
+@
+text
+@d15 1
+a15 1
+static char rcsid[] = "$Id: da_clust.c,v 1.5 1996/08/28 19:41:15 agray Exp agray $";
+d19 3
+d60 1
+a60 1
+ KMEANS
+d67 1
+d69 2
+a70 1
+ the same scale before performing k-means (see the function normalize_data()).
+d72 3
+a74 3
+int kmeans(float **data, int numrows, int numcols, float **means, 
+           float **initmeans, int *clustsize, int *class, int K,
+           int *numiters, int *num_empty_clusters, bool empty_cluster_ok)
+d229 1
+a229 1
+ MIXMOD_LIKELIHOOD
+d233 1
+d250 4
+a253 4
+float mixmod_likelihood(int K, float **means, float ***covars, float *weights,
+                        float **data, float **probs, float *prob_data, 
+                        float *sum_probs, int numrows, int numcols, 
+                        char *rows_or_cols, float min_diag)
+d278 1
+a278 1
+    vector_gauss_eval(data, mean_k, covar_k, numcols, numrows, probs_k,
+d282 1
+a282 1
+      printf("first three density values from vector_gauss_eval\n");
+d354 1
+a354 1
+ ESTIMATE_MIXMOD_PARAMS
+d376 5
+a380 5
+int estimate_mixmod_params(int K, float **means, float ***covars, 
+                           float *weights, float **data, float **probs, 
+                           float *sum_probs, int numrows, int numcols, 
+                           float min_weight, int *num_empty_clusters, 
+                           bool empty_cluster_ok)
+@
+
+
+1.5
+log
+@changed random_means() and random_means_from_data() to wrappers around
+functions in da_rand.
+@
+text
+@d15 1
+a15 1
+static char rcsid[] = "$Id: da_clust.c,v 1.4 1996/07/17 20:41:48 agray Exp agray $";
+d19 4
+d272 1
+a272 1
+    vector_prob_gauss(data, mean_k, covar_k, numcols, numrows, probs_k,
+d276 1
+a276 1
+      printf("first three density values from vector_prob_gauss\n");
+@
+
+
+1.4
+log
+@cosmetic.
+@
+text
+@d15 1
+a15 1
+static char rcsid[] = "$Id: da_clust.c,v 1.3 1996/07/11 16:38:23 agray Exp agray $";
+d19 3
+d48 1
+d193 1
+d197 1
+a197 1
+ attribute value
+d199 1
+a199 1
+int random_means(means, num_means, num_cols)
+a200 2
+    float **means;
+    int   num_means, num_cols;
+d202 1
+a202 12
+    int j,k;
+
+    for (k=1; k<=num_means; k++)
+      for (j=1; j<=num_cols; j++)
+        means[k][j] = (float) utScaledRand(0.0,1.0);
+    /* for Cray */
+
+        /* Sun:
+        means[k][j] = (float) drand48();
+        */
+
+    return (UT_OK);
+d208 2
+a209 2
+ Randomly set the mean vectors, by drawing randomly from the row vectors or
+ the column vectors of a dataset, according to a string argument.
+d211 2
+a212 2
+int random_means_from_data(means, num_means, num_cols, data, num_data, 
+                           rows_or_cols)
+a213 5
+    float **means;
+    int   num_means, num_cols;
+    float **data;
+    int   num_data;
+    char  *rows_or_cols;
+d215 2
+a216 2
+    int   i,j,k;
+    short *selected;
+a217 33
+    /* storage for indices for the data */
+    selected = (short*) utMalloc(num_data * sizeof(short));
+
+    /* randomly choose amongst the indices of the data */
+    utRandomPick (num_means, num_data, selected);
+
+    /* copy the chosen data to the means matrix */
+    k = 1;
+    for (i=1; i<=num_data; i++)
+    {
+      if (selected[i] == UT_TRUE)
+      {
+        for (j=1; j<=num_cols; j++)
+        {
+          if (utEqStr(rows_or_cols, "rows"))
+            means[k][j] = data[i][j];
+          else if (utEqStr(rows_or_cols, "cols"))
+            means[k][j] = data[j][i];
+          else
+          {
+            utError("Bad option given to pick_random_means()\n");
+            return (UT_ERROR);
+          }
+        }
+        k++;
+      }
+    }
+
+    /* clean up */
+    utFree(selected);
+    
+    return (UT_OK);
+}
+d341 1
+@
+
+
+1.3
+log
+@major edits to kmeans(); changed randomize_means() to random_means();
+added random_means_from_data(), mixmod_likelihood(), estimate_mixmod_
+params().
+@
+text
+@a10 3
+
+  Compile:   make
+  Example:   -
+d15 1
+a15 1
+static char rcsid[] = "$Id: da_clust.c,v 1.2 1996/05/14 01:03:02 agray Exp agray $";
+d19 5
+@
+
+
+1.2
+log
+@minor compile problems.
+@
+text
+@d18 1
+a18 1
+static char rcsid[] = "$Id: da_clust.c,v 1.1 1996/05/07 20:47:06 agray Exp agray $";
+d22 3
+d33 1
+d36 3
+d41 1
+d52 2
+a53 1
+ mean vectors which will start off the k-means iterations.
+d57 4
+a60 9
+int kmeans(data, numrows, numcols, means, initmeans, clustsize, class, K,
+           numreconverge)
+    float          **data;
+    int            numrows, numcols;
+    float          **means, **initmeans;
+    int            *clustsize;
+    int            *class;
+    int            K;
+    int            *numreconverge;
+d66 2
+a67 2
+    bool           stable = UT_FALSE, zero_cluster = UT_FALSE;
+    int            numiters = 0;
+d69 5
+a92 3
+        /*
+      for (i=1; i<=3; i++)
+      */
+d130 4
+a133 2
+      numiters++;
+      printf("iter# %d\n", numiters);
+d138 6
+d145 18
+a162 2
+          zero_cluster = UT_TRUE;
+          break;
+a163 12
+    
+      /* start over in this case */
+      if (zero_cluster == UT_TRUE)
+      {
+        printf("Restarted convergence after %d iterations.\n", numiters);
+        utSeedRandomByClock();
+        randomize_means(oldmeans, K, numcols);
+        numiters = 0;
+        stable = UT_FALSE;
+        *numreconverge += 1;
+        printf("This is the %dth reconvergence attempt.\n", *numreconverge);
+        continue;
+d180 4
+d188 1
+a188 1
+ RANDOMIZE_MEANS
+d192 2
+a193 1
+int randomize_means(means, nr, nc)
+d195 1
+a195 1
+    int nr, nc;
+d199 2
+a200 2
+    for (k=1; k<=nr; k++)
+      for (j=1; j<=nc; j++)
+d202 8
+d211 118
+d330 34
+a363 2
+      write_matrix("randmeans", K, numcols, oldmeans, "w");
+      */
+d365 19
+a383 1
+    return (UT_OK);
+d386 66
+d453 80
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d18 1
+a18 1
+static char rcsid[] = "$Id$";
+d21 4
+a24 1
+ *$Log$
+d31 1
+a31 1
+#include "ut_random.h"
+d48 2
+a49 1
+int kmeans(data, numrows, numcols, means, initmeans, clustsize, class, K)
+d56 1
+d143 2
+a144 2
+        numreconverge += 1;
+        printf("This is the %dth reconvergence attempt.\n", numreconverge);
+@

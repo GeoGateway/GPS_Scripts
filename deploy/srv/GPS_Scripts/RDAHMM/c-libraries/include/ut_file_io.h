@@ -1,0 +1,106 @@
+/*******************************************************************************
+MODULE HEADER:
+ut_file_io.h
+*******************************************************************************/
+
+#ifndef _UT_FILE_IO_H_
+#define _UT_FILE_IO_H_
+/* Protects from multiple inclusion. */
+
+#ifndef lint
+static char ut_file_io_h_rcsid[] = "$Id: ut_file_io.h,v 1.1 1997/01/29 23:44:54 agray Exp $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: ut_file_io.h,v $
+ * Revision 1.1  1997/01/29 23:44:54  agray
+ * Initial revision
+ *
+ * */
+
+/*==============================================================================
+Data Structures
+==============================================================================*/
+
+/*==============================================================================
+Constants, Macros
+==============================================================================*/
+
+#define UT_MAX_FILENAME_SIZE  256
+
+/*******************************************************************************
+FOPEN_REPORT_IF_FAIL
+Attempt to open a specified file.  If the attempt fails, report an error.
+
+Note that the caller can pretend that this macro returns the file pointer
+needed, i.e. one can say "fp = fopen_report_if_fail(f,m)".
+AG
+*******************************************************************************/
+#define fopen_report_if_fail(f,m) \
+  (FILE*) ut_status_ptr = (FILE*) fopen(f,m); \
+  sprintf(ut_err_msg, "Couldn't open file %s for %s\n", f, \
+          (strcmp (m, "r")) ? "writing" : "reading"); \
+  report_if_null(ut_status_ptr, ut_err_msg);
+
+/*******************************************************************************
+FOPEN_RETURN_IF_FAIL
+Attempt to open a specified file.  If the attempt fails, report an error and
+return from the calling function.  (Only a macro can do this.)
+
+Note that the caller can pretend that this macro returns the file pointer
+needed, i.e. one can say "fp = fopen_return_if_fail(f,m)".
+AG
+*******************************************************************************/
+#define fopen_return_if_fail(f,m,r) \
+  (FILE*) ut_status_ptr = (FILE*) fopen(f,m); \
+  sprintf(ut_err_msg, "Couldn't open file %s for %s\n", f, \
+          (strcmp (m, "r")) ? "writing" : "reading"); \
+  return_if_null(ut_status_ptr, ut_err_msg, r);
+
+/*******************************************************************************
+FOPEN_EXIT_IF_FAIL
+Attempt to open a specified file.  If the attempt fails, report an error and
+exit from the calling program.  Closes the log file first.
+
+Note that the caller can pretend that this macro returns the file pointer
+needed, i.e. one can say "fp = fopen_exit_if_fail(f,m)".
+AG
+*******************************************************************************/
+#define fopen_exit_if_fail(f,m) \
+  (FILE*) ut_status_ptr = (FILE*) fopen(f,m); \
+  sprintf(ut_err_msg, "Couldn't open file %s for %s\n", f, \
+          (strcmp (m, "r")) ? "writing" : "reading"); \
+  exit_if_null(ut_status_ptr, ut_err_msg);
+
+/*******************************************************************************
+FCLOSE_REPORT_IF_FAIL, FCLOSE_RETURN_IF_FAIL, FCLOSE_EXIT_IF_FAIL
+Attempt to close a specified file.  If the attempt fails, perform some error
+handling.  Analogous to the fopen_report_if_fail(), etc. macros.
+AG
+*******************************************************************************/
+#define fclose_report_if_fail(f) \
+  ut_status = fclose(f); \
+  sprintf(ut_err_msg, "Couldn't close file %s\n", f); \
+  report_if_bad(ut_status, ut_err_msg);
+
+#define fclose_return_if_fail(f,r) \
+  ut_status = fclose(f); \
+  sprintf(ut_err_msg, "Couldn't close file %s\n", f); \
+  return_if_bad(ut_status, ut_err_msg, r);
+
+#define fclose_exit_if_fail(f) \
+  ut_status = fclose(f); \
+  sprintf(ut_err_msg, "Couldn't close file %s\n", f); \
+  exit_if_bad(ut_status, ut_err_msg);
+
+/*==============================================================================
+Variables
+==============================================================================*/
+
+/*==============================================================================
+Function Declarations
+==============================================================================*/
+
+#endif /* _UT_FILE_IO_H_ */
+

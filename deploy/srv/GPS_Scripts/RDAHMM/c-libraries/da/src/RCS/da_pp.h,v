@@ -1,0 +1,159 @@
+head	1.5;
+access;
+symbols;
+locks; strict;
+comment	@ * @;
+
+
+1.5
+date	97.01.29.21.32.23;	author agray;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	96.10.31.02.17.39;	author agray;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	96.09.23.22.52.29;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	96.09.23.22.47.05;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.07.11.18.24.31;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@Blanket header file which is used for including all the parallel modules.
+@
+
+
+1.5
+log
+@new format.
+@
+text
+@/*******************************************************************************
+BLANKET HEADER:
+da_pp.h
+*******************************************************************************/
+
+#ifndef _DA_PP_H_
+#define _DA_PP_H_
+/* Protects from multiple inclusion. */
+
+#ifndef lint
+static char da_pp_h_rcsid[] = "$Id: da_pp.h,v 1.4 1996/10/31 02:17:39 agray Exp agray $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_pp.h,v $
+ * Revision 1.4  1996/10/31 02:17:39  agray
+ * updated due to library overhaul involving renaming and reorganization.
+ *
+ * Revision 1.3  1996/09/23 22:52:29  agray
+ * alphabetized order.
+ *
+ * Revision 1.2  1996/09/23 22:47:05  agray
+ * add new modules.
+ *
+ * Revision 1.1  1996/07/11 18:24:31  agray
+ * Initial revision
+ *
+ * */
+
+/* should include this first */
+#include "da_platform.h"
+
+#include "da_cluster_pp.h"
+#include "da_comm_pp.h"
+#include "da_io_pp.h"
+#include "da_signal_pp.h"
+
+#endif /* _DA_PP_H_ */
+@
+
+
+1.4
+log
+@updated due to library overhaul involving renaming and reorganization.
+@
+text
+@d6 2
+a7 2
+#ifndef _DA_PP_H
+#define _DA_PP_H
+d11 1
+a11 1
+static char da_pp_h_rcsid[] = "$Id: da_pp.h,v 1.3 1996/09/23 22:52:29 agray Exp agray $";
+d17 3
+d31 3
+d39 1
+a39 1
+#endif
+@
+
+
+1.3
+log
+@alphabetized order.
+@
+text
+@d1 4
+a4 1
+/* da_pp.h */
+d6 3
+a8 2
+#ifndef DA_PP_BLANKET_HDR
+#define DA_PP_BLANKET_HDR
+d11 1
+a11 1
+static char da_pp_blanket_hdr_rcsid[] = "$Id: da_pp.h,v 1.2 1996/09/23 22:47:05 agray Exp agray $";
+d13 2
+d17 3
+d28 4
+a31 4
+#include "da_clust_pp.h"
+#include "da_data_pp.h"
+#include "da_dist_pp.h"
+#include "da_msg_pp.h"
+@
+
+
+1.2
+log
+@add new modules.
+@
+text
+@d7 1
+a7 1
+static char da_pp_blanket_hdr_rcsid[] = "$Id: da_pp.h,v 1.1 1996/07/11 18:24:31 agray Exp agray $";
+d11 3
+a18 1
+#include "da_msg_pp.h"
+d22 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 1
+a7 1
+static char da_pp_blanket_hdr_rcsid[] = "$Id$";
+d10 4
+a13 1
+ * $Log$
+d18 2
+@

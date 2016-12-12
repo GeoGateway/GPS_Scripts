@@ -1,0 +1,111 @@
+/*******************************************************************************
+MODULE NAME
+ut_time
+
+ONE-LINE SYNOPSIS
+Utility functions related to times and dates.
+
+SCOPE OF THIS MODULE
+As stated.
+
+SEE ALSO
+-
+
+REFERENCE(S)
+-
+
+PROGRAM EXAMPLE(S)
+-
+
+NOTES
+-
+
+AG
+*******************************************************************************/
+#ifndef lint
+static char rcsid[] = "$Id: ut_time.c,v 1.1 1997/01/29 23:45:59 agray Exp $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: ut_time.c,v $
+ * Revision 1.1  1997/01/29 23:45:59  agray
+ * Initial revision
+ *
+ * */
+
+/* C library */
+#include <stdio.h>
+
+/* this module's header */
+#include "ut_time.h"
+
+
+/*******************************************************************************
+MONTH_DATE_TO_DAY
+Computes value from[0,364] (index into 365-day array) given the month [1,12] and
+date [1,31].  Returns UT_LEAP_DAY for leap day.
+JR, mod. by AG
+*******************************************************************************/
+int month_date_to_day (int month, int date)
+
+{
+  int mdays[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  int i, day=0; 
+
+  /* return -1 for leap day */
+  if ((month==2) && (date == 29))
+    return (UT_LEAP_DAY);
+
+  /* add in number of days from previous months */
+  for (i=0; i<month-1; i++)
+    day += mdays[i];
+
+  /* add in date within current month */
+  day += date;
+
+  /* return one less than day to get 0-based index */
+  return (day-1);
+}
+
+
+/*******************************************************************************
+DAYS_IN_YEAR
+Returns the number of days in the given year, accounting for leap years. Basic 
+leap years assumed, not complete Julian Calendar with leap year adjustments.
+JR, mod. by AG
+*******************************************************************************/
+int days_in_year (int year)
+
+{
+  int days=0; 
+
+  days = 365;
+  /* add a day if this is a leap year */
+  if ((year%4)==0)
+    days++;
+
+  return (days);
+}
+
+
+/*******************************************************************************
+DAYS_IN_YEAR_RANGE
+Returns the number of days in the given range of years, accounting for leap 
+years. Basic leap years assumed, not complete Julian Calendar with leap year 
+adjustments.
+JR, mod. by AG
+*******************************************************************************/
+int days_in_year_range (int startyear, int stopyear)
+
+{
+  int year, days=0; 
+
+  /* count number of days in range of years */
+  for (year=startyear; year<=stopyear; year++)
+    days += days_in_year (year);
+
+  return (days);
+}
+
+

@@ -1,0 +1,182 @@
+head	1.6;
+access;
+symbols;
+locks
+	granat:1.6; strict;
+comment	@# @;
+
+
+1.6
+date	98.06.05.21.49.45;	author agray;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	97.10.21.14.59.12;	author granat;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	97.09.01.18.14.53;	author granat;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	97.07.30.23.35.13;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	97.05.21.15.28.28;	author granat;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	97.05.20.22.35.07;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@setup script for the da library.
+@
+
+
+1.6
+log
+@changed to use higher-level location variable
+@
+text
+@#!/bin/csh -f
+
+# $Id: setup.csh,v 1.5 1997/10/21 14:59:12 granat Exp agray $
+# $Log: setup.csh,v $
+# Revision 1.5  1997/10/21 14:59:12  granat
+# changed DA_FAST_CFLAGS to "-O5"
+#
+# Revision 1.4  1997/09/01 18:14:53  granat
+# *** empty log message ***
+#
+# Revision 1.3  1997/07/30 23:35:13  agray
+# changed /tools/code to /proj/code
+#
+# Revision 1.2  1997/05/21 15:28:28  granat
+# added DA_FAST_CFLAGS
+#
+# Revision 1.1  1997/05/20 22:35:07  agray
+# Initial revision
+#
+#
+
+################################################################################
+#   setup.csh
+################################################################################
+#
+#   This file contains the machine-specific information that is necessary for
+#   using these shared C codes.  You should set each environment 
+#   variable, etc. as appropriate for your machine.  Individual users may 
+#   copy and source a customized version of this file if user-specific 
+#   variables are desired.
+#
+#   * * * IMPORTANT NOTICE * * *
+#
+#   If you are setting up these codes for the first time on your machine,
+#   you may need to change any software which refers explicitly to this file,
+#   so that it knows how to find this file.
+#
+################################################################################
+
+################################################################################
+# The following steps set environment variables which describe the directories 
+# where everything is located.
+################################################################################
+
+# DA_HOME is the top-level directory for this library
+
+setenv DA_HOME                $C_CODE_HOME/da
+
+# Set the compile command used by makefiles for compiling the library
+
+setenv DA_CC                  gcc
+#setenv DA_CC                  purify gcc
+
+# Set the compile options used by makefiles for compiling the library
+
+#setenv DA_CFLAGS              "-g -O2"
+#setenv DA_CFLAGS              "-g -Wall"
+setenv DA_CFLAGS              "-g"
+setenv DA_FAST_CFLAGS         "-O5"
+@
+
+
+1.5
+log
+@changed DA_FAST_CFLAGS to "-O5"
+@
+text
+@d3 1
+a3 1
+# $Id: setup.csh,v 1.4 1997/09/01 18:14:53 granat Exp granat $
+d5 3
+d47 1
+a47 1
+setenv DA_HOME                /proj/code/c/da
+@
+
+
+1.4
+log
+@*** empty log message ***
+@
+text
+@d3 1
+a3 1
+# $Id: setup.csh,v 1.3 1997/07/30 23:35:13 agray Exp granat $
+d5 3
+d56 1
+a56 1
+setenv DA_FAST_CFLAGS         "-O3"
+@
+
+
+1.3
+log
+@changed /tools/code to /proj/code
+@
+text
+@d2 5
+a7 2
+# $Id: setup.csh,v 1.2 1997/05/21 15:28:28 granat Exp agray $
+# $Log: setup.csh,v $
+d53 1
+a53 1
+setenv DA_FAST_CFLAGS         "-O5"
+@
+
+
+1.2
+log
+@added DA_FAST_CFLAGS
+@
+text
+@d3 1
+a3 1
+# $Id: setup.csh,v 1.1 1997/05/20 22:35:07 agray Exp granat $
+d5 3
+d38 1
+a38 1
+setenv DA_HOME                /tools/code/c/da
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 5
+a7 2
+# $Id$
+# $Log$
+d47 1
+@

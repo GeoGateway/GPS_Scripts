@@ -1,0 +1,410 @@
+head	1.10;
+access;
+symbols;
+locks
+	granat:1.10; strict;
+comment	@ * @;
+
+
+1.10
+date	98.03.09.00.40.28;	author granat;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	97.01.29.21.29.20;	author agray;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	96.10.31.02.05.10;	author agray;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	96.10.30.20.30.06;	author agray;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	96.09.27.17.57.57;	author agray;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	96.09.27.17.55.46;	author agray;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	96.08.28.19.41.52;	author agray;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	96.07.11.16.41.47;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	96.05.14.01.02.45;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.05.07.20.47.19;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@header file for clustering module.
+@
+
+
+1.10
+log
+@fixed boolean bug
+@
+text
+@/*******************************************************************************
+MODULE HEADER:
+da_cluster.h
+*******************************************************************************/
+
+#ifndef _DA_CLUSTER_H_
+#define _DA_CLUSTER_H_
+/* Protects from multiple inclusion. */
+
+#ifndef lint
+static char da_cluster_h_rcsid[] = "$Id: da_cluster.h,v 1.9 1997/01/29 21:29:20 agray Exp granat $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_cluster.h,v $
+ * Revision 1.9  1997/01/29 21:29:20  agray
+ * new format.
+ *
+ * Revision 1.8  1996/10/31 02:05:10  agray
+ * renamed from "da_clust" to "da_cluster";
+ * added functions from HMM project;
+ * changed .h and .c formats throughout library;
+ * some reorganizing between modules.
+ *
+ * Revision 1.7  1996/10/30 20:30:06  agray
+ * changed naming from "mixmod" to "mixture", other naming changes.
+ *
+ * Revision 1.6  1996/09/27 17:57:57  agray
+ * fixed log message.
+ *
+ * Revision 1.5  1996/09/27 17:55:46  agray
+ * removed k&r prototypes so that this library can be linked with c++ code.
+ *
+ * Revision 1.4  1996/08/28 19:41:52  agray
+ * changed arguments to random_means_from_data().
+ *
+ * Revision 1.3  1996/07/11 16:41:47  agray
+ * changed randomize_means() to random_means();
+ * added random_means_from_data(), mixmod_likelihood(), estimate_mixmod_
+ * params().
+ * .
+ *
+ * Revision 1.2  1996/05/14 01:02:45  agray
+ * minor compile problems.
+ *
+ * Revision 1.1  1996/05/07 20:47:19  agray
+ * Initial revision
+ *
+ * */
+
+/*==============================================================================
+Data Structures
+==============================================================================*/
+
+/*==============================================================================
+Constants, Macros
+==============================================================================*/
+
+/*==============================================================================
+Variables
+==============================================================================*/
+
+/*==============================================================================
+Function Declarations
+==============================================================================*/
+
+/* k-means clustering */
+
+int k_means(float **data, int numrows, int numcols, float **means, 
+            float **initmeans, int *clustsize, int *class, int K,
+            int *numiters, int *num_empty_clusters, boolean empty_cluster_ok);
+int k_means_mixture_estimate(float **data, float **means, float ***covars, 
+                             float *weights, int *clust_label, 
+                             int num_data, int num_dims, int K);
+float best_k_means_mixture_estimate(float **data, float num_data,
+                                    float num_dims, float **means, 
+                                    float ***covars, float *weights, 
+                                    float **best_means, float ***best_covars,
+                                    float *best_weights, float **init_means,
+                                    float **probs, float *prob_data, 
+                                    float *sum_probs, float num_tries, 
+                                    float min_diag, float *min_val, 
+                                    float *range, int K, int *clust_size,
+                                    int *clust_label, int empty_clust_ok);
+
+/* EM algorithm for mixtures */
+
+float mixture_likelihood(int K, float **means, float ***covars, float *weights,
+                         float **data, float **probs, float *prob_data, 
+                         float *sum_probs, int numrows, int numcols, 
+                         char *rows_or_cols, float min_diag);
+int estimate_mixture_params(int K, float **means, float ***covars, 
+                            float *weights, float **data, float **probs, 
+                            float *sum_probs, int numrows, int numcols, 
+                            float min_weight, int *num_empty_clusters, 
+                            boolean empty_cluster_ok);
+
+/* parameter initialization */
+
+int random_means(float **means, int num_means, int num_cols);
+int random_means_from_data(float **means, int num_means, int num_cols, 
+                           float **data, int num_data);
+
+#endif /* _DA_CLUSTER_H_ */
+
+@
+
+
+1.9
+log
+@new format.
+@
+text
+@d11 1
+a11 1
+static char da_cluster_h_rcsid[] = "$Id: da_cluster.h,v 1.8 1996/10/31 02:05:10 agray Exp agray $";
+d17 3
+d72 1
+a72 1
+            int *numiters, int *num_empty_clusters, bool empty_cluster_ok);
+d97 1
+a97 1
+                            bool empty_cluster_ok);
+@
+
+
+1.8
+log
+@renamed from "da_clust" to "da_cluster";
+added functions from HMM project;
+changed .h and .c formats throughout library;
+some reorganizing between modules.
+@
+text
+@d6 2
+a7 2
+#ifndef _DA_CLUSTER_H
+#define _DA_CLUSTER_H
+d11 1
+a11 1
+static char da_cluster_h_rcsid[] = "$Id: da_cluster.h,v 1.7 1996/10/30 20:30:06 agray Exp agray $";
+d17 6
+d49 1
+a49 1
+/*******************************************************************************
+d51 1
+a51 1
+*******************************************************************************/
+d53 1
+a53 1
+/*******************************************************************************
+d55 5
+a59 1
+*******************************************************************************/
+d61 1
+a61 1
+/*******************************************************************************
+d63 1
+a63 1
+*******************************************************************************/
+d102 2
+a103 1
+#endif
+@
+
+
+1.7
+log
+@changed naming from "mixmod" to "mixture", other naming changes.
+>> .
+done
+zen% rcsdiff da_clust.c
+===================================================================
+RCS file: RCS/da_clust.c,v
+retrieving revision 1.7
+diff -r1.7 da_clust.c
+zen% co -l da_clust.c
+RCS/da_clust.c,v  -->  da_clust.c
+revision 1.7 (locked)
+done
+zen% ci -u da_clust.h
+RCS/da_clust.h,v  <--  da_clust.h
+new revision: 1.7; previous revision: 1.6
+enter log message, terminated with single '.' or end of file:
+>>
+ changed naming from "mixmod" to "mixture", other naming changes.
+@
+text
+@d1 8
+a8 4
+/* da_clust.h */
+
+#ifndef DA_CLUST_HDR
+#define DA_CLUST_HDR
+d11 1
+a11 1
+static char da_clust_hdr_rcsid[] = "$Id: da_clust.h,v 1.6 1996/09/27 17:57:57 agray Exp agray $";
+d13 2
+d16 4
+a19 1
+ * $Log: da_clust.h,v $
+d43 11
+a53 1
+/* constants */
+d55 1
+a55 1
+/* function declarations */
+d60 13
+d74 1
+a74 3
+int random_means(float **means, int num_means, int num_cols);
+int random_means_from_data(float **means, int num_means, int num_cols, 
+                           float **data, int num_data);
+d85 6
+@
+
+
+1.6
+log
+@fixed log message.
+@
+text
+@d7 1
+a7 1
+static char da_clust_hdr_rcsid[] = "$Id: da_clust.h,v 1.5 1996/09/27 17:55:46 agray Exp agray $";
+d11 3
+d38 3
+a40 3
+int kmeans(float **data, int numrows, int numcols, float **means, 
+           float **initmeans, int *clustsize, int *class, int K,
+           int *numiters, int *num_empty_clusters, bool empty_cluster_ok);
+d46 9
+a54 10
+float mixmod_likelihood(int K, float **means, float ***covars, float *weights,
+                        float **data, float **probs, float *prob_data, 
+                        float *sum_probs, int numrows, int numcols, 
+                        char *rows_or_cols, float min_diag);
+
+int estimate_mixmod_params(int K, float **means, float ***covars, 
+                           float *weights, float **data, float **probs, 
+                           float *sum_probs, int numrows, int numcols, 
+                           float min_weight, int *num_empty_clusters, 
+                           bool empty_cluster_ok);
+@
+
+
+1.5
+log
+@#ifdef __STDC__
+removed k&r prototypes so that this library can be linked with c++ code.
+@
+text
+@d7 1
+a7 1
+static char da_clust_hdr_rcsid[] = "$Id: da_clust.h,v 1.4 1996/08/28 19:41:52 agray Exp agray $";
+d11 3
+@
+
+
+1.4
+log
+@changed arguments to random_means_from_data().
+@
+text
+@d7 1
+a7 1
+static char da_clust_hdr_rcsid[] = "$Id: da_clust.h,v 1.3 1996/07/11 16:41:47 agray Exp agray $";
+d11 3
+a31 2
+#ifdef __STDC__
+
+a49 13
+
+#else 
+
+int kmeans();
+
+int random_means();
+int random_means_from_data();
+
+float mixmod_likelihood();
+
+int estimate_mixmod_params();
+
+#endif
+@
+
+
+1.3
+log
+@changed randomize_means() to random_means();
+added random_means_from_data(), mixmod_likelihood(), estimate_mixmod_
+params().
+.
+@
+text
+@d7 1
+a7 1
+static char da_clust_hdr_rcsid[] = "$Id: da_clust.h,v 1.2 1996/05/14 01:02:45 agray Exp agray $";
+d11 6
+d37 1
+a37 1
+                           float **data, int num_data, char* rows_or_cols);
+@
+
+
+1.2
+log
+@minor compile problems.
+@
+text
+@d7 1
+a7 1
+static char da_clust_hdr_rcsid[] = "$Id: da_clust.h,v 1.1 1996/05/07 20:47:19 agray Exp agray $";
+d11 3
+d27 16
+a42 2
+           int *numreconverge);
+int randomize_means(float **means, int nr, int nc);
+d47 7
+a53 1
+int randomize_means();
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 1
+a7 1
+static char da_clust_hdr_rcsid[] = "$Id$";
+d10 4
+a13 1
+ * $Log$
+d23 2
+a24 1
+           float **initmeans, int *class, int K);
+@

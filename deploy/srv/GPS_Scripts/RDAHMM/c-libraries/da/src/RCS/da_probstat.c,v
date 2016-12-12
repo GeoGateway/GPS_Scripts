@@ -1,0 +1,2311 @@
+head	1.25;
+access;
+symbols;
+locks
+	granat:1.25; strict;
+comment	@ * @;
+
+
+1.25
+date	2001.01.02.23.57.22;	author granat;	state Exp;
+branches;
+next	1.24;
+
+1.24
+date	2000.04.04.23.39.12;	author granat;	state Exp;
+branches;
+next	1.23;
+
+1.23
+date	98.06.30.17.24.12;	author agray;	state Exp;
+branches;
+next	1.22;
+
+1.22
+date	98.05.07.23.45.06;	author granat;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	98.04.21.21.48.51;	author roden;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	98.04.21.21.08.11;	author roden;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	98.03.09.00.44.25;	author granat;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	98.03.09.00.37.14;	author granat;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	97.09.10.14.54.25;	author granat;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	97.06.20.22.13.36;	author granat;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	97.06.05.18.56.17;	author granat;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	97.06.02.15.54.35;	author granat;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	97.05.13.23.56.30;	author granat;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	97.05.06.22.22.43;	author agray;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	97.04.05.19.01.51;	author granat;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	97.02.24.22.59.13;	author granat;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	97.01.29.21.47.16;	author agray;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	96.10.31.02.18.27;	author agray;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	96.09.20.22.19.03;	author agray;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	96.09.20.22.13.31;	author agray;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	96.09.19.22.44.40;	author agray;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	96.09.16.21.04.40;	author agray;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	96.07.17.20.45.14;	author agray;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	96.07.11.18.25.25;	author agray;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	96.02.21.05.18.05;	author agray;	state Exp;
+branches;
+next	;
+
+
+desc
+@Module for probability/statistics functions.
+ag
+@
+
+
+1.25
+log
+@check-in before major revision transfered from laptop
+@
+text
+@/*******************************************************************************
+MODULE NAME
+da_probstat
+
+ONE-LINE SYNOPSIS
+General functions related to probability and statistics.
+
+SCOPE OF THIS MODULE
+Any functions relating specifically to other probabilistic or statistical 
+concepts which have representative modules in this library should go in the 
+appropriate module.  Functions that apply more generally are intended to go 
+here.  For instance, HMM induction, while entirely a probabilistic concept,
+is handled in da_timeseg.
+
+SEE ALSO
+Because the definition of this module is quite broad, there is some potential
+overlap with several other modules in this library.
+
+REFERENCE(S)
+-
+
+NOTES
+-
+
+AG
+*******************************************************************************/
+#ifndef lint
+static char rcsid[] = "$Id: da_probstat.c,v 1.24 2000/04/04 23:39:12 granat Exp granat $";
+#endif
+/* This string variable allows the RCS identification info to be printed. */
+
+/* 
+ * $Log: da_probstat.c,v $
+ * Revision 1.24  2000/04/04 23:39:12  granat
+ * changed prob_gauss so that it returns DBL_EPSILON instead of zero
+ *
+ * Revision 1.23  1998/06/30 17:24:12  agray
+ * changed includes.
+ *
+ * Revision 1.22  1998/05/07 23:45:06  granat
+ * Made edits to conform with function name changes in da_linalg and da_util
+ *
+ * Revision 1.21  1998/04/21 21:48:51  roden
+ * Changed calls to conform to new naming conventions as follows:
+ *   mat_vect_mult() -> right_mult_matrix()
+ *   dot_product()   -> dot_product_vec()
+ * Previous version, 1.20, was Granat's mod/fix to var_mat(); I stole lock
+ * to make above changes.
+ *
+ * Revision 1.20  1998/04/21 21:08:11  roden
+ * *** empty log message ***
+ *
+ * Revision 1.19  1998/03/09 00:44:25  granat
+ * fixed 2nd matrix stdev bug
+ *
+ * Revision 1.18  1998/03/09 00:37:14  granat
+ * fixed matrix stdev
+ * fixed boolean bug
+ * ,.
+ *
+ * Revision 1.17  1997/09/10 14:54:25  granat
+ * added routines to extend functionality to matrices of ints, uchars
+ *
+ * Revision 1.16  1997/06/20 22:13:36  granat
+ * changed to reflect bug fix in da_random
+ *
+ * Revision 1.15  1997/06/05 18:56:17  granat
+ * edited to conform to changes in da_linalg
+ *
+ * Revision 1.14  1997/06/02 15:54:35  granat
+ * changed to use new NR naming convention
+ *
+ * Revision 1.13  1997/05/13 23:56:30  granat
+ * added mean_mat, stdev_mat, var_vec, var_mat
+ * changed name of mean to mean_vec, name of stdev to stdev_vec
+ * changed order of input variables on some functions
+ *
+ * Revision 1.12  1997/05/06 22:22:43  agray
+ * added some things from dp cooltool.
+ *
+ * Revision 1.11  1997/04/05 19:01:51  granat
+ * changed a couple of things to adjust for changes to da_linalg
+ *
+ * Revision 1.10  1997/02/24 22:59:13  granat
+ * added linint, vector_linint, vector_ratint, vector_polint functions
+ * for function interpolation
+ *
+ * Revision 1.9  1997/01/29 21:47:16  agray
+ * new formatting, cleaning up debugging output using ut_output,
+ * cleaning up random number generation using da_random.  also
+ * changed chop_data_equally() to partition_vector().
+ *
+ * Revision 1.8  1996/10/31 02:18:27  agray
+ * renamed from "da_prob" to "da_probstat";
+ * changed .h and .c formats throughout library;
+ * some reorganizing between modules;
+ * added some functions from HMM project.
+ *
+ * Revision 1.7  1996/09/20 22:19:03  agray
+ * corrected comments.
+ *
+ * Revision 1.6  1996/09/20 22:13:31  agray
+ * changed names back.
+ *
+ * Revision 1.5  1996/09/19 22:44:40  agray
+ * changed name of prob_gauss() to gauss_eval(); similar for 
+ * vector_prob_gauss().
+ *
+ * Revision 1.4  1996/09/16 21:04:40  agray
+ * updated call to print_unnorm_cov_matrix().
+ *
+ * Revision 1.3  1996/07/17 20:45:14  agray
+ * cosmetic.
+ *
+ * Revision 1.2  1996/07/11 18:25:25  agray
+ * added read/print/write_gauss_parms(), print/write_gauss_parms_set(),
+ * print/write_unnorm_gauss_parms_set(), prob_gauss(), vector_prob_gauss().
+ *
+ * Revision 1.1  1996/02/21 05:18:05  agray
+ * Initial revision
+ *
+ * */
+
+/* C library */
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+/* UT library */
+#include "ut_error.h"
+#include "ut_math.h"
+#include "ut_output.h"
+#include "ut_string.h"
+#include "ut_types.h"
+#include "float.h"
+
+/* NR library */
+#include "nr.h"
+
+/* DA library */
+#include "da_util.h"
+#include "da_io.h"
+#include "da_linalg.h"
+#include "da_random.h"
+
+/* this module's header */
+#include "da_probstat.h"
+
+
+/*******************************************************************************
+MEAN_VEC
+Returns the mean of a vector.
+AG
+*******************************************************************************/
+float mean_vec(float *v, int nc)
+{
+  float result;
+
+  result = sum_vec(v, nc);
+
+  return ( result / (float) nc );
+}
+
+/*******************************************************************************
+MEAN_MAT
+Returns the mean of a matrix.
+RG
+*******************************************************************************/
+float mean_mat( float **m, int nr, int nc )
+{
+  float result;
+
+  result = sum_mat( m, nr, nc );
+
+  return( result / ((float) nr * nc) );
+}
+
+/*******************************************************************************
+MEAN_IMAT
+Returns the mean of an integer matrix.
+RG
+*******************************************************************************/
+float mean_imat( int **m, int nr, int nc )
+{
+  float result;
+
+  result = sum_imat( m, nr, nc );
+
+  return( result / ((float) nr * nc) );
+}
+
+/*******************************************************************************
+MEAN_CMAT
+Returns the mean of an unsigned char matrix.
+RG
+*******************************************************************************/
+float mean_cmat( unsigned char **m, int nr, int nc )
+{
+  float result;
+
+  result = sum_cmat( m, nr, nc );
+
+  return( result / ((float) nr * nc) );
+}
+
+/*******************************************************************************
+STDEV_VEC
+Returns the standard deviation of a vector.
+RG
+*******************************************************************************/
+float stdev_vec(float *v, int nc, float mean)
+
+{
+  float result;
+
+  result = var_vec( v, nc, mean );
+
+  result = (float) sqrt( (double) result / (double) (nc - 1) );
+
+  return ( result );
+}
+
+/*******************************************************************************
+STDEV_MAT
+Returns the standard deviation of a matrix.
+RG
+*******************************************************************************/
+float stdev_mat( float **m, int nr, int nc, float mean )
+{
+  float result;
+
+  result = var_mat( m, nr, nc, mean );
+
+  result = (float) sqrt( (double) result / ((double) (nr * nc - 1)) );
+
+  return( result );
+}
+
+/*******************************************************************************
+VAR_VEC
+Returns the variance of a vector.
+RG
+*******************************************************************************/
+float var_vec( float *v, int nc, float mean )
+{
+  int   i;
+  float result = 0.0;
+  float *p;
+
+  p = &v[1];
+
+  for (i = 1; i <= nc; i++) {
+    result += NR_sqr(*p - mean);
+    p++;
+  }
+
+  return( result );
+}
+
+/*******************************************************************************
+VAR_MAT
+Returns the variance of a matrix.
+RG
+*******************************************************************************/
+float var_mat( float **m, int nr, int nc, float mean )
+{
+  int   i, j;
+  float result = 0.0;
+  float *p;
+
+  p = &m[1][1];
+
+  for (i = 1; i <= nr; i++)
+    for (j = 1; j <= nc; j++) {
+      result += NR_sqr(*p - mean);
+      p++;
+    }
+
+  return( result );
+}
+
+
+/*******************************************************************************
+EST_COVAR_MAT
+Estimate covariance matrix given a data set and the mean of the data set.
+AG
+*******************************************************************************/
+int est_covar_mat(float **covar, float **data, float *mean, int num_data,
+                  int num_dims)
+
+{
+  int i, j, j2;
+  float *data_i;
+
+  for (i = 1; i <= num_data; i++)
+  {
+    /* add the square of the deviation vectors to the right position in the
+       covariance matrix */
+    for (j = 1; j <= num_dims; j++)
+    {
+      data_i = data[i];
+      for (j2 = j; j2 <= num_dims; j2++)
+        covar[j][j2] += (data_i[j] - mean[j]) * (data_i[j2] - mean[j2]);
+    }
+  }
+
+  /* normalize the covariance matrices by the number of data */
+  scalar_div_mat(covar, num_dims, num_dims, num_data);
+
+  /* fill in the lower triangle of each covariance matrix based on upper 
+     triangle */
+  for (j = 1; j <= num_dims; j++)
+    for (j2 = 1; j2 < j; j2++)
+      covar[j][j2] = covar[j2][j];
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+STATS_OF_COLS
+For each of k columns in a matrix, find the mean and standard deviation.  Pass
+in a size k vector for each of these sets of values, and they will be filled in
+by this function.  
+
+Note:  This performs two passes over the data.
+AG
+*******************************************************************************/
+int stats_of_cols(float **mat, float *means, float *stdevs, int numrows, 
+                  int numcols)
+
+{
+  int   i,j;
+  float *mat_row_i;
+
+  /* initialize */
+  fast_zero_vec(means, numcols);
+  fast_zero_vec(stdevs, numcols);
+
+  /* for each attribute, find the sum */
+  for (i=1; i<=numrows; i++)
+  {
+    mat_row_i = mat[i];
+
+    for (j=1; j<=numcols; j++)
+      means[j] += mat_row_i[j];
+  }
+    
+  /* for each attribute, normalize the sum */
+  for (j=1; j<=numcols; j++)
+    means[j] = means[j] / numrows;
+
+  /* for each attribute, find the deviation from the mean */
+  for (i=1; i<=numrows; i++)
+  {
+    mat_row_i = mat[i];
+
+    for (j=1; j<=numcols; j++)
+      stdevs[j] += NR_sqr(mat_row_i[j] - means[j]);
+  }
+    
+  /* for each attribute, normalize the deviations */
+  for (j=1; j<=numcols; j++)
+    stdevs[j] = (float) sqrt( (double) stdevs[j] / (double) (numrows - 1) );
+  
+  return(UT_OK);
+}
+
+
+/*******************************************************************************
+PROB_GAUSS
+Compute the conditional probability of the datum assuming it was drawn from a 
+multivariate normal distribution with the specified mean and covariance matrix,
+using the normal probability density function.
+AG
+*******************************************************************************/
+double prob_gauss(double *datum, double *mean, double **covar, int dim, 
+                  double min_diag)
+
+{
+    double mahalanobis, prob;
+    double **covar_inv;
+    double *diff, *tempvec;
+    double denom;
+
+    /* make temporary storage */
+    diff =       NR_dvector(1,dim);
+    tempvec =    NR_dvector(1,dim);
+    covar_inv =  NR_dmatrix(1,dim,1,dim);
+
+    /* try to ensure that the covariance matrix is not ill-conditioned,
+       before we try to invert it */
+    restrict_illcond_dmatrix(covar, dim, min_diag);
+
+    /* invert the covariance matrix */
+    jacobi_invert_copy_alloc_dmat(covar, dim, covar_inv);
+
+    /* compute constant factor
+       note that det() destroys input matrix */
+    denom = det_copy_alloc_dmat(covar, dim);
+    denom = sqrt(denom);
+    denom = pow((double)(2.0*UT_PI), (double)(dim/2.0)) * denom;
+    /*
+    denom = pow((double)(2.0*UT_PI), (double)(dim/2.0)) * 
+                sqrt((double)det_copy_alloc_dmat(covar, dim));
+		*/
+
+    /* compute Mahalanobis distance */
+    subtract_dvec(datum, mean, diff, dim);
+    right_mult_dmatrix(covar_inv, dim, dim, diff, tempvec);
+    mahalanobis = dot_product_dvec(diff, tempvec, dim);
+
+    /* compute probability */
+    prob = (double) exp(-0.5 * mahalanobis) / (double) denom;
+    
+    /* protect against returning unexpected zeros */
+    if (prob == 0.0)
+      prob = DBL_MIN;
+    
+    /* protect against returning infinity */
+    if (prob > DBL_MAX)
+      prob = DBL_MAX;
+
+    /* clean up */
+    NR_free_dmatrix(covar_inv,1,dim,1,dim);
+    NR_free_dvector(tempvec,1,dim);
+    NR_free_dvector(diff,1,dim);
+
+    return (prob);
+}
+
+
+/*******************************************************************************
+VECTOR_PROB_GAUSS
+Compute the conditional probability of the datum assuming it was drawn from a 
+multivariate normal distribution with the specified mean and covariance matrix,
+using the normal probability density function.  Returns the vector of proba-
+bilities, one for each datum.
+AG
+*******************************************************************************/
+double* vector_prob_gauss(double **data, double *mean, double **covar, int dim, 
+                         int numdata, double *probs, double min_diag,
+                         char *rows_or_cols)
+
+{
+    double mahalanobis;
+    double **covar_inv;
+    double *datum, *diff, *tempvec;
+    double denom;
+    int   i;
+    boolean row_flag;
+
+	if (debug_output())
+    {
+      log_printf("covar in vector_prob_gauss\n");
+      print_dmatrix(ut_log_fp, dim, dim, covar);
+    }
+
+    /* make temporary storage */
+    datum =      NR_dvector(1,dim);
+    diff =       NR_dvector(1,dim);
+    tempvec =    NR_dvector(1,dim);
+    covar_inv =  NR_dmatrix(1,dim,1,dim);
+
+    /* try to ensure that the covariance matrix is not ill-conditioned,
+       before we try to invert it */
+    restrict_illcond_dmatrix(covar, dim, min_diag);
+
+    if (debug_output())
+    {
+      log_printf("covar in vector_prob_gauss after restriction\n");
+      print_dmatrix(ut_log_fp, dim, dim, covar);
+    }
+
+    /* invert the covariance matrix */
+    jacobi_invert_copy_alloc_dmat(covar, dim, covar_inv);
+
+    if (debug_output())
+    {
+      log_printf("covar_inv in vector_prob_gauss\n");
+      print_dmatrix(ut_log_fp, dim, dim, covar_inv);
+
+      log_printf("det of covar in vector_prob_gauss = %g\n",
+                 det_copy_alloc_dmat(covar,dim));
+      log_printf("sqrt of det of covar in vpg = %g\n",
+                 sqrt((double)det_copy_alloc_dmat(covar,dim)));
+    }
+
+    /* compute constant factor */
+    denom = pow((double)(2.0*UT_PI), (double)(dim/2.0)) * 
+                sqrt((double)det_copy_alloc_dmat(covar, dim));
+
+    /* set flag to avoid string comparisons */
+    if (streq(rows_or_cols, "rows"))
+      row_flag = UT_TRUE;
+    else
+      row_flag = UT_FALSE;
+
+    /* compute probability for each datum in the dataset */
+    for (i=1; i<=numdata; i++)
+    {
+      /* get the i'th datum from the dataset */
+      if (row_flag == UT_TRUE)
+        grab_row_dmat(data, i, dim, datum);
+      else
+        grab_col_dmat(data, i, dim, datum);
+
+      /* compute Mahalanobis distance */
+      subtract_dvec(datum, mean, diff, dim);
+      right_mult_dmatrix(covar_inv, dim, dim, diff, tempvec);
+      mahalanobis = dot_product_dvec(diff, tempvec, dim);
+
+      /* compute probability */
+      probs[i] = (double) exp(-0.5 * mahalanobis) / (double) denom;
+
+      /* protect against returning unexpected zeros */
+      if (probs[i] == 0.0)
+	probs[i] = DBL_MIN;
+
+      /* protect against returning infinity */
+      if (probs[i] > DBL_MAX)
+        probs[i] = DBL_MAX;
+
+    }
+
+    /* clean up */
+    NR_free_dvector(datum,1,dim);
+    NR_free_dmatrix(covar_inv,1,dim,1,dim);
+    NR_free_dvector(tempvec,1,dim);
+    NR_free_dvector(diff,1,dim);
+
+    return (probs);
+}
+
+/*******************************************************************************
+GENERATE_DISC_RV_VALUE
+Given the parameters of a discrete distribution, randomly generate a value
+from that distribution.  Takes a vector containing the probability of each
+discrete symbol, such that they sum to 1, and returns the index of the value
+selected.
+
+Given an empty vector to contain the cumulative symbol probabilities, this
+function will fill in the cumulative probabilities and use these to sample
+from the set of values.  Note that the pseudo-random number generator is 
+assumed to have already been seeded.
+AG
+*******************************************************************************/
+int generate_disc_rv_value(double *prob_symbol, int num_symbols, 
+                           double *cum_prob_symbol)
+
+{
+  int i, index;
+  double r;
+
+  /* compute cumulative symbol probabilities */
+  cum_prob_symbol[1] = prob_symbol[1];
+  for (i = 2; i <= num_symbols; i++)
+    cum_prob_symbol[i] = cum_prob_symbol[i - 1] + prob_symbol[i];
+
+  /* select a value from the distribution */
+  r = (double) gen_rand();
+
+  for (i = 1; i <= num_symbols; i++)
+    if (r <= cum_prob_symbol[i])
+    {
+      index = i;
+      break;
+    }
+  if (r > cum_prob_symbol[num_symbols])
+  {
+    log_printf("Invariant not met in generate_disc_rv_value.\n");
+    return(UT_ERROR);
+  }
+
+  return( index );
+}
+
+
+/*******************************************************************************
+GENERATE_MIXTURE_RV_VALUE
+Given the parameters of a continuous mixture distribution, randomly generate 
+a value from that distribution.  Takes mixture weights, means and covariance
+matrices defining a mixture.
+
+Given an empty vector to contain the cumulative component probabilities, this
+function will fill in the cumulative probabilities and use these to sample
+from the set of values.  Note that the pseudo-random number generator is 
+assumed to have already been seeded.
+AG
+*******************************************************************************/
+int generate_mixture_rv_value(double *value, int num_dims, int num_comps, 
+                              double **means, double ***covars, double *weights,
+                              double *cum_prob_comps, double **chol_factor,
+                              double *diag)
+
+{
+  int index;
+
+  /* first choose which component will generate the value */
+  index = generate_disc_rv_value(weights, num_comps, cum_prob_comps);
+
+  /* now generate a value from the selected component */
+  generate_gaussian_rv_value(value, num_dims, means[index], covars[index],
+                             chol_factor, diag);
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+GENERATE_GAUSSIAN_RV_VALUE
+Given the parameters of a Gaussian distribution, randomly generate a value
+from that distribution.  Takes a mean vector and covariance matrix defining a
+multivariate Gaussian distribution, and space for the Cholesky factor that must
+be computed internally, a matrix having the same dimensions as the covariance
+matrix, as well as space for the diagonal of the Cholesky factor.
+
+Note that the pseudo-random number generator is assumed to have already been 
+seeded, e.g. by using set_rand().
+AG
+*******************************************************************************/
+int generate_gaussian_rv_value(double *value, int num_dims, double *mean, 
+                               double **covar, double **chol_factor, double *diag)
+
+{
+  int i,j;
+
+  /* compute Cholesky decomposition of the covariance matrix */
+  copy_dmat(covar, chol_factor, num_dims, num_dims);
+  NR_dcholdc(chol_factor, num_dims, diag);
+
+  /* due to the way the answer is stored by choldc(), we must transform the
+     result to get the true lower diagonal Cholesky factor we want */
+  for (i = 1; i <= num_dims; i++)
+    for (j = i; j <= num_dims; j++)
+    {
+      if (i == j)
+        chol_factor[i][j] = diag[i];
+      else  
+        chol_factor[i][j] = 0.0;
+    }
+
+  /* generate a vector of independent standard normals */
+  for (i = 1; i <= num_dims; i++)
+    diag[i] = NR_dgasdev(&da_curr_rand);
+
+  /* multiply by Cholesky factor to obtain a vector with the proper 
+     covariance */
+  right_mult_dmatrix(chol_factor, num_dims, num_dims, diag, value);
+
+  /* add the mean to obtain a vector with the proper mean */
+  add_dvec(value, mean, value, num_dims);
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+MERF
+Compute the 'multidimensional erf() (error function)' for set of vectors in 
+a dataset.  The output is a probability for each datum, stored in the vector
+probs, which has nr elements.
+AG
+*******************************************************************************/
+int merf(mean, cov, data, nr, nc, probs)
+
+  double  *mean;     /* mean vector of gaussian distribution */
+  double  **cov;     /* covariance matrix of gaussian distribution */
+  double  **data;    /* set of data vectors (rows) to be evaluated */
+  int    nr;        /* number of rows in data */
+  int    nc;        /* number of dimensions of data */
+  double  *probs;    /* holds the resulting probabilities; filled in by this 
+                       function */
+{
+  double  **inv_cov, *datum, *t1, *t2;
+  double  p_r, r2;
+  int    i;
+
+  /* Compute inverse of covariance matrix */
+  inv_cov = NR_dmatrix(1, nc, 1, nc);
+  invert_copy_alloc_dmat(cov, nc, inv_cov);
+
+  /* Compute probabilities using gamma function */
+
+  /* allocate intermediate vectors */
+  datum = NR_dvector(1, nc);
+  t1 = NR_dvector(1, nc);
+  t2 = NR_dvector(1, nc);
+  
+  for (i = 1; i <= nr; i++) {
+    
+    /* grab datum from data matrix */
+    grab_row_dmat(data, i, nc, datum);
+    
+    /* transform each vector to standard multivariate normal */
+    subtract_dvec(datum, mean, t1, nc);
+    right_mult_dmatrix(inv_cov, nc, nc, t1, t2);
+    
+    /* perform radius substitution */
+    r2 = (double) dot_product_dvec(t1, t2, nc);
+
+    /* compute lower-case gamma function */
+    p_r = NR_dgammp( (double) nc/2, (double) r2 / 2.0 );
+    
+    probs[i] = p_r;
+  }
+
+  /* free */
+  NR_free_dvector(datum, 1, nc);
+  NR_free_dvector(t1, 1, nc);
+  NR_free_dvector(t2, 1, nc);
+  NR_free_dmatrix(inv_cov, 1, nc, 1, nc);
+
+  return (UT_OK);
+}
+
+/*******************************************************************************
+PROB_MIXTURE
+Compute the conditional probability of the datum assuming it was drawn from a 
+mixture of multivariate normal distributions having the specified mean vectors
+and covariance matrices.  If the weights sum to 1, this is a stochastic value,
+i.e. this is a probability density function.
+AG
+*******************************************************************************/
+double prob_mixture(double *datum, double **means, double ***covars, double *weights,
+                   int dim, int num_comps, double min_diag)
+
+{
+  int i;
+  double prob;
+    
+  prob = 0.0;
+  for (i = 1; i <= num_comps; i++)
+    prob += weights[i] * prob_gauss(datum, means[i], covars[i], dim, min_diag);
+  
+  return (prob);
+}
+
+
+/*******************************************************************************
+PROB_MIXTURE_AND_KEEP
+Compute the conditional probability of the datum assuming it was drawn from a 
+mixture of multivariate normal distributions having the specified mean vectors
+and covariance matrices.  If the weights sum to 1, this is a stochastic value,
+i.e. this is a probability density function.
+
+Same as prob_mixture(), except that the individual weighted component proba-
+bility values are returned in the vector comp_wgtd_probs (this is the 'keep' 
+option).
+AG
+*******************************************************************************/
+double prob_mixture_and_keep(double *datum, double **means, double ***covars, 
+                            double *weights, int dim, int num_comps, 
+                            double min_diag, double *comp_wgtd_probs)
+
+{
+  int i;
+  double prob;
+
+  prob = 0.0;
+  for (i = 1; i <= num_comps; i++)
+  {
+    comp_wgtd_probs[i] = weights[i] * 
+                         prob_gauss(datum, means[i], covars[i], dim, min_diag);
+    prob += comp_wgtd_probs[i];
+  }
+
+  return (prob);
+}
+
+
+/******************************************************************************o
+LININT
+Given a vector of x locations xa and y locations ya representing a function, 
+perform a linear interpolation to calculate the value y of that function for 
+the independent variable x.  The slop measures how close the value x must be
+to the endpoints of the interval covered by xa in order to be successfully
+evaluated (necessary for floating point "equality").
+*******************************************************************************/
+int linint( float *xa, float *ya, int n, float x, float *y, float slop )
+{
+  int   i;
+  float interval;
+ 
+  for (i = 1; xa[i] < x; i++)
+    if (i == n+1) /* interp point is above data range */
+      return( UT_ERROR );
+ 
+  if (i == 1) { /* interp point is below data range */
+    if ((x - xa[1]) < slop)
+      i = 2;
+    else
+      return( UT_ERROR );
+  }
+ 
+  interval = xa[i] - xa[i-1];
+  *y = ya[i-1] * ( xa[i] - x ) + ya[i] * ( x - xa[i-1] );
+  *y /= interval;
+ 
+  return( UT_OK );
+}
+
+/*******************************************************************************
+VECTOR_LININT
+A wrapper around the function linint so that it is called for a series of
+values contained in the vector x; the interpolated function values are
+returned in y.  The slop measures how close the values x must be to the 
+endpoints of the interval covered by xa in order to be successfully
+evaluated (necessary for floating point "equality").  Note that this code
+is somewhat more inefficient than a special function designed to do this
+thing without including the linint function.
+*******************************************************************************/
+int vector_linint( float *xa, float *ya, int n, float *x, float *y, int m,
+                   float slop )
+{
+  int i;
+  int error_code;
+ 
+  for (i = 1; i <= m; i++) {
+    error_code = linint( xa, ya, n, x[i], &y[i], slop );
+    if (error_code == UT_ERROR)
+      return( UT_ERROR );
+  }
+ 
+  return( UT_OK );
+}
+
+
+/*******************************************************************************
+VECTOR_RATINT
+A wrapper around the function ratint so that it is called for a series of
+values contained in the vector x; the interpolated function values are
+returned in y.  
+*******************************************************************************/
+int vector_ratint(float *xa, float *ya, int n, float *x, float *y, int m)
+{
+  int i;
+  float error;
+ 
+  for (i = 1; i <= m; i++)
+    NR_ratint( xa, ya, n, x[i], &y[i], &error );
+ 
+  return( UT_OK );
+}
+
+
+/*******************************************************************************
+VECTOR_POLINT
+A wrapper around the function polint so that it is called for a series of
+values contained in the vector x; the interpolated function values are
+returned in y.  
+*******************************************************************************/
+int vector_polint(float *xa, float *ya, int n, float *x, float *y, int m)
+{
+  int i;
+  float error;
+ 
+  for (i = 1; i <= m; i++)
+    NR_polint( xa, ya, n, x[i], &y[i], &error );
+ 
+  return( UT_OK );
+}
+
+
+/*******************************************************************************
+FIT_LINE_TO_DATA
+Given an index vector x and a corresponding data vector f(x), fit a line to it
+and return the line's slope and intercept.
+AG
+******************************************************************************/
+int fit_line_to_data(float *data, float *index, int num_data, float *slope, 
+                     float *intercept)
+
+{
+  int mwt;
+  float sig, siga, sigb, chi2, q;
+
+  mwt = 0;  /* this says to ignore option of weighting the different data
+               differently; fit() will thus ignore the contents of sig */
+
+  /* perform linear regression */
+  NR_fit (index, data, num_data, &sig, mwt, intercept, slope, &siga, &sigb, &chi2,
+       &q);
+
+  /* note that here we ignore the additional returned values siga, sigb, chi2, 
+     and q */
+
+  return (UT_OK);
+}
+
+
+/*******************************************************************************
+COMPUTE_LINE
+Given an index vector x, compute the function l(x), which is specified by
+a slope and intercept.
+AG
+*******************************************************************************/
+int compute_line(float *data, float *index, int num_data, float slope, 
+                 float intercept)
+                 
+{
+  int i;
+
+  for (i = 1; i <= num_data; i++)
+    data[i] = ( slope * index[i] ) + intercept;
+
+  return(UT_OK);
+}
+
+/*******************************************************************************
+COUNT_IN_INTERVALS
+Compute a histogram given a vector of data.  Takes two other vectors, one 
+containing the start points for each bucket, and one to contain the number of 
+data in each bucket, which will be filled in by this function.
+AG
+*******************************************************************************/
+int count_in_intervals(float *data, int *count, float *start_value,
+                       int num_data, int num_buckets)
+
+{
+  int i, b;
+  float curr_value;
+
+  set_ivec(count, num_buckets, 0);
+
+  for (i = 1; i <= num_data; i++)
+  {
+    curr_value = data[i];
+
+    /* each bucket is defined by its starting value */
+    for (b = 1; b < num_buckets; b++)
+      if ( (curr_value >= start_value[b]) && (curr_value < start_value[b+1]) )
+      {
+        count[b]++;
+        break;  /* from the inner for loop */
+      }
+    /* the last bucket includes everything up to infinity */
+    if (curr_value >= start_value[num_buckets])
+      count[num_buckets]++;
+  }
+  
+  return(UT_OK);
+}
+
+/*******************************************************************************
+PARTITION_VECTOR
+Given a vector of data, determine the start-points of a given number of
+equally-spaced subintervals.
+AG
+*******************************************************************************/
+int partition_vector(float *data, float *start_values, int num_data, 
+                     int num_intervals)
+
+{
+  int i;
+  float range_data, min_data, max_data, interval_len;
+
+  /* get interval length using range of data */
+  min_data = min_vec(data, num_data);
+  max_data = max_vec(data, num_data);
+  range_data = max_data - min_data;
+
+  interval_len = range_data / (float) num_intervals;
+
+  /* compute start points */
+  start_values[1] = min_data;
+  for (i = 2; i <= num_intervals; i++)
+    start_values[i] = start_values[i-1] + interval_len;
+
+  return (UT_OK);
+}
+
+@
+
+
+1.24
+log
+@changed prob_gauss so that it returns DBL_EPSILON instead of zero
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.23 1998/06/30 17:24:12 agray Exp granat $";
+d34 3
+d400 4
+d406 1
+d416 1
+d418 5
+a422 1
+      prob = DBL_EPSILON;
+d515 9
+@
+
+
+1.23
+log
+@changed includes.
+@
+text
+@d28 1
+a28 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.22 1998/05/07 23:45:06 granat Exp agray $";
+d34 3
+d132 1
+d374 2
+a375 2
+float prob_gauss(float *datum, float *mean, float **covar, int dim, 
+                 float min_diag)
+d378 3
+a380 3
+    float mahalanobis, prob;
+    float **covar_inv;
+    float *diff, *tempvec;
+d384 3
+a386 3
+    diff =       NR_vector(1,dim);
+    tempvec =    NR_vector(1,dim);
+    covar_inv =  NR_matrix(1,dim,1,dim);
+d390 1
+a390 1
+    restrict_illcond_matrix(covar, dim, min_diag);
+d393 1
+a393 1
+    invert_copy_alloc_mat(covar, dim, covar_inv);
+d398 1
+a398 1
+                sqrt((double)det_copy_alloc_mat(covar, dim));
+d401 3
+a403 3
+    subtract_vec(datum, mean, diff, dim);
+    right_mult_matrix(covar_inv, dim, dim, diff, tempvec);
+    mahalanobis = dot_product_vec(diff, tempvec, dim);
+d406 4
+a409 1
+    prob = (float) exp(-0.5 * mahalanobis) / (float) denom;
+d412 3
+a414 3
+    NR_free_matrix(covar_inv,1,dim,1,dim);
+    NR_free_vector(tempvec,1,dim);
+    NR_free_vector(diff,1,dim);
+d428 2
+a429 2
+float* vector_prob_gauss(float **data, float *mean, float **covar, int dim, 
+                         int numdata, float *probs, float min_diag,
+d433 3
+a435 3
+    float mahalanobis;
+    float **covar_inv;
+    float *datum, *diff, *tempvec;
+a439 2
+    float temp;
+
+d443 1
+a443 1
+      print_matrix(ut_log_fp, dim, dim, covar);
+d447 4
+a450 4
+    datum =      NR_vector(1,dim);
+    diff =       NR_vector(1,dim);
+    tempvec =    NR_vector(1,dim);
+    covar_inv =  NR_matrix(1,dim,1,dim);
+d454 1
+a454 1
+    restrict_illcond_matrix(covar, dim, min_diag);
+d459 1
+a459 1
+      print_matrix(ut_log_fp, dim, dim, covar);
+d463 1
+a463 1
+    invert_copy_alloc_mat(covar, dim, covar_inv);
+d468 1
+a468 1
+      print_matrix(ut_log_fp, dim, dim, covar_inv);
+d471 1
+a471 1
+                 det_copy_alloc_mat(covar,dim));
+d473 1
+a473 1
+                 sqrt((double)det_copy_alloc_mat(covar,dim)));
+d478 1
+a478 1
+                sqrt((double)det_copy_alloc_mat(covar, dim));
+d491 1
+a491 1
+        grab_row_mat(data, i, dim, datum);
+d493 1
+a493 1
+        grab_col_mat(data, i, dim, datum);
+d496 3
+a498 3
+      subtract_vec(datum, mean, diff, dim);
+      right_mult_matrix(covar_inv, dim, dim, diff, tempvec);
+      mahalanobis = dot_product_vec(diff, tempvec, dim);
+d501 1
+a501 1
+      probs[i] = (float) exp(-0.5 * mahalanobis) / (float) denom;
+d505 4
+a508 3
+    NR_free_matrix(covar_inv,1,dim,1,dim);
+    NR_free_vector(tempvec,1,dim);
+    NR_free_vector(diff,1,dim);
+d526 2
+a527 2
+int generate_disc_rv_value(float *prob_symbol, int num_symbols, 
+                           float *cum_prob_symbol)
+d531 1
+a531 1
+  float r;
+d539 1
+a539 1
+  r = gen_rand();
+d569 4
+a572 4
+int generate_mixture_rv_value(float *value, int num_dims, int num_comps, 
+                              float **means, float ***covars, float *weights,
+                              float *cum_prob_comps, float **chol_factor,
+                              float *diag)
+d600 2
+a601 2
+int generate_gaussian_rv_value(float *value, int num_dims, float *mean, 
+                               float **covar, float **chol_factor, float *diag)
+d607 2
+a608 2
+  copy_mat(covar, chol_factor, num_dims, num_dims);
+  NR_choldc(chol_factor, num_dims, diag);
+d623 1
+a623 1
+    diag[i] = NR_gasdev(&da_curr_rand);
+d627 1
+a627 1
+  right_mult_matrix(chol_factor, num_dims, num_dims, diag, value);
+d630 1
+a630 1
+  add_vec(value, mean, value, num_dims);
+d645 3
+a647 3
+  float  *mean;     /* mean vector of gaussian distribution */
+  float  **cov;     /* covariance matrix of gaussian distribution */
+  float  **data;    /* set of data vectors (rows) to be evaluated */
+d650 1
+a650 1
+  float  *probs;    /* holds the resulting probabilities; filled in by this 
+d653 2
+a654 2
+  float  **inv_cov, *datum, *t1, *t2;
+  float  p_r, r2;
+d658 2
+a659 2
+  inv_cov = NR_matrix(1, nc, 1, nc);
+  invert_copy_alloc_mat(cov, nc, inv_cov);
+d664 3
+a666 3
+  datum = NR_vector(1, nc);
+  t1 = NR_vector(1, nc);
+  t2 = NR_vector(1, nc);
+d671 1
+a671 1
+    grab_row_mat(data, i, nc, datum);
+d674 2
+a675 2
+    subtract_vec(datum, mean, t1, nc);
+    right_mult_matrix(inv_cov, nc, nc, t1, t2);
+d678 1
+a678 1
+    r2 = (float) dot_product_vec(t1, t2, nc);
+d681 1
+a681 1
+    p_r = NR_gammp( (float) nc/2, (float) r2 / 2.0 );
+d687 4
+a690 4
+  NR_free_vector(datum, 1, nc);
+  NR_free_vector(t1, 1, nc);
+  NR_free_vector(t2, 1, nc);
+  NR_free_matrix(inv_cov, 1, nc, 1, nc);
+d703 2
+a704 2
+float prob_mixture(float *datum, float **means, float ***covars, float *weights,
+                   int dim, int num_comps, float min_diag)
+d708 1
+a708 1
+  float prob;
+d730 3
+a732 3
+float prob_mixture_and_keep(float *datum, float **means, float ***covars, 
+                            float *weights, int dim, int num_comps, 
+                            float min_diag, float *comp_wgtd_probs)
+d736 1
+a736 1
+  float prob;
+d767 1
+a767 1
+  if (i == 1) /* interp point is below data range */
+d772 1
+@
+
+
+1.22
+log
+@Made edits to conform with function name changes in da_linalg and da_util
+@
+text
+@d13 1
+a13 1
+is handled in da_hmm.
+a21 4
+PROGRAM EXAMPLE(S)
+1. /proj/cooltools/merf, AG.   Given a dataset, applies the merf() function to 
+each vector in the set.  The output is a probability for each datum.
+
+d28 1
+a28 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.21 1998/04/21 21:48:51 roden Exp granat $";
+d34 3
+a137 1
+#include "da_signal.h"
+@
+
+
+1.21
+log
+@Changed calls to conform to new naming conventions as follows:
+  mat_vect_mult() -> right_mult_matrix()
+  dot_product()   -> dot_product_vec()
+Previous version, 1.20, was Granat's mod/fix to var_mat(); I stole lock
+to make above changes.
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.20 1998/04/21 21:08:11 roden Exp roden $";
+d38 7
+a130 1
+
+d135 1
+d391 1
+a391 1
+    invert_mat_copy(covar, dim, covar_inv);
+d396 1
+a396 1
+                sqrt((double)det_copy(covar, dim));
+d460 1
+a460 1
+    invert_mat_copy(covar, dim, covar_inv);
+d468 1
+a468 1
+                 det_copy(covar,dim));
+d470 1
+a470 1
+                 sqrt((double)det_copy(covar,dim)));
+d475 1
+a475 1
+                sqrt((double)det_copy(covar, dim));
+d488 1
+a488 1
+        grab_row(data, i, dim, datum);
+d490 1
+a490 1
+        grab_col(data, i, dim, datum);
+d655 1
+a655 1
+  invert_mat_copy(cov, nc, inv_cov);
+d667 1
+a667 1
+    grab_row(data, i, nc, datum);
+@
+
+
+1.20
+log
+@*** empty log message ***
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.19 1998/03/09 00:44:25 granat Exp granat $";
+d38 3
+d393 2
+a394 2
+    mat_vec_mult(covar_inv, dim, dim, diff, tempvec);
+    mahalanobis = dot_product(diff, tempvec, dim);
+d487 2
+a488 2
+      mat_vec_mult(covar_inv, dim, dim, diff, tempvec);
+      mahalanobis = dot_product(diff, tempvec, dim);
+d616 1
+a616 1
+  mat_vec_mult(chol_factor, num_dims, num_dims, diag, value);
+d664 1
+a664 1
+    mat_vec_mult(inv_cov, nc, nc, t1, t2);
+d667 1
+a667 1
+    r2 = (float) dot_product(t1, t2, nc);
+@
+
+
+1.19
+log
+@fixed 2nd matrix stdev bug
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.18 1998/03/09 00:37:14 granat Exp granat $";
+d38 3
+d260 1
+a260 1
+      result += (*p - mean);
+@
+
+
+1.18
+log
+@fixed matrix stdev
+fixed boolean bug
+,.
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.17 1997/09/10 14:54:25 granat Exp granat $";
+d38 5
+d216 1
+a216 1
+  result = (float) sqrt( (double) result / ((double) (nr * nc - 1) );
+@
+
+
+1.17
+log
+@added routines to extend functionality to matrices of ints, uchars
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.16 1997/06/20 22:13:36 granat Exp granat $";
+d38 3
+d211 1
+a211 1
+  result = (float) sqrt( (double) result / ((double) (nr - 1) * (nc - 1)) );
+d415 1
+a415 1
+    bool  row_flag;
+@
+
+
+1.16
+log
+@changed to reflect bug fix in da_random
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.15 1997/06/05 18:56:17 granat Exp granat $";
+d38 3
+d152 27
+@
+
+
+1.15
+log
+@edited to conform to changes in da_linalg
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.14 1997/06/02 15:54:35 granat Exp granat $";
+d38 3
+d281 2
+a282 2
+  fast_zero_vec(numcols, means);
+  fast_zero_vec(numcols, stdevs);
+d568 1
+a568 1
+    diag[i] = NR_gasdev(da_curr_rand);
+@
+
+
+1.14
+log
+@changed to use new NR naming convention
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.13 1997/05/13 23:56:30 granat Exp granat $";
+d38 3
+d249 1
+a249 1
+  scalar_div_mat(num_dims, num_dims, covar, num_data);
+d345 3
+a347 3
+    subtract_vec(dim, datum, mean, diff);
+    mat_vec_mult(dim, dim, covar_inv, diff, tempvec);
+    mahalanobis = dot_product(diff, dim, tempvec);
+d439 3
+a441 3
+      subtract_vec(dim, datum, mean, diff);
+      mat_vec_mult(dim, dim, covar_inv, diff, tempvec);
+      mahalanobis = dot_product(diff, dim, tempvec);
+d569 1
+a569 1
+  mat_vec_mult(num_dims, num_dims, chol_factor, diag, value);
+d572 1
+a572 1
+  add_vec(num_dims, value, mean, value);
+d616 2
+a617 2
+    subtract_vec(nc, datum, mean, t1);
+    mat_vec_mult(nc, nc, inv_cov, t1, t2);
+d620 1
+a620 1
+    r2 = (float) dot_product(t1, nc, t2);
+d843 1
+a843 1
+  set_ivec(num_buckets, count, 0);
+@
+
+
+1.13
+log
+@added mean_mat, stdev_mat, var_vec, var_mat
+changed name of mean to mean_vec, name of stdev to stdev_vec
+changed order of input variables on some functions
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.12 1997/05/06 22:22:43 agray Exp granat $";
+d38 5
+a102 1
+#include "nrutil.h"
+d191 1
+a191 1
+    result += sqr(*p - mean);
+d297 1
+a297 1
+      stdevs[j] += sqr(mat_row_i[j] - means[j]);
+d325 3
+a327 3
+    diff =       vector(1,dim);
+    tempvec =    vector(1,dim);
+    covar_inv =  matrix(1,dim,1,dim);
+d350 3
+a352 3
+    free_matrix(covar_inv,1,dim,1,dim);
+    free_vector(tempvec,1,dim);
+    free_vector(diff,1,dim);
+d387 4
+a390 4
+    datum =      vector(1,dim);
+    diff =       vector(1,dim);
+    tempvec =    vector(1,dim);
+    covar_inv =  matrix(1,dim,1,dim);
+d445 3
+a447 3
+    free_matrix(covar_inv,1,dim,1,dim);
+    free_vector(tempvec,1,dim);
+    free_vector(diff,1,dim);
+d547 1
+a547 1
+  choldc(chol_factor, num_dims, diag);
+d562 1
+a562 1
+    diag[i] = gasdev(da_curr_rand);
+d597 1
+a597 1
+  inv_cov = matrix(1, nc, 1, nc);
+d603 3
+a605 3
+  datum = vector(1, nc);
+  t1 = vector(1, nc);
+  t2 = vector(1, nc);
+d620 1
+a620 1
+    p_r = gammp( (float) nc/2, (float) r2 / 2.0 );
+d626 4
+a629 4
+  free_vector(datum, 1, nc);
+  free_vector(t1, 1, nc);
+  free_vector(t2, 1, nc);
+  free_matrix(inv_cov, 1, nc, 1, nc);
+d757 1
+a757 1
+    ratint( xa, ya, n, x[i], &y[i], &error );
+d775 1
+a775 1
+    polint( xa, ya, n, x[i], &y[i], &error );
+d798 1
+a798 1
+  fit (index, data, num_data, &sig, mwt, intercept, slope, &siga, &sigb, &chi2,
+@
+
+
+1.12
+log
+@added some things from dp cooltool.
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.11 1997/04/05 19:01:51 granat Exp agray $";
+d38 3
+d112 1
+a112 1
+MEAN
+d116 1
+a116 2
+float mean(int nc, float *v)
+
+d126 16
+a141 1
+STDEV
+d143 1
+a143 1
+AG
+d145 1
+a145 1
+float stdev(int nc, float *v, float mean)
+d148 1
+a148 2
+  int     i;
+  float result = 0.0;
+d150 1
+a150 2
+  for (i = 1; i <= nc; i++)
+    result += sqr(v[i] - mean);
+d155 59
+@
+
+
+1.11
+log
+@changed a couple of things to adjust for changes to da_linalg
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.10 1997/02/24 22:59:13 granat Exp granat $";
+d38 3
+d177 50
+@
+
+
+1.10
+log
+@added linint, vector_linint, vector_ratint, vector_polint functions
+for function interpolation
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.9 1997/01/29 21:47:16 agray Exp granat $";
+d38 4
+d115 1
+a115 1
+  result = sum_vec(nc, v);
+d744 2
+a745 2
+  min_data = min_vec(num_data, data);
+  max_data = max_vec(num_data, data);
+@
+
+
+1.9
+log
+@new formatting, cleaning up debugging output using ut_output,
+cleaning up random number generation using da_random.  also
+changed chop_data_equally() to partition_vector().
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.8 1996/10/31 02:18:27 agray Exp agray $";
+d38 5
+d551 92
+@
+
+
+1.8
+log
+@renamed from "da_prob" to "da_probstat";
+changed .h and .c formats throughout library;
+some reorganizing between modules;
+added some functions from HMM project.
+@
+text
+@d32 1
+a32 1
+static char rcsid[] = "$Id: da_probstat.c,v 1.7 1996/09/20 22:19:03 agray Exp agray $";
+d38 6
+d66 1
+d75 1
+a75 1
+#include "ut_types.h"
+d77 1
+a77 1
+#include "ut_debug.h"
+d79 2
+d87 1
+d89 1
+a89 1
+#include "da_io.h"
+d123 1
+a123 1
+    result += SQR(v[i] - mean);
+d240 4
+a243 3
+    if (utDebugLevel > 0) {
+      printf("covar in vector_prob_gauss\n");
+      print_matrix(stdout, dim, dim, covar);
+d256 4
+a259 3
+    if (utDebugLevel > 0) {
+      printf("covar in vector_prob_gauss after restriction\n");
+      print_matrix(stdout, dim, dim, covar);
+d265 4
+a268 4
+    if (utDebugLevel > 0) {
+      printf("covar_inv in vector_prob_gauss\n");
+      print_matrix(stdout, dim, dim, covar_inv);
+    }
+d270 4
+a273 4
+    if (utDebugLevel > 0) {
+      printf("det of covar in vector_prob_gauss = %g\n",det_copy(covar,dim));
+      printf("sqrt of det of covar in vpg = %g\n",
+             sqrt((double)det_copy(covar,dim)));
+d281 1
+a281 1
+    if (utEqStr(rows_or_cols, "rows"))
+d338 1
+a338 2
+  r = (float) drand48();   /* for Sun */
+  /* r = (float) utScaledRand(0.0,1.0); */
+d348 2
+a349 2
+    perror("Error!");
+    return(-1);
+d422 1
+a422 1
+    diag[i] = gasdev(ut_curr_rand);
+d630 1
+a630 1
+CHOP_DATA_EQUALLY
+d635 2
+a636 2
+int chop_data_equally(float *data, float *start_value, int num_data, 
+                      int num_intervals)
+d650 1
+a650 1
+  start_value[1] = min_data;
+d652 1
+a652 1
+    start_value[i] = start_value[i-1] + interval_len;
+a655 1
+
+@
+
+
+1.7
+log
+@corrected comments.
+@
+text
+@d2 2
+d5 2
+a6 9
+  Title:     da_prob
+  Author:    Alexander Gray
+  Function:  Data analysis routines, Numerical Recipes style.
+             This file contains probability and statistics concepts.
+             Useful for 'filling in the gaps' left by the raw Numerical Recipes
+             library.
+  Reference: Numerical Recipes, 2e.
+  How used:  First use - in ~/CoolTools/Merf/merf.c.
+  Notes:     -
+d8 22
+d32 1
+a32 1
+static char rcsid[] = "$Id: da_prob.c,v 1.6 1996/09/20 22:13:31 agray Exp agray $";
+d34 2
+d37 4
+a40 1
+ * $Log: da_prob.c,v $
+d62 1
+d67 1
+d73 1
+d77 1
+d79 2
+a80 44
+#include "da_data.h"
+#include "da_dist.h"
+#include "da_prob.h"
+
+/*******************************************************************************
+ READ_GAUSS_PARMS
+ Read in a standard file containing mean vector and covariance matrix.
+ Allocates the structures that will hold the mean vector and covariance matrix.
+*******************************************************************************/
+int read_gauss_parms(parmsfile, nc, mean, cov)
+
+  char   *parmsfile;      /* name of file to read */
+  int    nc;              /* number of dimensions of Gaussian */
+  float  **mean, ***cov;  /* ptrs to mean vector and covariance matrix to be 
+                             filled in */
+{
+  FILE    *fp;
+  int     j, k;
+
+  /* open file for reading */
+  fp = fopen(parmsfile, "r");
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate mean vector */
+  *mean = vector(1, nc);
+  if (*mean == (float*)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* allocate covariance matrix */
+  *cov = matrix(1, nc, 1, nc);
+  if (*cov == (float**)NULL) {
+    printf("Error in memory allocation.\n");
+    return (UT_ERROR);
+  }
+
+  /* read mean vector from file */
+  for (j = 1; j <= nc; j++) {
+    fscanf(fp, "%g ", &(*mean)[j]);
+  }
+d82 2
+a83 6
+  /* read covariance matrix from file */
+  for (j = 1; j <= nc; j++) {
+    for (k = 1; k <= nc; k++) {
+      fscanf(fp, "%g ", &(*cov)[j][k]);
+    }
+  }
+a84 3
+  fclose(fp);
+  return (UT_OK);
+}
+d87 3
+a89 2
+ PRINT_GAUSS_PARMS
+ Print the contents of a mean vector and of a covariance matrix.
+d91 1
+a91 1
+int print_gauss_parms(stream, nc, mean, cov)
+a92 3
+  FILE   *stream;       /* stream to print to, e.g. stdout, file pointer */
+  int    nc;            /* number of dimensions in Gaussian */
+  float  *mean, **cov;  /* mean vector and covariance matrix to write */
+d94 1
+a94 2
+  /* print mean vector */
+  print_row(stream, nc, mean);
+d96 1
+a96 2
+  /* print covariance matrix */
+  print_matrix(stream, nc, nc, cov);
+d98 1
+a98 1
+  return (UT_OK);
+d102 3
+a104 2
+ WRITE_GAUSS_PARMS
+ Write out a standard file containing mean vector and covariance matrix.
+d106 1
+a106 1
+int write_gauss_parms(parmsfile, nc, mean, cov, mode)
+a107 31
+  char   *parmsfile;    /* name of file to write to */
+  int    nc;            /* number of dimensions in Gaussian */
+  float  *mean, **cov;  /* mean vector and covariance matrix to write */
+  char   *mode;         /* file i/o mode to use: e.g. "w" or "a" */
+{
+  FILE    *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(parmsfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+
+  print_gauss_parms(fp, nc, mean, cov);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+/*******************************************************************************
+ PRINT_GAUSS_PARMS_SET
+ Print the contents of K mean vectors and covariance matrices.
+*******************************************************************************/
+int print_gauss_parms_set(stream, nc, K, means, covars)
+
+  FILE   *stream;       /* stream to print to, e.g. stdout, file pointer */
+  int    nc;            /* number of dimensions in Gaussian */
+  int    K;             /* number of Gaussians in the set */
+  float  **means;       /* matrix containing K mean vectors to write */
+  float  ***covars;     /* matrix containing K covariance matrices to write */
+d109 2
+a110 1
+  int k;
+d112 2
+a113 4
+  for (k=1; k<=K; k++)
+  {
+    /* print identification number */
+    fprintf(stream, "#%d\n\n",k);
+d115 1
+a115 8
+    /* print mean vector to file */
+    print_row(stream, nc, means[k]);
+    fprintf(stream, "\n");
+
+    /* print covariance matrix to file */
+    print_matrix(stream, nc, nc, covars[k]);
+    fprintf(stream, "\n");
+  }
+d117 1
+a117 1
+  return (UT_OK);
+d120 1
+d122 6
+a127 22
+ WRITE_GAUSS_PARMS_SET
+ Write the contents of K mean vectors and covariance matrices to a standard
+ file.
+*******************************************************************************/
+int write_gauss_parms_set(parmsfile, nc, K, means, covars, mode)
+
+  char   *parmsfile;    /* name of file to write to */
+  int    nc;            /* number of dimensions in Gaussian */
+  int    K;             /* number of Gaussians in the set */
+  float  **means;       /* matrix containing K mean vectors to write */
+  float  ***covars;     /* matrix containing K covariance matrices to write */
+  char   *mode;         /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  int k;
+  FILE *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(parmsfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+a128 22
+  print_gauss_parms_set(fp, nc, K, means, covars);
+
+  fclose(fp);
+  return (UT_OK);
+}
+
+/*******************************************************************************
+ PRINT_UNNORM_GAUSS_PARMS_SET
+ Print the contents of a set of K mean vectors and covariance matrices.
+ Takes data which has normalized by the range of values in each attribute,
+ and prints it in unnormalized form.
+*******************************************************************************/
+int print_unnorm_gauss_parms_set(stream, nc, K, means, covars, range,
+                                 minval)
+
+  FILE   *stream;       /* stream to print to, e.g. stdout, file pointer */
+  int    nc;            /* number of dimensions in Gaussian */
+  int    K;             /* number of Gaussians in the set */
+  float  **means;       /* matrix containing K mean vectors to write */
+  float  ***covars;     /* matrix containing K covariance matrices to write */
+  float  *range;        /* range of values for each attribute */
+  float  *minval;       /* minimum value in each attribute */
+d130 2
+a131 1
+  int k;
+d133 1
+a133 1
+  for (k=1; k<=K; k++)
+d135 8
+a142 10
+    /* print identification number */
+    fprintf(stream, "#%d\n\n",k);
+
+    /* print mean vector to file */
+    print_unnorm_row(stream, nc, means[k], range, minval);
+    fprintf(stream, "\n");
+
+    /* print covariance matrix to file */
+    print_unnorm_cov_matrix(stream, nc, covars[k], range);
+    fprintf(stream, "\n");
+d145 2
+a146 30
+  return (UT_OK);
+}
+
+/*******************************************************************************
+ WRITE_UNNORM_GAUSS_PARMS_SET
+ Write out a standard file containing a set of K mean vectors and covariance 
+ matrices.  Takes data which has normalized by the range of values in each 
+ attribute, and prints it in unnormalized form.
+*******************************************************************************/
+int write_unnorm_gauss_parms_set(parmsfile, nc, K, means, covars, range,
+                                 minval, mode)
+
+  char   *parmsfile;    /* name of file to write to */
+  int    nc;            /* number of dimensions in Gaussian */
+  int    K;             /* number of Gaussians in the set */
+  float  **means;       /* matrix containing K mean vectors to write */
+  float  ***covars;     /* matrix containing K covariance matrices to write */
+  float  *range;        /* range of values for each attribute */
+  float  *minval;       /* minimum value in each attribute */
+  char   *mode;         /* file i/o mode to use: e.g. "w", "r", or "a" */
+{
+  int k;
+  FILE *fp;
+
+  /* open file in the specified mode */
+  fp = fopen(parmsfile, mode);
+  if (fp == (FILE*) NULL) {
+    printf("Error in trying to open a file.\n");
+    return (UT_ERROR);
+  }
+d148 5
+a152 1
+  print_unnorm_gauss_parms_set(fp, nc, K, means, covars, range, minval);
+a153 1
+  fclose(fp);
+a156 57
+/*******************************************************************************
+ MERF
+ Compute the 'multidimensional erf() (error function)' for set of vectors in 
+ a dataset.  The output is a probability for each datum, stored in the vector
+ probs, which has nr elements.
+*******************************************************************************/
+int merf(mean, cov, data, nr, nc, probs)
+
+  float  *mean;     /* mean vector of gaussian distribution */
+  float  **cov;     /* covariance matrix of gaussian distribution */
+  float  **data;    /* set of data vectors (rows) to be evaluated */
+  int    nr;        /* number of rows in data */
+  int    nc;        /* number of dimensions of data */
+  float  *probs;    /* holds the resulting probabilities; filled in by this 
+                       function */
+{
+  float  **inv_cov, *datum, *t1, *t2;
+  float  p_r, r2;
+  int    i;
+
+  /* Compute inverse of covariance matrix */
+  inv_cov = matrix(1, nc, 1, nc);
+  invert_mat_copy(cov, nc, inv_cov);
+
+  /* Compute probabilities using gamma function */
+
+  /* allocate intermediate vectors */
+  datum = vector(1, nc);
+  t1 = vector(1, nc);
+  t2 = vector(1, nc);
+  
+  for (i = 1; i <= nr; i++) {
+    
+    /* grab datum from data matrix */
+    grab_row(data, i, nc, datum);
+    
+    /* transform each vector to standard multivariate normal */
+    subtract_vec(nc, datum, mean, t1);
+    mat_vec_mult(nc, nc, inv_cov, t1, t2);
+    
+    /* perform radius substitution */
+    r2 = (float) dot_product(t1, nc, t2);
+
+    /* compute lower-case gamma function */
+    p_r = gammp( (float) nc/2, (float) r2 / 2.0 );
+    
+    probs[i] = p_r;
+  }
+
+  /* free */
+  free_vector(datum, 1, nc);
+  free_vector(t1, 1, nc);
+  free_vector(t2, 1, nc);
+  free_matrix(inv_cov, 1, nc, 1, nc);
+
+  return (UT_OK);
+}
+d159 5
+a163 4
+ PROB_GAUSS
+ Compute the conditional probability of the datum assuming it was drawn from a 
+ multivariate normal distribution with the specified mean and covariance matrix,
+ using the normal probability density function.
+d209 6
+a214 5
+ VECTOR_PROB_GAUSS
+ Compute the conditional probability of the datum assuming it was drawn from a 
+ multivariate normal distribution with the specified mean and covariance matrix,
+ using the normal probability density function.  Returns the vector of proba-
+ bilities, one for each datum.
+d298 346
+@
+
+
+1.6
+log
+@changed names back.
+@
+text
+@d15 1
+a15 1
+static char rcsid[] = "$Id: da_prob.c,v 1.5 1996/09/19 22:44:40 agray Exp agray $";
+d19 3
+d345 3
+a347 4
+ Compute the conditional density of the datum assuming it was drawn from a 
+ multivariate normal distribution with the specified mean and covariance matrix.
+
+ Note that it does not compute a true probability.
+d394 4
+a397 5
+ Compute the conditional density of each datum in a data matrix assuming it
+ was drawn from a multivariate normal distribution with the specified mean and 
+ covariance matrix.  Returns the vector of densities, one for each datum.
+
+ Note that it does not compute true probabilities.
+@
+
+
+1.5
+log
+@changed name of prob_gauss() to gauss_eval(); similar for vector_prob_gauss().
+@
+text
+@d15 1
+a15 1
+static char rcsid[] = "$Id: da_prob.c,v 1.4 1996/09/16 21:04:40 agray Exp agray $";
+d19 4
+d341 1
+a341 1
+ GAUSS_EVAL
+d347 1
+a347 1
+float gauss_eval(float *datum, float *mean, float **covar, int dim, 
+d391 1
+a391 1
+ VECTOR_GAUSS_EVAL
+d398 1
+a398 1
+float* vector_gauss_eval(float **data, float *mean, float **covar, int dim, 
+d413 1
+a413 1
+      printf("covar in vector_gauss_eval\n");
+d428 1
+a428 1
+      printf("covar in vector_gauss_eval after restriction\n");
+d436 1
+a436 1
+      printf("covar_inv in vector_gauss_eval\n");
+d441 1
+a441 1
+      printf("det of covar in vector_gauss_eval = %g\n",det_copy(covar,dim));
+@
+
+
+1.4
+log
+@updated call to print_unnorm_cov_matrix().
+@
+text
+@d15 1
+a15 1
+static char rcsid[] = "$Id: da_prob.c,v 1.3 1996/07/17 20:45:14 agray Exp agray $";
+d19 3
+d337 2
+a338 2
+ PROB_GAUSS
+ Compute the conditional probability of the datum assuming it was drawn from a 
+d340 2
+d343 1
+a343 1
+float prob_gauss(float *datum, float *mean, float **covar, int dim, 
+d387 2
+a388 2
+ VECTOR_PROB_GAUSS
+ Compute the conditional probability of each datum in a data matrix assuming it
+d390 3
+a392 1
+ covariance matrix.  Returns the vector of probabilities, one for each datum.
+d394 1
+a394 1
+float* vector_prob_gauss(float **data, float *mean, float **covar, int dim, 
+d409 1
+a409 1
+      printf("covar in vector_prob_gauss\n");
+d424 1
+a424 1
+      printf("covar in vector_prob_gauss after restriction\n");
+d432 1
+a432 1
+      printf("covar_inv in vector_prob_gauss\n");
+d437 1
+a437 1
+      printf("det of covar in vector_prob_gauss = %g\n",det_copy(covar,dim));
+@
+
+
+1.3
+log
+@cosmetic.
+@
+text
+@d15 1
+a15 1
+static char rcsid[] = "$Id: da_prob.c,v 1.2 1996/07/11 18:25:25 agray Exp agray $";
+d19 3
+d234 1
+a234 1
+    print_unnorm_cov_matrix(stream, nc, nc, covars[k], range);
+@
+
+
+1.2
+log
+@added read/print/write_gauss_parms(), print/write_gauss_parms_set(),
+print/write_unnorm_gauss_parms_set(), prob_gauss(), vector_prob_gauss().
+@
+text
+@a10 3
+
+  Compile:   make
+  Example:   -
+d15 1
+a15 1
+static char rcsid[] = "$Id: da_prob.c,v 1.1 1996/02/21 05:18:05 agray Exp agray $";
+d19 4
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d18 1
+a18 1
+static char rcsid[] = "$Id$";
+d20 5
+a24 1
+/* $Log$ */
+d29 1
+d31 4
+d37 1
+d39 2
+d44 228
+a291 1
+  /* note that this destroys the original matrix, cov */
+d293 1
+a293 1
+  invert_mat(cov, nc, inv_cov);
+d328 140
+@
