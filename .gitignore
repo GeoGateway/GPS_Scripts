@@ -89,6 +89,9 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# Ansible project settings
+*.retry
+
 # =========================
 # Operating System Files
 # =========================

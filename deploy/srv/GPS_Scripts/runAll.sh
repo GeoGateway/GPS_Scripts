@@ -17,7 +17,7 @@ echo
 echo "***********************************"
 echo "Changing permissions to Executables"
 echo "***********************************"
-cd /root/GPS_Scripts/RDAHMM
+cd /root/GPS_Scripts/deploy/srv/GPS_Scripts/RDAHMM
 chmod -R 777 rdahmm3
 
 echo 
@@ -25,6 +25,7 @@ echo
 echo "***********************************"
 echo "Adding data to MongoDB"
 echo "***********************************"
+cd ../
 python PythonRDAHMM/create_mongodb.py UNR_SPLICE
 
 

@@ -5,9 +5,6 @@ echo
 echo "***********************************"
 echo "Installing prerequisites"
 echo "***********************************"
-sudo apt-get update
-sudo apt-get install python
-sudo apt-get python-pip
 pip install --upgrade pip
 pip install virtualenv
 
@@ -29,6 +26,7 @@ source deploy/bin/activate
 echo "***********************************"
 echo "Installing pre requisites"
 echo "***********************************"
+sudo apt install ansible
 pip install -r requirements-deploy.txt 
 
 echo 
