@@ -1,6 +1,0 @@
----
-- name: install git
-  hosts: backend
-  become: yes
-  roles:
-    - roles/git
