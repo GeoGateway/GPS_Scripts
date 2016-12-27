@@ -32,10 +32,18 @@ pip install -r requirements-deploy.txt
 echo 
 echo
 echo "***********************************"
-echo "Installing simplejson on server"
+echo "Installing simplejson on backend"
 echo "***********************************"
 ansible backend -i inventory -m raw -a "sudo yum install -y python-simplejson"
 
+echo 
+echo
+echo "***********************************"
+echo "Compressing files"
+echo "***********************************"
+cd srv
+tar -czf server.tar.gz server/
+cd ..
 
 echo "***********************************"
 echo "Deploying code on backend"
