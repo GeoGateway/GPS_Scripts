@@ -3,24 +3,86 @@
   hosts: backend
   become: true
   tasks:
-    - name: source bashrc
-      shell: source /etc/bashrc
     - name: copy code to backend
       copy:
-        src: srv/GPS_Scripts/
-        dest: /root/GPS_Scripts/
+        src: srv/server.tar.gz
+        dest: "{{ server_dest }}"
         owner: root
         group: root
-        mode: 0644
+        mode: a+rwx
+    - name: extract server tar file
+      unarchive: 
+        src: "{{ server_dest }}/server.tar.gz"  
+        dest: "{{ server_dest }}"
+        remote_src: yes
+        owner: root
+        group: root
+        mode: a+rwx
+    - name: extract rdahmm3 binaries
+      unarchive: 
+        src: "{{  rdahmm_dir }}/rdahmm3.tar.gz"  
+        dest: "{{  rdahmm_dir }}"
+        remote_src: yes
+        owner: root
+        group: root
+        mode: a+rwx
+    - name: extract c library binaries
+      unarchive: 
+        src: "{{  rdahmm_dir }}/c-libraries.tar.gz"  
+        dest: "{{  rdahmm_dir }}"
+        remote_src: yes
+        owner: root
+        group: root
+        mode: a+rwx
+    # - name: extract UNR_FID model tar
+    #   unarchive: 
+    #     src: "{{  model_dir }}/UNR_FID.tar.gz"  
+    #     dest: "{{  model_dir }}"
+    #     remote_src: yes
+    #     owner: root
+    #     mode: a+rwx
+    # - name: extract UNR_IGS08 model tar
+    #   unarchive: 
+    #     src: "{{  model_dir }}/UNR_IGS08.tar.gz"  
+    #     dest: "{{  model_dir }}"
+    #     remote_src: yes
+    #     owner: root
+    #     mode: a+rwx
+    # - name: extract UNR_SPLICE model tar
+    #   unarchive: 
+    #     src: "{{  model_dir }}/UNR_SPLICE.tar.gz"  
+    #     dest: "{{  model_dir }}"
+    #     remote_src: yes
+    #     owner: root
+    #     mode: a+rwx
+    # - name: install requirements for setting up server
+    #   pip:
+    #     requirements: "{{ server_dir }}/requirements-virtualenv.txt"
+    # # http://stackoverflow.com/questions/20040141/ansible-command-from-inside-virtualenv
+    # - name: setup virtual environment
+    #   command: chdir="{{ server_dir }}" virtualenv flask-mongo --no-site-packages
+    # - name: installing prerequisites to virtualenv
+    #   pip:
+    #      requirements: "{{ server_dir }}/requirements-server-mongo.txt"
+    #      virtualenv: "{{ venv }}"
+    # - name: copying template
+    #   template: src=template/venv_exec.j2 dest={{ venv }}/exec mode=755
+    # - name: start flask server
+    #   command: chdir="{{ server_dir }}" "{{ venv }}/exec" python start_server_mongo.py
     # - name: clone repository
     #   git: 
     #    repo: https://github.com/GeoGateway/GPS_Scripts.git
     #    dest: "{{ repo_dest }}"
     #    update: no
       # command: git clone "https://github.com/GeoGateway/GPS_Scripts.git" /root/
-    - name: set permissions to executable
-      command: chdir="{{ repo_dest }}/GPS_Scripts/RDAHMM" chmod -R 777 rdahmm3
+    # - name: set permissions to executable
+    #   command: chdir="/root/server/GPS_Scripts/RDAHMM" chmod -R 777 rdahmm3
 
   vars:
-    repo_dest: /root/
+    server_dest: /mnt/data
+    rdahmm_dir: "{{ server_dest }}/server/RDAHMM"
+    model_dir: "{{ rdahmm_dir }}/Model"
+    # server_dir: "{{ server_dest }}/server"
+    # venv: "{{ server_dir }}/flask-mongo"
+
 
