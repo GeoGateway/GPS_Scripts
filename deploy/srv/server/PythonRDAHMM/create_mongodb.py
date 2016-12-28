@@ -27,8 +27,8 @@ today = datetime.today()
 serverName = "gf9.ucs.indiana.edu"
 updateTime = str(today.strftime("%Y-%m-%dT%H:%M:%S"))
 beginDate = "1994-01-01"
-endDate = str(today.strftime("%Y-%m-%d"))
-# endDate = '2016-10-19'
+# endDate = str(today.strftime("%Y-%m-%d"))
+endDate = '2016-10-19'
 centerLng = "-119.7713889"
 centerLat = "36.7477778"
 stateChangeNumTxtFile = "stateChangeNums.txt"
@@ -521,10 +521,8 @@ def get_legacy_data(station):
 start_date=datetime.strptime(beginDate, '%Y-%m-%d')
 end_date=datetime.strptime(endDate, '%Y-%m-%d')
 
-# http://stackoverflow.com/questions/21231789/how-to-get-all-days-in-current-month
 from calendar import monthrange
 
-# temp_station_list= []
 for station in stations:
 #     GeoJson format: maybe considered in future
 #     loc = {'type' : "Point", 
@@ -540,26 +538,27 @@ for station in stations:
         
         for month in range(1,13):
             no_of_days_in_month = monthrange(year, month)[1]+1
-            days=range(1, no_of_days_in_month)
-#             state=[None]*(no_of_days_in_month-1)          
+            days=range(1, no_of_days_in_month)          
             data_for_a_month={}
             
             for day in days:
                 date_in_time_series=datetime(year, month, day)
-                if (date_in_time_series > today):
+                
+                if (date_in_time_series > end_date):
+                    data_for_a_year[str(month)] = data_for_a_month
+                    data_for_all_years[str(year)] = data_for_a_year
                     break                
                 data_for_a_month[str(day)] = str(getStationState(date_in_time_series, station))
 
-            if (date_in_time_series > today):
-                break 
+            if (date_in_time_series >= end_date):
+                break
             data_for_a_year[str(month)] = data_for_a_month
-
-        if (date_in_time_series > today):
-            break             
+            
+        if (date_in_time_series >= end_date):
+            break            
         data_for_all_years[str(year)] = data_for_a_year
         
     document['status'] = data_for_all_years
-    # set_legacy_data(document, station)
     
     # Add station time series
     collections_time_series_stations.insert_one(document)
