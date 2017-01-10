@@ -5,6 +5,6 @@
   tasks:
   - name: upgrade system to latest packages
     yum: name='*' state=latest
-  - name: install laplack
+  - name: install lapack
     yum: name=lapack-devel state=latest
 
