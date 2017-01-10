@@ -8,7 +8,7 @@ Prerequisite
 ------------------
 The deployment is divided into 2 parts-  
 1. Deploy machine- Where you will clone this repository. It can be your PC or a VM on the cloud. A VM on cloud is preferred because deployement process will be faster.  
-2. Host machine - It is an instance of 64 bit, 4 GB RAM or more, 100GB memory or more, [CentOS 5.4](https://www.centos.org/) or less with Python 2.4 or less installed. An image can be found in community AMI of N.Virginia region of Amazon AWS EC2 (ami-7ea24a17).   
+2. Host machine - It will host the backend server. Make sure that it is an instance of 64 bit, 4 GB RAM or more, 100GB memory or more, [CentOS 5.4](https://www.centos.org/) or less with Python 2.4 or less installed. An image can be found in community AMI of N.Virginia region of Amazon AWS EC2 (ami-7ea24a17).   
 
 The deploy machine first should have following installed-  
 1. [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)    
