@@ -49,6 +49,6 @@ echo "***********************************"
 echo "Starting server"
 echo "***********************************"
 echo "Check if the service has started by typing or pasting following command in a new terminal"
-echo curl "http://localhost:5000/gps?lat_min=18.005611&lat_max=48.987386&long_min=-124.626080&long_max=-62.361014"
+echo curl "http://localhost:5000/GPS_UNR_SPLICE/time_series?lat_min=&lat_max=&lon_min=&lon_max=&year=2013&month=6&day=18"
 echo "Should display a json file giving data for USA"
 python start_server_mongo.py
