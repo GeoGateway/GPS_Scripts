@@ -1,3 +1,15 @@
+#
+# Project-specific exclusions
+#
+deploy/srv/server/daily/
+deploy/srv/server/RDAHMM/Model/
+deploy/srv/server/RDAHMM/TEMP/
+deploy/srv/server/RDAHMM/Data/
+
+#
+# General things to ignore
+#
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -78,7 +78,7 @@ def setStationStartDate(stationDir, stationData):
             startDate = startFile.readline().rstrip()
         startFile.close()
     else:
-		startDate = "1994-01-01"
+        startDate = "1994-01-01"
     stationData['start_date'] = startDate
     return
 
@@ -231,10 +231,10 @@ def setTimesNoData(stationDir, stationData):
                     eventdate_keep=eventdate2
 
             # We now know the range of no-data values, so insert this range, latest first
-	    noDataEvent['to'] = eventdate_keep
-	    noDataEvent['from'] = eventdate1
-	    noDataRanges.append(noDataEvent)
-	    noDataCount += 1
+            noDataEvent['to'] = eventdate_keep
+            noDataEvent['from'] = eventdate1
+            noDataRanges.append(noDataEvent)
+            noDataCount += 1
             
     # Finally, prepend the data-not-yet-available date range, from the last day of data
     # until today's date.
@@ -273,6 +273,7 @@ else:
     sys.exit("Invalid number of parameters!")
 
 projectDir = FINAL_PATH +dataSet
+
 
 if(os.path.isdir(projectDir)):
 # Open the JSON file that will contain the results
@@ -313,11 +314,12 @@ for stationList in os.listdir(projectDir):
 summaryData['stations'] = stations
 summaryData['station_count'] = stationCount
 
+print 'Completed step 1 processing'
 
 
 ##############################################################
 # 
-#	New Code to add data to MongoDB instead of saving to json
+#       New Code to add data to MongoDB instead of saving to json
 #
 ###############################################################
 def convert_string_to_date(string):
@@ -448,7 +450,6 @@ def getStationState(date,gpsStation):
     return theState
 
 
-
 #########SAVE TO MONGODB###########
 client = MongoClient('localhost', 27017)
 
@@ -466,6 +467,7 @@ collections_meta_network = db.collections_meta_network
 collections_meta_stations = db.collections_meta_stations
 # for stations
 collections_time_series_stations = db.collections_time_series_stations  
+
 
 
 meta_network= {}
