@@ -2,9 +2,9 @@
 # Project-specific exclusions
 #
 deploy/srv/server/daily/
-deploy/srv/server/RDAHMM/Model/
-deploy/srv/server/RDAHMM/TEMP/
-deploy/srv/server/RDAHMM/Data/
+deploy/srv/server/RDAHMM/Model/*
+deploy/srv/server/RDAHMM/TEMP/*
+deploy/srv/server/RDAHMM/Data/*
 
 #
 # General things to ignore
