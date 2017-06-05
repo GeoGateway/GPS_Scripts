@@ -38,13 +38,13 @@ else:
     sys.exit("Invalid number of parameters!")
 
     if dataset == 'igs08':
-    url_prefix = "http://geodesy.unr.edu/gps_timeseries/tenv3/IGS08/"
-    url_suffix = ".IGS08.tenv3"
-elif dataset == 'fid':
-    url_prefix = "http://geodesy.unr.edu/gps_timeseries/rapids/tenv3/FID/"
-    url_suffix = ".FID.tenv3"
-else:
-    sys.exit("Unrecognized dataset: " + dataset)
+        url_prefix = "http://geodesy.unr.edu/gps_timeseries/tenv3/IGS08/"
+        url_suffix = ".IGS08.tenv3"
+    elif dataset == 'fid':
+        url_prefix = "http://geodesy.unr.edu/gps_timeseries/rapids/tenv3/FID/"
+        url_suffix = ".FID.tenv3"
+    else:
+        sys.exit("Unrecognized dataset: " + dataset)
 
 station_list = unr_sites()
 
