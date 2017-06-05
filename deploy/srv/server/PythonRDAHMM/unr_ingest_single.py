@@ -37,7 +37,7 @@ elif numargv == 2:
 else:
     sys.exit("Invalid number of parameters!")
 
-if dataset == 'igs08':
+    if dataset == 'igs08':
     url_prefix = "http://geodesy.unr.edu/gps_timeseries/tenv3/IGS08/"
     url_suffix = ".IGS08.tenv3"
 elif dataset == 'fid':
@@ -67,7 +67,7 @@ if not os.path.exists(workdir):
 
 #if the same db file exists, drop it
 if os.path.isfile(dbfile):
-    print "deleting old database " + dbfile
+    #print "deleting old database " + dbfile
     os.remove(dbfile)
 
 # creating/connecting the database 
@@ -130,7 +130,7 @@ for entry in station_list:
 
     station_dbfile = datadir + stationID + ".sqlite"
     if os.path.isfile(station_dbfile):
-        print "deleting old station database " + station_dbfile
+        #print "deleting old station database " + station_dbfile
         os.remove(station_dbfile)
 	#continue
     station_conn = db.connect(station_dbfile)
