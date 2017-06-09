@@ -315,7 +315,8 @@ summaryData['stations'] = stations
 summaryData['station_count'] = stationCount
 
 print 'Completed step 1 processing'
-
+print "Summary Data", summaryData
+print
 
 ##############################################################
 # 
