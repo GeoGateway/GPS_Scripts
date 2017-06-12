@@ -24,7 +24,7 @@ from pymongo import MongoClient
 
 # Some useful global constants
 today = datetime.today()
-serverName = "gf9.ucs.indiana.edu"
+serverName = "149.165.168.78"
 updateTime = str(today.strftime("%Y-%m-%dT%H:%M:%S"))
 beginDate = "1994-01-01"
 endDate = str(today.strftime("%Y-%m-%d"))
@@ -314,9 +314,6 @@ for stationList in os.listdir(projectDir):
 summaryData['stations'] = stations
 summaryData['station_count'] = stationCount
 
-print 'Completed step 1 processing'
-print "Summary Data", summaryData
-print
 
 ##############################################################
 # 
