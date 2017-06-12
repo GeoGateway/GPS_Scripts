@@ -2,7 +2,9 @@
 
 # ~/GPS_Scripts/PythonRDAHMM/cron_rdahmm_unr.py
 pypy PythonRDAHMM/unr_ingest_single.py igs08
-pypy PythonRDAHMM/unr_ingest_single.py fid
+
+# Need to use python instead of pypy for some obscure bug workaround
+python PythonRDAHMM/unr_ingest_single.py fid
 
 pypy PythonRDAHMM/unr_splice.py
 
