@@ -1,17 +1,22 @@
 #!/bin/bash
 
 # ~/GPS_Scripts/PythonRDAHMM/cron_rdahmm_unr.py
-pypy PythonRDAHMM/unr_ingest_single.py igs08
+time pypy PythonRDAHMM/unr_ingest_single.py igs08
+echo "IGS08 ingesting complete"
 
 # Need to use python instead of pypy for some obscure bug workaround
-python PythonRDAHMM/unr_ingest_single.py fid
+time python PythonRDAHMM/unr_ingest_single.py fid
+echo "FID ingestion complete"
 
-pypy PythonRDAHMM/unr_splice.py
+time pypy PythonRDAHMM/unr_splice.py
+echo "Splicing complete:
 
-pypy PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
+time pypy PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
+echo "RDAHMM evaluation complete"
 
 #python PythonRDAHMM/create_cassandra_db.py UNR_SPLICE
-pypy PythonRDAHMM/create_mongodb.py UNR_SPLICE
+time pypy PythonRDAHMM/create_mongodb.py UNR_SPLICE
+echo "MongoDB update complete"
 
 
 # /home/yuma/PythonRDAHMM/cron_rdahmm_unr.py
