@@ -9,7 +9,7 @@ time python PythonRDAHMM/unr_ingest_single.py fid
 echo "FID ingestion complete"
 
 time pypy PythonRDAHMM/unr_splice.py
-echo "Splicing complete:
+echo "Splicing complete"
 
 time pypy PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
 echo "RDAHMM evaluation complete"
