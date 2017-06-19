@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ~/GPS_Scripts/PythonRDAHMM/cron_rdahmm_unr.py
-time pypy PythonRDAHMM/unr_ingest_single.py igs08
+time python PythonRDAHMM/unr_ingest_single.py igs08
 echo "IGS08 ingesting complete"
 
 # Need to use python instead of pypy for some obscure bug workaround
