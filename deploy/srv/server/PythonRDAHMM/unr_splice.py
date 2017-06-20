@@ -51,7 +51,8 @@ if os.path.isfile(dbfile):
 #    print "deleting old database " + dbfile
     os.remove(dbfile)
 
-# creating/connecting the database 
+# creating/connecting the database
+# Create a new network database for the combined UNR data.
 conn = db.connect(dbfile)
 # creating a Cursor
 cur = conn.cursor()
@@ -76,13 +77,14 @@ sql ="""CREATE TABLE ReferencePositions (
 cur.execute(sql)
 conn.commit()
 
+# Connect to the two databases that we will be splicing.
 igs_conn = db.connect(igs_dbfile)
 igs_cur = igs_conn.cursor()
 
 fid_conn = db.connect(fid_dbfile)
 fid_cur = fid_conn.cursor()
 
-
+# Loop over all the stations that we will splice together
 for station in os.listdir(fid_model_path):
     stationID = station[-4:]
      
@@ -97,6 +99,7 @@ for station in os.listdir(fid_model_path):
     if not os.path.exists(igs_station_dbfile):
 	continue
 
+    # Get the station metadata from the IGS network DB and insert into the network DB for spliced data
     igs_sql = "SELECT StationID, Latitude, Longitude, Height FROM ReferencePositions WHERE StationID = '%s'" % stationID
     igs_row = igs_cur.execute(igs_sql).fetchone()
     if igs_row == None:

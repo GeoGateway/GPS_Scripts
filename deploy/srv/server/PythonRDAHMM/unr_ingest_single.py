@@ -58,6 +58,7 @@ dbfile = datadir + "UNR_" + dataset.upper() + ".sqlite"
 workdir = temp_path + "UNR_" + dataset.upper() + "/"
 #print datadir, dbfile
 
+#Make a data directory for the data set if needed.
 if not os.path.exists(datadir):
     cmd = "mkdir -p " + datadir
     os.system(cmd) 
@@ -75,6 +76,7 @@ conn = db.connect(dbfile)
 # creating a Cursor
 cur = conn.cursor()
 # creating tables
+# These all go to the main DB file for the network.
 sql ="""CREATE TABLE GPSTimeSeries (
       StationID CHAR(4), 
       North Num,
@@ -99,6 +101,7 @@ conn.commit()
 cmd = "rm -f " + workdir + "*"
 os.system(cmd)
 
+# Loop over all the stations in the station list.
 for entry in station_list:
     (stationID, lat, long, height) = entry
     # skip non-FID stations to reduce final size.
@@ -109,6 +112,8 @@ for entry in station_list:
     #if (stationID <> 'J234'):
     #	continue
 
+    # Check the update time for a data set and ignore old data sets.
+    # TODO: Need to check the data sets we have on hand and only download the ones that have changed.
     url = url_prefix + stationID + url_suffix
     try:
         last_mod = urllib2.urlopen(url).info().getdate('last-modified')
@@ -121,13 +126,18 @@ for entry in station_list:
     except urllib2.URLError:
         print stationID + " not available for download."
 	continue
+
+    # Use the wget command from the OS to download the data for a station.
+    # TODO: All of the code below may belong in a try/except block.
     wgetcmd = "wget -nv -P" + workdir + " " + url 
     os.system(wgetcmd)
 
+    # These are from the station list file and go to the network DB.
     sql = "INSERT INTO ReferencePositions (StationID, Latitude, Longitude, Height) "
     sql += " VALUES ('%s', '%s', '%s', '%s')" % (stationID, lat, long, height)
     cur.execute(sql)
 
+    # Create a DB for each station.
     station_dbfile = datadir + stationID + ".sqlite"
     if os.path.isfile(station_dbfile):
         #print "deleting old station database " + station_dbfile
@@ -148,9 +158,13 @@ for entry in station_list:
     station_cur.execute(station_sql)
     station_conn.commit()
 
+    #Insert each line into the station's DB.
     with open(workdir + stationID + url_suffix, 'r') as f: 
 	data = f.readlines()
 	last_line = ""
+        # Create two DB tables per station.
+        # GPSTimeSeries: this is just the data as is.
+        # StationGPSTimeSeries: this is the data with missing values inserted.
 	for line in data[1:]:
 	    record = string.split(line)
 	    if len(record) < 20: # When missing white spaces between columns
