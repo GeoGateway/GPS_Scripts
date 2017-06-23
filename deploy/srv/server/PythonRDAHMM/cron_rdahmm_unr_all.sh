@@ -15,9 +15,8 @@ time pypy PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
 echo "RDAHMM evaluation complete"
 
 #python PythonRDAHMM/create_cassandra_db.py UNR_SPLICE
-time pypy PythonRDAHMM/create_mongodb.py UNR_SPLICE
+time python PythonRDAHMM/create_mongodb.py UNR_SPLICE
 echo "MongoDB update complete"
-
 
 # /home/yuma/PythonRDAHMM/cron_rdahmm_unr.py
 # /home/yuma/PythonRDAHMM/unr_splice.py
