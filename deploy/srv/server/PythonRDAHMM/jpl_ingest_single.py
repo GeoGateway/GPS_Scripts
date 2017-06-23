@@ -180,6 +180,11 @@ def createDbForStations(stationID):
                     station_cur.execute(station_sql)
 		last_line = line
 
+            station_sql = "INSERT INTO StationGPSTimeSeries (North, East, Up, Nsig, Esig, Usig, Timestamp) "
+            station_sql += " VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (north, east, vert, nsig, esig, vsig, timeStamp)
+    	    station_cur.execute(station_sql)
+                
+
     station_conn.commit()
     station_cur.close()
     station_conn.close()
@@ -200,6 +205,7 @@ readStationList()
 
 for station in stationList:
     createDbForStations(station)
+
 
 # create index 
 sql = "CREATE INDEX idx_StationID ON GPSTimeSeries(StationID)"
