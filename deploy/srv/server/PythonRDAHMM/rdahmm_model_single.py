@@ -83,8 +83,10 @@ for dbfile in glob.glob(data_path+"/????.sqlite"):
     # data for model run
     sql = "SELECT MIN(Timestamp) FROM StationGPSTimeSeries"
     start_epoch = cur.execute(sql).fetchone()[0]
+    print "Start epoch", start_epoch
     end_epoch = train_epoch
-    start = datetime.datetime(*map(int, string.split(start_epoch, "-")))
+    start =  datetime.datetime.strptime(start_epoch, "%Y-%m-%d %H:%M:%S")
+    #    start = datetime.datetime(*map(int, string.split(start_epoch, "-")))
     end = datetime.datetime(*map(int, string.split(end_epoch, "-")))
     if (end - start) < datetime.timedelta(days=(3*365)):
         sql = "SELECT MAX(Timestamp) FROM StationGPSTimeSeries"
