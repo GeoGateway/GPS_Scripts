@@ -451,11 +451,11 @@ def getStationState(date,gpsStation):
 #########SAVE TO MONGODB###########
 client = MongoClient('localhost', 27017)
 
-database_name='GPS_'+dataSet
+database_name = 'GPS_'+dataSet
 
 # Create database
-client.drop_database(database_name)
-db =client[database_name]
+# client.drop_database(database_name)
+db = client[database_name]
 
 
 # Create 3 collections
@@ -466,29 +466,27 @@ collections_meta_stations = db.collections_meta_stations
 # for stations
 collections_time_series_stations = db.collections_time_series_stations  
 
-
-
-meta_network= {}
-meta_network['update_time'] = summaryData['update_time']
-meta_network['data_source'] = summaryData['data_source']
-meta_network['begin_date'] = summaryData['begin_date']
-meta_network['end_date'] = summaryData['end_date']
-meta_network['center_longitude'] = summaryData['center_longitude']
-meta_network['center_latitude'] = summaryData['center_latitude']
-meta_network['server_url'] = summaryData['server_url']
-meta_network['stateChangeNumTxtFile'] = summaryData['stateChangeNumTxtFile']
-meta_network['stateChangeNumJsInput'] = summaryData['stateChangeNumJsInput']
-meta_network['allStationInputName'] = summaryData['allStationInputName']
-meta_network['Filters'] = summaryData['Filters']
-meta_network['video_url'] = summaryData['video_url']
-meta_network['station_count'] = summaryData['station_count']
-
-collections_meta_network.insert_one(meta_network)
+# meta_network= {}
+# meta_network['update_time'] = summaryData['update_time']
+# meta_network['data_source'] = summaryData['data_source']
+# meta_network['begin_date'] = summaryData['begin_date']
+# meta_network['end_date'] = summaryData['end_date']
+# meta_network['center_longitude'] = summaryData['center_longitude']
+# meta_network['center_latitude'] = summaryData['center_latitude']
+# meta_network['server_url'] = summaryData['server_url']
+# meta_network['stateChangeNumTxtFile'] = summaryData['stateChangeNumTxtFile']
+# meta_network['stateChangeNumJsInput'] = summaryData['stateChangeNumJsInput']
+# meta_network['allStationInputName'] = summaryData['allStationInputName']
+# meta_network['Filters'] = summaryData['Filters']
+# meta_network['video_url'] = summaryData['video_url']
+# meta_network['station_count'] = summaryData['station_count']
+#
+# collections_meta_network.insert_one(meta_network)
 
 
 def get_legacy_data(station):
     
-    document= {}
+    document = {}
     document['_id'] = station['id']
     document['pro_dir'] = station['pro_dir']
     document['AFile'] = station['AFile']
@@ -518,56 +516,67 @@ def get_legacy_data(station):
     
     return document
 
+
 start_date=datetime.strptime(beginDate, '%Y-%m-%d')
 end_date=datetime.strptime(endDate, '%Y-%m-%d')
 
-from calendar import monthrange
-
 for station in stations:
-#     GeoJson format: maybe considered in future
-#     loc = {'type' : "Point", 
-#            'coordinates' : [float(station['long']), float(station['lat'])]
-#           }
-    loc = [float(station['long']), float(station['lat'])]   
-    document={'station_id' : station['id'], 'loc' : loc }
-    
-    data_for_all_years = {}
-    
-    for year in range(start_date.year,end_date.year+1):
-        data_for_a_year = {}
-        
-        for month in range(1,13):
-            no_of_days_in_month = monthrange(year, month)[1]+1
-            days=range(1, no_of_days_in_month)          
-            data_for_a_month={}
-            
-            for day in days:
-                date_in_time_series=datetime(year, month, day)
-                
-                if (date_in_time_series > end_date):
-                    data_for_a_year[str(month)] = data_for_a_month
-                    data_for_all_years[str(year)] = data_for_a_year
-                    break                
-                data_for_a_month[str(day)] = str(getStationState(date_in_time_series, station))
-
-            if (date_in_time_series >= end_date):
-                break
-            data_for_a_year[str(month)] = data_for_a_month
-            
-        if (date_in_time_series >= end_date):
-            break            
-        data_for_all_years[str(year)] = data_for_a_year
-        
-    document['status'] = data_for_all_years
+    # GeoJson format: maybe considered in future
+    # loc = {'type' : "Point",
+    #        'coordinates' : [float(station['long']), float(station['lat'])]
+    #       }
+    # loc = [float(station['long']), float(station['lat'])]
+    # document={'station_id' : station['id'], 'loc' : loc }
+    #
+    # data_for_all_years = {}
+    #
+    # for year in range(start_date.year,end_date.year+1):
+    #     data_for_a_year = {}
+    #
+    #     for month in range(1,13):
+    #         no_of_days_in_month = monthrange(year, month)[1]+1
+    #         days=range(1, no_of_days_in_month)
+    #         data_for_a_month={}
+    #
+    #         for day in days:
+    #             date_in_time_series=
+    #
+    #             if (date_in_time_series > end_date):
+    #                 data_for_a_year[str(month)] = data_for_a_month
+    #                 data_for_all_years[str(year)] = data_for_a_year
+    #                 break
+    #             data_for_a_month[str(day)] = str(getStationState(date_in_time_series, station))
+    #
+    #         if (date_in_time_series >= end_date):
+    #             break
+    #         data_for_a_year[str(month)] = data_for_a_month
+    #
+    #     if (date_in_time_series >= end_date):
+    #         break
+    #     data_for_all_years[str(year)] = data_for_a_year
+    # document['status'] = data_for_all_years
     
     # Add station time series
-    collections_time_series_stations.insert_one(document)
-    
+    # collections_time_series_stations.insert_one(document)
+
+    end_date_year = end_date.year
+    end_date_month = end_date.month
+    end_date_day = end_date.day
+
+    end_date_state = str(getStationState(datetime(end_date_year, end_date_month, end_date_day), station))
+
+    # Push end_date's state into the mongodb collection for this station
+    update = {"$set": {}}
+    update['$set']['status.' + str(end_date_year) + '.' + str(end_date_month) + '.' + str(end_date_day)] \
+        = end_date_state
+
+    collections_time_series_stations.update_one({'station_id' : station['id']}, update)
+
     # Add station metadata
-    collections_meta_stations.insert_one(get_legacy_data(station))
-    
+    # collections_meta_stations.insert_one(get_legacy_data(station))
+
 # Create 2-D index based on latitude, longitude
-db.collections_stations.create_index( [("lon", pymongo.GEO2D)] )
+# db.collections_stations.create_index( [("lon", pymongo.GEO2D)] )
 
 # Close connection to database
 client.close()
