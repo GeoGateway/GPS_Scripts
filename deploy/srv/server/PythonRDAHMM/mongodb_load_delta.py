@@ -1,18 +1,20 @@
 # #!/usr/local/bin/python
 #==========================================================================
-# Script to load the final json file into MongoDB.
+# Script to perform delta load from the SQLite db into MongoDB.
 
 # usage:
-     # python create_mongodb scripps_dataset_name
-     # eg: python create_mongodb.py UNR_SPLICE
+	 # python mongodb_load_delta scripps_dataset_name
+	 # eg: python mongodb_load_delta.py UNR_SPLICE
 
 # output:
-#   MongoDB database named gps_timeseries_database which contains
-#   three tables-
+# 	Updates MongoDB database named gps_timeseries_database with delta information.
+#   
+#   The following tables are always updated - 
+#   collections_time_series_stations: Timeseries for each station
+#
+#   The following tables may get updated if any new Stations are encountered not present in mongodb previous loads - 
 #   collections_meta_network: Data for that station
 #   collections_meta_stations: Meta data for each station
-#   collections_time_series_stations: Timeseries for each station
-#   The database is indexed based on latitude and longitude
 #===========================================================================
 import os, sys, string, re, json
 from datetime import date, datetime, timedelta, time
@@ -37,13 +39,13 @@ allStationInputName = "all_stations.all.input"
 filters = "Fill_Missing"
 
 # Used to separate parts of the station name
-SEPARATOR_CHARACTER="_"
-NO_DATA_TIME_STAMP="22:22:22"
+SEPARATOR_CHARACTER = "_"
+NO_DATA_TIME_STAMP = "22:22:22"
 FINAL_PATH=properties('eval_path')
 
 
 def setStationId(stationList, stationData):
-    #Get the station name.
+    # Get the station name.
     stationName=stationList.split(SEPARATOR_CHARACTER)[2];
 
     stationData['id'] = stationName
@@ -321,7 +323,6 @@ summaryData['station_count'] = stationCount
 #
 ###############################################################
 def convert_string_to_date(string):
-#     return datetime.strptime(string, '%Y-%m-%d').now().date()
     return datetime.strptime(string, '%Y-%m-%d')
 
 
@@ -451,22 +452,19 @@ def getStationState(date,gpsStation):
 #########SAVE TO MONGODB###########
 client = MongoClient('localhost', 27017)
 
-database_name='GPS_'+dataSet
+database_name = 'GPS_'+dataSet
 
-# Create database
-client.drop_database(database_name)
-db =client[database_name]
+# Connect to database
+db = client[database_name]
 
 
-# Create 3 collections
+# Initialize the 3 collections
 # for network meta data
 collections_meta_network = db.collections_meta_network
 # for station meta data
 collections_meta_stations = db.collections_meta_stations
 # for stations
 collections_time_series_stations = db.collections_time_series_stations  
-
-
 
 meta_network= {}
 meta_network['update_time'] = summaryData['update_time']
@@ -483,12 +481,13 @@ meta_network['Filters'] = summaryData['Filters']
 meta_network['video_url'] = summaryData['video_url']
 meta_network['station_count'] = summaryData['station_count']
 
+# Empty the meta network collection before pushing new values
+collections_meta_network.delete_many({})
 collections_meta_network.insert_one(meta_network)
-
 
 def get_legacy_data(station):
     
-    document= {}
+    document = {}
     document['_id'] = station['id']
     document['pro_dir'] = station['pro_dir']
     document['AFile'] = station['AFile']
@@ -518,56 +517,29 @@ def get_legacy_data(station):
     
     return document
 
+
 start_date=datetime.strptime(beginDate, '%Y-%m-%d')
 end_date=datetime.strptime(endDate, '%Y-%m-%d')
 
-from calendar import monthrange
-
 for station in stations:
-#     GeoJson format: maybe considered in future
-#     loc = {'type' : "Point", 
-#            'coordinates' : [float(station['long']), float(station['lat'])]
-#           }
-    loc = [float(station['long']), float(station['lat'])]   
-    document={'station_id' : station['id'], 'loc' : loc }
-    
-    data_for_all_years = {}
-    
-    for year in range(start_date.year,end_date.year+1):
-        data_for_a_year = {}
-        
-        for month in range(1,13):
-            no_of_days_in_month = monthrange(year, month)[1]+1
-            days=range(1, no_of_days_in_month)          
-            data_for_a_month={}
-            
-            for day in days:
-                date_in_time_series=datetime(year, month, day)
-                
-                if (date_in_time_series > end_date):
-                    data_for_a_year[str(month)] = data_for_a_month
-                    data_for_all_years[str(year)] = data_for_a_year
-                    break                
-                data_for_a_month[str(day)] = str(getStationState(date_in_time_series, station))
+    # If this station has no entry in the collection
+    # Create a new entry
+    if collections_time_series_stations.find({'station_id': station['id']}).count() < 1:
+        document={'station_id': station['id'], 'loc': loc }
+        data_for_all_years = {}
+        document['status'] = data_for_all_years
+        collections_time_series_stations.insert_one(document)
+        collections_meta_stations.insert_one(get_legacy_data(station))
 
-            if (date_in_time_series >= end_date):
-                break
-            data_for_a_year[str(month)] = data_for_a_month
-            
-        if (date_in_time_series >= end_date):
-            break            
-        data_for_all_years[str(year)] = data_for_a_year
-        
-    document['status'] = data_for_all_years
-    
-    # Add station time series
-    collections_time_series_stations.insert_one(document)
-    
-    # Add station metadata
-    collections_meta_stations.insert_one(get_legacy_data(station))
-    
-# Create 2-D index based on latitude, longitude
-db.collections_stations.create_index( [("lon", pymongo.GEO2D)] )
+    # Proceed to computing the end_date data state
+    end_date_state = str(getStationState(datetime(end_date.year, end_date.month, end_date.day), station))
+
+    # Push end_date's state into the mongodb collection for this station
+    update = {"$set": {}}
+    update['$set']['status.' + str(end_date.year) + '.' + str(end_date.month) + '.' + str(end_date.day)] \
+        = end_date_state
+
+    collections_time_series_stations.update_one({'station_id': station['id']}, update)
 
 # Close connection to database
 client.close()
