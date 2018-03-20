@@ -8,14 +8,15 @@ echo "IGS08 ingesting complete"
 time python PythonRDAHMM/unr_ingest_single.py fid
 echo "FID ingestion complete"
 
-time pypy PythonRDAHMM/unr_splice.py
+time python PythonRDAHMM/unr_splice.py
 echo "Splicing complete"
 
-time pypy PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
+time python PythonRDAHMM/rdahmm_eval_single.py UNR_SPLICE
 echo "RDAHMM evaluation complete"
 
 #python PythonRDAHMM/create_cassandra_db.py UNR_SPLICE
-time python PythonRDAHMM/create_mongodb.py UNR_SPLICE
+#time python PythonRDAHMM/create_mongodb.py UNR_SPLICE
+time python PythonRDAHMM/mongodb_load_delta.py UNR_SPLICE
 echo "MongoDB update complete"
 
 # /home/yuma/PythonRDAHMM/cron_rdahmm_unr.py
