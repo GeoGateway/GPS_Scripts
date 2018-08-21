@@ -66,6 +66,7 @@ def _getParser():
     parser.add_argument('--ct', action='store', dest='ct',required=False,help='coseismic window t-ct/2 to t+ct/2, default 0.1 years')
     parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     parser.add_argument('--minm', action='store_true',dest='mon',required=False,help='minimize marker size')
+    parser.add_argument('--vabs', action='store_true',dest='vabs',required=False,help='display absolute verticals')
     return parser
 
 def main():
@@ -175,6 +176,8 @@ def main():
                     vlon = vlon-rlon
                     vlat = vlat-rlat
                     vrad = vrad-rrad
+                    if (results.vabs == True):
+                        vrad = vrad+rrad
 
                     # Set marker color
                     if (test[0] == refsite):
@@ -229,7 +232,7 @@ def main():
                     print("   <LineString>",file=outFile1)
                     print("   <coordinates>",file=outFile1)
                     print("   {:f},{:f},0".format(lon,lat),file=outFile1)
-                    print("   {:f},{:f},0".format(lon+vlon/scale,lat+vlat/scale),file=outFile1)
+                    print("   {:f},{:f},0".format(lon+vlon/scale/math.cos(lat*math.pi/180.),lat+vlat/scale),file=outFile1)
                     print("    </coordinates>",file=outFile1)
                     print("   </LineString>",file=outFile1)
                     print("  </Placemark>",file=outFile1)
@@ -261,7 +264,7 @@ def main():
                             angle = k/30*2*math.pi
                             elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
                             elat = slon*math.cos(angle)*math.sin(theta)+slat*math.sin(angle)*math.cos(theta)
-                            elon = (elon+vlon)/scale
+                            elon = (elon+vlon)/scale/math.cos(lat*math.pi/180.)
                             elat = (elat+vlat)/scale
                             print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile1)
 
@@ -301,7 +304,7 @@ def main():
                         angle = k/30*2*math.pi
                         elon = vrad*math.cos(angle)*math.cos(theta)-vrad*math.sin(angle)*math.sin(theta)
                         elat = vrad*math.cos(angle)*math.sin(theta)+vrad*math.sin(angle)*math.cos(theta)
-                        elon = (elon+0)/scale
+                        elon = (elon+0)/scale/math.cos(lat*math.pi/180.)
                         elat = (elat+0)/scale
                         print("      {:f},{:f},0".format(lon+elon,lat+elat),file=outFile2)
 

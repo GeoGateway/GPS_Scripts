@@ -7,16 +7,16 @@ from __future__ import print_function
 
 prolog="""
 **PROGRAM**
-    getPostseismic.py
+    getModel.py
       
 **PURPOSE**
-    Make kml file from postseismic break estimates
+    Make kml file from model displacements
 
 **USAGE**
 """
 epilog="""
 **EXAMPLE**
-    getPostseismic.py --lat 33 --lon -115 --width 2 --height 2 -o postseismic.kml -t 2010-04-08
+    getModel.py --lat 33 --lon -115 --width 2 --height 2 -o displace -t1 2010-03-28 -t2 2010-04-11 -e
                
 **COPYRIGHT**
     | Copyright 2016, by the California Institute of Technology
@@ -60,11 +60,10 @@ def _getParser():
     parser.add_argument('--lon', action='store', dest='lon',required=True,help='center longitude in degrees')
     parser.add_argument('--width', action='store', dest='width',required=True,help='width in degrees')
     parser.add_argument('--height', action='store', dest='height',required=True,help='height in degrees')
-    parser.add_argument('-t', action='store', dest='epoch',required=True,help='date given as YYYY-MM-DD')
+    parser.add_argument('-t1', action='store', dest='epoch1',required=True,help='start date given as YYYY-MM-DD')
+    parser.add_argument('-t2', action='store', dest='epoch2',required=True,help='stop date given as YYYY-MM-DD')
     parser.add_argument('--scale', action='store', dest='scale',required=False,help='scale for drawing estimates, default is 320 mm/deg')
     parser.add_argument('--ref', action='store', dest='ref',required=False,help='reference site')
-    parser.add_argument('--ct', action='store', dest='ct',required=False,help='coseismic window t-ct/2 to t+ct/2, default 0.1 years')
-    parser.add_argument('--pt', action='store', dest='pt',required=False,help='postseismic window t+ct/2 to t+ct/2+pt, default 2 years')
     parser.add_argument('-e', action='store_true',dest='eon',required=False,help='include error bars')
     parser.add_argument('--minm', action='store_true',dest='mon',required=False,help='minimize marker size')
     parser.add_argument('--vabs', action='store_true',dest='vabs',required=False,help='display absolute verticals')
@@ -98,26 +97,25 @@ def main():
     if (results.ref != None):
         refsite = results.ref
 
-    # Set epoch
-    if (len(results.epoch) == 10):
-        results.epoch = datetime.datetime.strptime(results.epoch,"%Y-%m-%d").strftime("%y%b%d").upper()
-        ntime = time.strptime(results.epoch,"%y%b%d")
+    # Set first epoch
+    if (len(results.epoch1) == 10):
+        results.epoch1 = datetime.datetime.strptime(results.epoch1,"%Y-%m-%d").strftime("%y%b%d").upper()
+        ntime = time.strptime(results.epoch1,"%y%b%d")
         jtime = time.strptime("2000JAN01","%Y%b%d")
-        ytime = float(calendar.timegm(ntime)-calendar.timegm(jtime))
-        ytime = ytime/(86400.*365.25)
-        ytime = ytime + 2000.
+        ytime1 = float(calendar.timegm(ntime)-calendar.timegm(jtime))
+        ytime1 = ytime1/(86400.*365.25)
+        ytime1 = ytime1 + 2000.
 
-    # Set coseismic window
-    ct = 0.1 
-    if (results.ct != None):
-        ct = float(results.ct)
+    # Set second epoch
+    if (len(results.epoch2) == 10):
+        results.epoch2 = datetime.datetime.strptime(results.epoch2,"%Y-%m-%d").strftime("%y%b%d").upper()
+        ntime = time.strptime(results.epoch2,"%y%b%d")
+        jtime = time.strptime("2000JAN01","%Y%b%d")
+        ytime2 = float(calendar.timegm(ntime)-calendar.timegm(jtime))
+        ytime2 = ytime2/(86400.*365.25)
+        ytime2 = ytime2 + 2000.
 
-    # Set coseismic window
-    pt = 2 
-    if (results.pt != None):
-        pt = float(results.pt)
-
-    # Read table of positions
+    # Read table of positions and velocities
     response1 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table2.html')
     lines = response1.read().decode('utf-8').splitlines()
 
@@ -125,17 +123,65 @@ def main():
     response2 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table3.html')
     breaks = response2.read().decode('utf-8').splitlines()
 
+    # Read table of seasonals
+    response3 = urllib.request.urlopen('http://sideshow.jpl.nasa.gov/post/tables/table4.html')
+    seasonal = response3.read().decode('utf-8').splitlines()
+
     # Set reference values
     rlon = 0
     rlat = 0
     rrad = 0
+
+    # Velocities 
+    for j in range(0,len(lines)):
+        test2 = lines[j].split()
+        if (len(test2) == 8):
+            if ((test2[0] == refsite) & (test2[1] == 'VEL')):
+                rlon = rlon + float(test2[3])*(ytime2-ytime1)
+                rlat = rlat + float(test2[2])*(ytime2-ytime1)
+                rrad = rrad + float(test2[4])*(ytime2-ytime1)
+
+    # Breaks
     for j in range(0,len(breaks)):
         test2 = breaks[j].split()
         if (len(test2) == 8):
-            if ((test2[0] == refsite) & (float(test2[1]) > ytime+(ct/2)) & (float(test2[1]) < ytime+(ct/2)+pt)):
+            if ((test2[0] == refsite) & (float(test2[1]) >= ytime1) & (float(test2[1]) <= ytime2)):
                 rlon = rlon + float(test2[3])
                 rlat = rlat + float(test2[2])
                 rrad = rrad + float(test2[4])
+
+    # Seasonal
+    for j in range(0,len(seasonal)):
+        test2 = seasonal[j].split()
+        if (len(test2) == 8):
+            if ((test2[0] == refsite) & (test2[1] == 'AC1')):
+                rlon = rlon + float(test2[3])*math.cos(2*math.pi*(ytime2-2019.0))
+                rlat = rlat + float(test2[2])*math.cos(2*math.pi*(ytime2-2019.0))
+                rrad = rrad + float(test2[4])*math.cos(2*math.pi*(ytime2-2019.0))
+                rlon = rlon - float(test2[3])*math.cos(2*math.pi*(ytime1-2019.0))
+                rlat = rlat - float(test2[2])*math.cos(2*math.pi*(ytime1-2019.0))
+                rrad = rrad - float(test2[4])*math.cos(2*math.pi*(ytime1-2019.0))
+            if ((test2[0] == refsite) & (test2[1] == 'AS1')):
+                rlon = rlon + float(test2[3])*math.sin(2*math.pi*(ytime2-2019.0))
+                rlat = rlat + float(test2[2])*math.sin(2*math.pi*(ytime2-2019.0))
+                rrad = rrad + float(test2[4])*math.sin(2*math.pi*(ytime2-2019.0))
+                rlon = rlon - float(test2[3])*math.sin(2*math.pi*(ytime1-2019.0))
+                rlat = rlat - float(test2[2])*math.sin(2*math.pi*(ytime1-2019.0))
+                rrad = rrad - float(test2[4])*math.sin(2*math.pi*(ytime1-2019.0))
+            if ((test2[0] == refsite) & (test2[1] == 'AC2')):
+                rlon = rlon + float(test2[3])*math.cos(4*math.pi*(ytime2-2019.0))
+                rlat = rlat + float(test2[2])*math.cos(4*math.pi*(ytime2-2019.0))
+                rrad = rrad + float(test2[4])*math.cos(4*math.pi*(ytime2-2019.0))
+                rlon = rlon - float(test2[3])*math.cos(4*math.pi*(ytime1-2019.0))
+                rlat = rlat - float(test2[2])*math.cos(4*math.pi*(ytime1-2019.0))
+                rrad = rrad - float(test2[4])*math.cos(4*math.pi*(ytime1-2019.0))
+            if ((test2[0] == refsite) & (test2[1] == 'AS2')):
+                rlon = rlon + float(test2[3])*math.sin(4*math.pi*(ytime2-2019.0))
+                rlat = rlat + float(test2[2])*math.sin(4*math.pi*(ytime2-2019.0))
+                rrad = rrad + float(test2[4])*math.sin(4*math.pi*(ytime2-2019.0))
+                rlon = rlon - float(test2[3])*math.sin(4*math.pi*(ytime1-2019.0))
+                rlat = rlat - float(test2[2])*math.sin(4*math.pi*(ytime1-2019.0))
+                rrad = rrad - float(test2[4])*math.sin(4*math.pi*(ytime1-2019.0))
 
     # Start kml file
     outFile1 = open(results.output+'_horizontal.kml','w')
@@ -164,19 +210,60 @@ def main():
                     vlon = 0
                     vlat = 0
                     vrad = 0
-                    slon = 0
-                    slat = 0
-                    srad = 0
+                    slon = 1
+                    slat = 1
+                    srad = 4
+
+                    # Velocities 
+                    for j in range(0,len(lines)):
+                        test2 = lines[j].split()
+                        if (len(test2) == 8):
+                            if ((test2[0] == test[0]) & (test2[1] == 'VEL')):
+                                vlon = vlon + float(test2[3])*(ytime2-ytime1)
+                                vlat = vlat + float(test2[2])*(ytime2-ytime1)
+                                vrad = vrad + float(test2[4])*(ytime2-ytime1)
+
+                    # Breaks
                     for j in range(0,len(breaks)):
                         test2 = breaks[j].split()
                         if (len(test2) == 8):
-                            if ((test2[0] == test[0]) & (float(test2[1]) > ytime+(ct/2)) & (float(test2[1]) < ytime+(ct/2)+pt)):
+                            if ((test2[0] == test[0]) & (float(test2[1]) >= ytime1) & (float(test2[1]) <= ytime2)):
                                 vlon = vlon + float(test2[3])
                                 vlat = vlat + float(test2[2])
                                 vrad = vrad + float(test2[4])
-                                slon = slon + float(test2[6])*float(test2[6])
-                                slat = slat + float(test2[5])*float(test2[5])
-                                srad = srad + float(test2[7])*float(test2[7])
+
+                    # Seasonal
+                    for j in range(0,len(seasonal)):
+                        test2 = seasonal[j].split()
+                        if (len(test2) == 8):
+                            if ((test2[0] == test[0]) & (test2[1] == 'AC1')):
+                                vlon = vlon + float(test2[3])*math.cos(2*math.pi*(ytime2-2019.0))
+                                vlat = vlat + float(test2[2])*math.cos(2*math.pi*(ytime2-2019.0))
+                                vrad = vrad + float(test2[4])*math.cos(2*math.pi*(ytime2-2019.0))
+                                vlon = vlon - float(test2[3])*math.cos(2*math.pi*(ytime1-2019.0))
+                                vlat = vlat - float(test2[2])*math.cos(2*math.pi*(ytime1-2019.0))
+                                vrad = vrad - float(test2[4])*math.cos(2*math.pi*(ytime1-2019.0))
+                            if ((test2[0] == test[0]) & (test2[1] == 'AS1')):
+                                vlon = vlon + float(test2[3])*math.sin(2*math.pi*(ytime2-2019.0))
+                                vlat = vlat + float(test2[2])*math.sin(2*math.pi*(ytime2-2019.0))
+                                vrad = vrad + float(test2[4])*math.sin(2*math.pi*(ytime2-2019.0))
+                                vlon = vlon - float(test2[3])*math.sin(2*math.pi*(ytime1-2019.0))
+                                vlat = vlat - float(test2[2])*math.sin(2*math.pi*(ytime1-2019.0))
+                                vrad = vrad - float(test2[4])*math.sin(2*math.pi*(ytime1-2019.0))
+                            if ((test2[0] == test[0]) & (test2[1] == 'AC2')):
+                                vlon = vlon + float(test2[3])*math.cos(4*math.pi*(ytime2-2019.0))
+                                vlat = vlat + float(test2[2])*math.cos(4*math.pi*(ytime2-2019.0))
+                                vrad = vrad + float(test2[4])*math.cos(4*math.pi*(ytime2-2019.0))
+                                vlon = vlon - float(test2[3])*math.cos(4*math.pi*(ytime1-2019.0))
+                                vlat = vlat - float(test2[2])*math.cos(4*math.pi*(ytime1-2019.0))
+                                vrad = vrad - float(test2[4])*math.cos(4*math.pi*(ytime1-2019.0))
+                            if ((test2[0] == test[0]) & (test2[1] == 'AS2')):
+                                vlon = vlon + float(test2[3])*math.sin(4*math.pi*(ytime2-2019.0))
+                                vlat = vlat + float(test2[2])*math.sin(4*math.pi*(ytime2-2019.0))
+                                vrad = vrad + float(test2[4])*math.sin(4*math.pi*(ytime2-2019.0))
+                                vlon = vlon - float(test2[3])*math.sin(4*math.pi*(ytime1-2019.0))
+                                vlat = vlat - float(test2[2])*math.sin(4*math.pi*(ytime1-2019.0))
+                                vrad = vrad - float(test2[4])*math.sin(4*math.pi*(ytime1-2019.0))
 
                     # Subtract reference values
                     vlon = vlon-rlon
@@ -232,7 +319,7 @@ def main():
                     # Draw vector    
                     print("  <Placemark>",file=outFile1)
                     print("   <Style><LineStyle>",file=outFile1)
-                    print("    <color>FF0078F0</color>",file=outFile1)
+                    print("    <color>FF800080</color>",file=outFile1)
                     print("    <width>2</width>",file=outFile1)
                     print("   </LineStyle></Style>",file=outFile1)
                     print("   <LineString>",file=outFile1)
@@ -263,11 +350,7 @@ def main():
                         print("     <LinearRing>",file=outFile1)
                         print("      <coordinates>",file=outFile1)
 
-                        slon = math.sqrt(slon)
-                        slat = math.sqrt(slat)
-                        srad = math.sqrt(srad)
                         theta = 0
-
                         for k in range(0,31):
                             angle = k/30*2*math.pi
                             elon = slon*math.cos(angle)*math.cos(theta)-slat*math.sin(angle)*math.sin(theta)
